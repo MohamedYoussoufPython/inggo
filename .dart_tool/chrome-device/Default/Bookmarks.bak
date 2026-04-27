@@ -1,0 +1,304 @@
+{
+   "checksum": "0ff50f9cbca2faab87e81ce443a4915c",
+   "roots": {
+      "bookmark_bar": {
+         "children": [ {
+            "date_added": "13360317502432505",
+            "date_last_used": "13366877693686389",
+            "guid": "04fa83de-b6b9-44e4-973d-eea2b6190660",
+            "id": "7",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Microsoft Copilot in Bing",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://www.bing.com/chat?form=MSNCHB",
+            "visit_count": 0
+         }, {
+            "date_added": "13398023089595080",
+            "date_last_used": "0",
+            "guid": "94f2d600-68df-47f1-a8cf-2d82f0e4ea22",
+            "id": "8",
+            "name": "InnMoto - Connexion",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "file:///C:/Users/moham/Music/InnMoto/Developement/login.html",
+            "visit_count": 0
+         }, {
+            "date_added": "13398943264422122",
+            "date_last_used": "13405501656256665",
+            "guid": "7eb77667-a51c-4062-948f-8cf884528f84",
+            "id": "9",
+            "name": "Projects – Uizard",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://app.uizard.io/prototypes",
+            "visit_count": 16
+         }, {
+            "date_added": "13410090333881075",
+            "date_last_used": "0",
+            "guid": "c1e82540-cd57-483e-95f7-bd054d2d36ba",
+            "id": "10",
+            "name": "D",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://chatgpt.com/c/693d2258-8030-832d-a16a-3cbe4de121a5",
+            "visit_count": 1
+         }, {
+            "date_added": "13413285449678753",
+            "date_last_used": "0",
+            "guid": "d64aeda6-7b12-4775-b45d-62c7702df75e",
+            "id": "11",
+            "name": "New tab",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "edge://newtab/",
+            "visit_count": 1
+         } ],
+         "date_added": "13418674977965256",
+         "date_last_used": "0",
+         "date_modified": "13413285449678753",
+         "guid": "0bc5d13f-2cba-5d74-951f-3f233fe6c908",
+         "id": "1",
+         "name": "Favorites bar",
+         "source": "unknown",
+         "type": "folder"
+      },
+      "other": {
+         "children": [ {
+            "date_added": "13343412272213208",
+            "date_last_used": "0",
+            "guid": "2a3d0d53-dca0-40ea-abd6-5580ea650aab",
+            "id": "12",
+            "name": "Dahabshiil MTS",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://dahabonline.co.uk/login.aspx?ReturnUrl=%2f",
+            "visit_count": 0
+         }, {
+            "date_added": "13343412297204966",
+            "date_last_used": "0",
+            "guid": "a5e156d0-5c58-40e1-a03a-e897fe8ce241",
+            "id": "13",
+            "name": "Global Remit",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://orspayments.com/Account/Login?ReturnUrl=%2f",
+            "visit_count": 0
+         }, {
+            "date_added": "13344338687221257",
+            "date_last_used": "0",
+            "guid": "11da5082-c9e0-465b-841f-880c75a86ac1",
+            "id": "14",
+            "name": "AML Compass",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://dahabshiil-somalia.amlcompass.cbix.paymentapproved.com/",
+            "visit_count": 0
+         }, {
+            "date_added": "13344338911536646",
+            "date_last_used": "0",
+            "guid": "62289d40-26cb-46f8-8538-ddec0049b4c7",
+            "id": "15",
+            "name": "Sign in to Outlook",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://login.microsoftonline.com/common/oauth2/authorize?client_id=00000002-0000-0ff1-ce00-000000000000&redirect_uri=https%3a%2f%2foutlook.office.com%2fowa%2f&resource=00000002-0000-0ff1-ce00-000000000000&response_mode=form_post&response_type=code+id_token&scope=openid&msafed=1&msaredir=1&client-request-id=9438b5b4-7684-acd1-7b4f-e81c641fb2ec&protectedtoken=true&claims=%7b%22id_token%22%3a%7b%22xms_cc%22%3a%7b%22values%22%3a%5b%22CP1%22%5d%7d%7d%7d&nonce=638354602681120812.b133fe47-85b0-492e-8d2b-8027817e20ce&state=Dcs7FoAwCABBos_jYPgkAY9jFFtLry_FbLcFANa0pEIZsKGuvQ2S4cxCzrJPVn2iGXqfhO2QQL9lopOYs4XQFSXfrb7fWX8&sso_reload=true",
+            "visit_count": 0
+         }, {
+            "date_added": "13346757212903948",
+            "date_last_used": "0",
+            "guid": "ff88db49-7f53-41c9-a74f-d6f08882b1ca",
+            "id": "16",
+            "name": "ViewImage",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://www.dahabonline.com/ViewImage.aspx?FileID=",
+            "visit_count": 0
+         }, {
+            "date_added": "13355825964309207",
+            "date_last_used": "0",
+            "guid": "b23c7478-34d1-4cbe-9c01-8aa7607ff07c",
+            "id": "17",
+            "name": "AML Compass",
+            "show_icon": false,
+            "source": "sync",
+            "type": "url",
+            "url": "https://dahabshiil-somalia.amlcompass.cbix.paymentapproved.com/Alerts",
+            "visit_count": 0
+         }, {
+            "children": [  ],
+            "date_added": "13368045346124022",
+            "date_last_used": "0",
+            "date_modified": "13368045346124022",
+            "guid": "b9678df6-6a8a-4d19-9bbf-428817b3f127",
+            "id": "18",
+            "name": "Bookmark Bar",
+            "source": "unknown",
+            "type": "folder"
+         }, {
+            "children": [ {
+               "date_added": "13343412272000000",
+               "date_last_used": "0",
+               "guid": "0ca898d1-8bb5-480e-b6df-8476a9872460",
+               "id": "20",
+               "name": "Dahabshiil MTS",
+               "show_icon": false,
+               "source": "sync",
+               "type": "url",
+               "url": "https://dahabonline.co.uk/login.aspx?ReturnUrl=%2f",
+               "visit_count": 0
+            }, {
+               "date_added": "13343412297000000",
+               "date_last_used": "0",
+               "guid": "73d86193-6c67-4c7d-a65b-6ed1474ac4c1",
+               "id": "21",
+               "name": "Global Remit",
+               "show_icon": false,
+               "source": "sync",
+               "type": "url",
+               "url": "https://orspayments.com/Account/Login?ReturnUrl=%2f",
+               "visit_count": 0
+            }, {
+               "date_added": "13344338687000000",
+               "date_last_used": "0",
+               "guid": "ce06124f-0a80-4456-9311-aa3b4b164ae1",
+               "id": "22",
+               "name": "l",
+               "show_icon": false,
+               "source": "sync",
+               "type": "url",
+               "url": "https://dahabshiil-somalia.amlcompass.cbix.paymentapproved.com/",
+               "visit_count": 0
+            }, {
+               "date_added": "13344338911000000",
+               "date_last_used": "0",
+               "guid": "b26d0d74-6689-478f-aafe-4d51ec6c0fa4",
+               "id": "23",
+               "name": "Sign in to Outlook",
+               "show_icon": false,
+               "source": "sync",
+               "type": "url",
+               "url": "https://login.microsoftonline.com/common/oauth2/authorize?client_id=00000002-0000-0ff1-ce00-000000000000&redirect_uri=https%3a%2f%2foutlook.office.com%2fowa%2f&resource=00000002-0000-0ff1-ce00-000000000000&response_mode=form_post&response_type=code+id_token&scope=openid&msafed=1&msaredir=1&client-request-id=9438b5b4-7684-acd1-7b4f-e81c641fb2ec&protectedtoken=true&claims=%7b%22id_token%22%3a%7b%22xms_cc%22%3a%7b%22values%22%3a%5b%22CP1%22%5d%7d%7d%7d&nonce=638354602681120812.b133fe47-85b0-492e-8d2b-8027817e20ce&state=Dcs7FoAwCABBos_jYPgkAY9jFFtLry_FbLcFANa0pEIZsKGuvQ2S4cxCzrJPVn2iGXqfhO2QQL9lopOYs4XQFSXfrb7fWX8&sso_reload=true",
+               "visit_count": 0
+            }, {
+               "date_added": "13346757212000000",
+               "date_last_used": "0",
+               "guid": "d7f1efc1-aadc-4361-9efd-ab0ee83dc0fd",
+               "id": "24",
+               "name": "ViewImage",
+               "show_icon": false,
+               "source": "sync",
+               "type": "url",
+               "url": "https://www.dahabonline.com/ViewImage.aspx?FileID=",
+               "visit_count": 0
+            }, {
+               "date_added": "13355825964000000",
+               "date_last_used": "0",
+               "guid": "7d52dcee-72a4-48bc-add5-b5918bd499c7",
+               "id": "25",
+               "name": "AML Compass",
+               "show_icon": false,
+               "source": "sync",
+               "type": "url",
+               "url": "https://dahabshiil-somalia.amlcompass.cbix.paymentapproved.com/Alerts",
+               "visit_count": 0
+            }, {
+               "date_added": "13368792072000000",
+               "date_last_used": "0",
+               "guid": "8fc35703-9aa4-4989-852f-cd707144d28b",
+               "id": "26",
+               "name": "Build a mobile app with Google Sheets on Glide and no coding - Coursera Project Network - Informations sur le cours | Coursera",
+               "show_icon": false,
+               "source": "sync",
+               "type": "url",
+               "url": "https://www.coursera.org/learn/build-a-mobile-app-with-google-sheets-on-glide-and-no-coding/home/info",
+               "visit_count": 0
+            } ],
+            "date_added": "13368045346124746",
+            "date_last_used": "0",
+            "date_modified": "13368792072000000",
+            "guid": "861c4968-79bf-4b7b-9a22-34225c841e2e",
+            "id": "19",
+            "name": "Other Bookmarks",
+            "source": "unknown",
+            "type": "folder"
+         }, {
+            "children": [ {
+               "date_added": "0",
+               "date_last_used": "0",
+               "guid": "7d95b342-2fd2-4ca3-8cd3-daa1a9e43edf",
+               "id": "28",
+               "name": "ChatGPT",
+               "show_icon": false,
+               "source": "sync",
+               "type": "url",
+               "url": "https://chat.openai.com/",
+               "visit_count": 0
+            }, {
+               "date_added": "13397991267572351",
+               "date_last_used": "0",
+               "guid": "74b2ed8e-fa62-4563-b2cd-c70c253735fa",
+               "id": "29",
+               "name": "file:///C:/Users/moham/Music/InnMoto/Design%20UX-UI/login.html",
+               "show_icon": false,
+               "source": "sync",
+               "type": "url",
+               "url": "file:///C:/Users/moham/Music/InnMoto/Design%20UX-UI/login.html",
+               "visit_count": 1
+            } ],
+            "date_added": "13368045346124982",
+            "date_last_used": "0",
+            "date_modified": "13397991267572351",
+            "guid": "ad24d7d0-153a-4c29-bd65-7b07d07cdde6",
+            "id": "27",
+            "name": "Synced Bookmarks",
+            "source": "unknown",
+            "type": "folder"
+         } ],
+         "date_added": "13418674977965256",
+         "date_last_used": "0",
+         "date_modified": "13355825964309207",
+         "guid": "82b081ec-3dd3-529c-8475-ab6c344590dd",
+         "id": "2",
+         "name": "Other favorites",
+         "source": "unknown",
+         "type": "folder"
+      },
+      "synced": {
+         "children": [  ],
+         "date_added": "13418674977965256",
+         "date_last_used": "0",
+         "date_modified": "0",
+         "guid": "4cf2e351-0e85-532b-bb37-df045d8f8d0f",
+         "id": "3",
+         "name": "Mobile favorites",
+         "source": "unknown",
+         "type": "folder"
+      },
+      "workspaces_v2": {
+         "children": [  ],
+         "date_added": "13418674977965256",
+         "date_last_used": "0",
+         "date_modified": "0",
+         "guid": "75aa6670-344f-549d-b742-660f029506ab",
+         "id": "5",
+         "name": "Workspaces",
+         "source": "unknown",
+         "type": "folder"
+      }
+   },
+   "sync_metadata": "CjEKDgiIgQISCNfX3gCdAQAAEgAqGFJ1N3hPeVA2VkNCNGFnUXlrNWNscnc9PUgDoAYHEo4BCAUSiQEKHHdSQnJaTCs2UEE5YXZLZ2pOUDdKWERMY2Z2cz0SJDM0YTcxOWM4LWMxNmMtNWU3Ni1hMDhmLTBkY2E5MTU2MWZhMBgAIAAoADDe+KWulzM4uvmlrpczQLr5pa6XM0ocbm14NjVzUUR2eEk4VGdFZXYrQStudHRvU240PVoAZQAAAADCPgJgABKsAQgdEqcBChxFanpNUVBIY3RuS2tCTGJMK3VJTG9Dc044K3c9EiQ3NGIyZWQ4ZS1mYTYyLTQ1NjMtYjJjZC1jNzBjMjUzNzM1ZmEYACAAKAAwuZixroQzOJWZsa6EM0CVmbGuhDNKHENVSGROWHdPd1VSZ0ZTSEsrOWFiNmZkOTgvQT1aHiIcbmEweTBQekx5dnVVMUFNclJMRG9rZG5oaVFjPWUAAAAAwj4CYAUSrAEIHBKnAQocTjlMWlIrMGpBMUdFTnB6Znk0OWpxSmM3ZDRZPRIkN2Q5NWIzNDItMmZkMi00Y2EzLThjZDMtZGFhMWE5ZTQzZWRmGAAgACgAMPOE4IjPMzjYj4fnlDJA2I+H55QyShxhVHh4Y1hwR1BrTVcreG40QzIxOXpFSHB5T2c9Wh4iHDY3eE5SZEVkaDU3RGhDNFdPQ04reXRQRytmTT1lhqXYyMI+AmAFEq0BCBsSqAEKHEY2VTdRcUR1U0ZWSTJGcys4MnhoZDBpWGk1VT0SJGFkMjRkN2QwLTE1M2EtNGMyOS1iZDY1LTdiMDdkMDdjZGRlNhgAIAAoADCKjofnlDI4so+H55QyQLKPh+eUMkocZ1l2THptS0F0TE1DMVdZc3RFeUluOVlVWFRNPVofIh3+WmZGTklEbmYrZlg1WEVvc0Q5ZE5FS0dXVWdNPWUAAAAAwj4CYAASrQEIGRKoAQoceDVLUXVNTE9wZElmSXorTGlLWDZLL2x6cmxJPRIkN2Q1MmRjZWUtNzJhNC00OGJjLWFkZDUtYjU5MThiZDQ5OWM3GAAgACgAMOLZjJaMMzih5IyWjDNAoeSMlowzShxxL01WYWR1OTJ4NmNFNUgzNTZBY3JxNHJ0aDA9Wh8iHfpwTFYxSEtTekNIS01HSk1EVlJ1TUtaSUs3bUU9Zar//KPCPgJgBRKtAQgYEqgBChxlbzhQeFcvY05BTHhJc1RaTWlIZWFPeTE3bWM9EiRkN2YxZWZjMS1hYWRjLTQzNjEtOWVmZC1hYjBlZTgzZGMwZmQYACAAKAAw4dmMlowzOITkjJaMM0CE5IyWjDNKHG03SXEyMTVhL0Y1STN5UW04cXZFRXc3UmdxQT1aHyId9ENYMkpJL2tiZGNGb3Z5ZEZjWUkxTThDckI3az1lAAAAAMI+AmAFEq0BCBESqAEKHEhmZUtmWEhPbHpGMVpvMFBFTWZjeEVVWHBQMD0SJGIyM2M3NDc4LTM0ZDEtNGNiZS05YzAxLThhYTc2MDdmZjA3YxgAIAAoADCX+5LWljI42Jy99ZAyQNicvfWQMkocUlFIZEhDdGZxOXhISW5KdkRub0pxVmE5MDdZPVofIh33QjQ5aUxnMHRZTlpRS0ZBNUs0eWNqTUx6VlFnPWWq//yjwj4CYAUSrQEIFxKoAQocOVMzRUlxajcya01YM2ltelBacDNMckJjUU80PRIkYjI2ZDBkNzQtNjY4OS00NzhmLWFhZmUtNGQ1MWVjNmMwZmE0GAAgACgAMODZjJaMMzjl44yWjDNA5eOMlowzShxrUmxSekpkUkpnVTBaS012TWJPeXRvaXF2L1k9Wh8iHelrT2h6d29idU5laGExZjJrMmloU2lWK3BFeDA9Zacc0hnCPgJgBRKtAQgVEqgBChx0VyszRG9TdDZUNURGa3gzYlNnZjJ1WWZSbEk9EiQ3M2Q4NjE5My02YzY3LTRjN2QtYTY1Yi02ZWQxNDc0YWM0YzEYACAAKAAw39mMlowzOLfjjJaMM0C344yWjDNKHDNodHg3eFJXdy9aWVU3dkFkcXptMXFpVmRIbz1aHyIdpjBpbFF5cWdycmJPTHlRUHlTamRMSnVyaU5Gcz1lAAAAAMI+AmAFEq0BCBMSqAEKHEV4dDRSczBxNWpDdGdqV3hBODlHclp4M090UT0SJDg2MWM0OTY4LTc5YmYtNGI3Yi05YTIyLTM0MjI1Yzg0MWUyZRgAIAAoADCIjofnlDI4gY+H55QyQIGPh+eUMkocYnpLaC80T0k1OThWd00yM0gzNWdQbHJJbnR3PVofIh39Tmt0M2srdi9hcWUreGcwZ3BTQmd3WVhrZTFNPWUAAAAAwj4CYAASrQEIDxKoAQocbjZObDM4eHFzNjNDbTdoVFFlakpFcEk5VGdnPRIkNjIyODlkNDAtMjZjYi00NmY4LTg1MzgtZGRlYzAwNDliNGM3GAAgACgAMKyqktaWMjjvm731kDJA75u99ZAyShxhc1ZrdFA1TjViYjcwcDJPN2FGZ1oxbk5UQU09Wh8iHd1qT3NBS0dMd0pZL0cwV1M1NnAyNllLSHp1QjQ9Zacc0hnCPgJgBRKsAQgNEqcBChxSdm5HR2QxQzhnS1VGOU5mRGpqdUt5RWc5d3M9EiRhNWUxNTZkMC01YzU4LTQwZTEtYTAzYS1lODk3ZmU4Y2UyNDEYACAAKAAw8pa99ZAyOKiavfWQMkComr31kDJKHDYzSy8vWklrNjYxTHNyY2NKY3RLd1ZXN3JXWT1aHiIcd3pxWXZmK3VTcmtjaVNyU2kzSEwvbng5S0g4PWUAAAAAwj4CYAUSrQEIDhKoAQocRWhGSzNQMjhjWFdQTnkyN0t2K3IrSHZSOVM4PRIkMTFkYTUwODItYzllMC00NjViLTg0MWYtODgwYzc1YTg2YWMxGAAgACgAMJb7ktaWMjj9mr31kDJA/Zq99ZAyShxBQTRBNXpaYlJ3K0FaRmE0UGg1cjI1M1N1R1E9Wh8iHbtnYXBsdEhPTGJsQ2RTd1MxRDR2UFA4cXFMM2M9Zar//KPCPgJgBRKtAQgaEqgBChxRekw4UE9Mend2a2F5eW1qZ3RwTjA1ck4vRkk9EiQ4ZmMzNTcwMy05YWE0LTQ5ODktODUyZi1jZDcwNzE0NGQyOGIYACAAKAAw1q/7htAzOL3kjJaMM0C95IyWjDNKHDJnUWVHTTlKOE9YSlpKM0pFWW8xS0JReGNBUT1aHyId/W81ZWxRSDhZMGw5VmxsM1JESFM1VmpWTGREVT1lGw/YLMI+AmAFEqwBCAwSpwEKHDljb01GL3F3QndjYkZBQVFCRUhQNUZObUhscz0SJDJhM2QwZDUzLWRjYTAtNDBlYS1hYmQ2LTU1ODBlYTY1MGFhYhgAIAAoADD2lr31kDI4o5y99ZAyQKOcvfWQMkocazdRaDRtdnVadTVVajVZWTF2U3RoaVJPcXlZPVoeIhxBZkxQNzB4K01LWnM3RlJ5Q0hZU1ZDbDRJN3M9ZQAAAADCPgJgBRKtAQgLEqgBChx0a2hldmI1OW11dW1IbUpDczZmRWJ6TjBRazA9EiRkNjRhZWRhNi03YjEyLTQ3NzUtYjQ1ZC02MmM3NzAyZGY3NWUYACAAKAAw+uqbq70zOJ7sm6u9M0Ce7JurvTNKHHAvckg4NFhXeFQxbTRQdU1VS3h0THprYW9PVT1aHyId+2pNbG41WmxnSCtiZUpmTGlxMnZBd3BBdGVnQT1lVNVgPsI+AmAFEq0BCBISqAEKHFVHZ3YwNjF6b25WaEJIZ0k1QmFDY3AxY3Z4MD0SJGI5Njc4ZGY2LTZhOGEtNGQxOS05YmJmLTQyODgxN2IzZjEyNxgAIAAoADCJjofnlDI4mI+H55QyQJiPh+eUMkocL1FUcjg1UUdyc1FrM3BQQzBvQ0g1bGl4THVrPVofIh37bjZ2bGEweUpKRW9qMkdidmtDbVZOMGlubTg4PWUAAAAAwj4CYAASrAEIFBKnAQocem03dktEWmEyL0ZaMXIvalYrS0ZrNTlXZkM4PRIkMGNhODk4ZDEtOGJiNS00ODBlLWI2ZGYtODQ3NmE5ODcyNDYwGAAgACgAMN7ZjJaMMzia44yWjDNAmuOMlowzShx5ang5Q3hzRFFGWGFNU0RaTjVpK1ZaVWFVNkE9Wh4iHE1FSU1KYmUvY1ZzSVRud1puYmVjUkx1NlRFaz1lAAAAAMI+AmAFEo4BCAISiQEKHFljU1RvbnZFU1B3cUNzNEwyY3JWaHY2OEw5OD0SJDRhZTk1MTgwLWIyMjItNWE4Mi04YjAyLWE0NzZiNjRjMWI1ZBgAIAAoADC4h9GBwjA40InRgcIwQNCJ0YHCMEocb1BWa2h3QlJiVjY1S0NXUjIrSU9OSFdvT3U4PVoAZQAAAADCPgJgABKtAQgKEqgBChxxSHUreUNmY2hXMHAyZk4zZWJ5Q1dwaHYxSDg9EiRjMWU4MjU0MC1jZDU3LTQ4M2UtOTVmNy1iZDA1NGQyZDM2YmEYACAAKAAwx+7Vt7EzOM3b1bexM0DN29W3sTNKHFJIM1NpWXpXc3Zld05FRFpYdkMyZXlCalh2dz1aHyId9kduZGwydTlGeGtmZzZkVDZCeVRvbkM0QzZqND1loEkd2MI+AmAFEq0BCBASqAEKHE5tcXkwYXdndXdMdmg5bDNIZzFaWnE5N0lkVT0SJGZmODhkYjQ5LTdmNTMtNDFjOS1hNzRmLWQ2ZjA4ODgyYjFjYRgAIAAoADD0lr31kDI4upu99ZAyQLqbvfWQMkocbFg2NzdEWkNaUlJ4L0ROaXg0ejFqbk9GTTZnPVofIh3uay9IblhUV3ArYkpMaVhBVUk4UWtHNTNCVlJjPWUAAAAAwj4CYAUSrQEICRKoAQocUmxmcGFsL3M4UVFPcEJvVGRNL2V1ekFTTU00PRIkN2ViNzc2NjctYTUxYy00MDYyLTk0OGYtOGNmODg0NTI4Zjg0GAAgACgAMNjrzqugMzj9qKr0hzNA/aiq9IczShxweVB1amwxay9Od1BGL25ra2RoKzN1MzJmREk9Wh8iHe0yY2lnQlIzVmpIVS80UHZObUp4N0FNMEQydnM9ZSy5uxrCPgJgBRKtAQgIEqgBChw1WkFOV2Y4UXJ2dS9VT2xhemVxaklzaTZQaEk9EiQ5NGYyZDYwMC02OGRmLTQ3ZjEtYThjZi0yZDgyZjBlNGVhMjIYACAAKAAwosvBmZszOLS6x72EM0C0use9hDNKHEpzN0oxamVHaVR1QjRDTTc1cTk4KzNoWWFnbz1aHyId2zJ5RWYxSGk0WFRzMThGRHFtSkIxcnlkRWZvbz1lAAAAAMI+AmAFEqwBCAcSpwEKHG9uZ0pMaHJyd2s1QkNld1c4VGplQWhnMWpjYz0SJDA0ZmE4M2RlLWI2YjktNDRlNC05NzNkLWVlYTJiNjE5MDY2MBgAIAAoADD74ZHDtDI4n/GRw7QyQJ/xkcO0MkocUU9IK2RydXJxSHM3emN6Y2pFbTd4KzRTeFprPVoeIhxvY2JQNUd4ejluTktMVXBIMHhPN01lY3BESnM9ZZxqgCjCPgJgBRKtAQgWEqgBChxWR2JLRGI2M1VsZHlDNmxLY21hV2JwcGZIOEU9EiRjZTA2MTI0Zi0wYTgwLTQ0NTYtOTMxMS1hYTNiNGIxNjRhZTEYACAAKAAw3dmMlowzOOPijJaMM0Dj4oyWjDNKHGFON2pFbHdrdUR2N3ZKYWxCWkEzY1VNVEpuMD1aHyId03RqRXNQdEMxQU4ya0kwTTdsZzRzRTlIRUFhaz1lqv/8o8I+AmAFEo4BCAESiQEKHHl4Si82ZnZrZWNyN2twNUVRekI0dFdMcGRiRT0SJGQxMjdkNDNjLTE2ZWUtNTdjNy1hNTIxLTYyNmI4MjVmNDI1MxgAIAAoADC4h9GBwjA4sInRgcIwQLCJ0YHCMEocYVJDV0xnaEY5YjVJbnFLSUR2dUovanZRa0ZjPVoAZQAAAADCPgJgABKOAQgDEokBChxuamdEdTg4ZUNydlhwODZwRDdmSEdjcUZwODg9EiRiNmU3ZTFiOS1hMDE2LTU1MjctODBhNi1lMmYyNTA4MjVmN2IYACAAKAAwuIfRgcIwOOyK0YHCMEDsitGBwjBKHHl6TkIwMWNuNTRBN2NSVTB1VCsvUGdtVHRVbz1aAGUAAAAAwj4CYAAwADgA",
+   "version": 1
+}

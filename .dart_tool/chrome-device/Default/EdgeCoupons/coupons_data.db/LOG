@@ -1,0 +1,27 @@
+2026/03/29-23:12:36.493 24b8 Reusing MANIFEST C:\Users\Amine\AppData\Local\Temp\flutter_tools.7d6b29a3\flutter_tools_chrome_device.6f636fc9\Default\EdgeCoupons/coupons_data.db/MANIFEST-000001
+2026/03/29-23:12:36.498 24b8 Recovering log #29
+2026/03/29-23:12:36.499 24b8 Reusing old log C:\Users\Amine\AppData\Local\Temp\flutter_tools.7d6b29a3\flutter_tools_chrome_device.6f636fc9\Default\EdgeCoupons/coupons_data.db/000029.log 
+2026/03/29-23:12:36.503 24b8 Delete type=0 #4
+2026/03/29-23:12:36.503 24b8 Delete type=0 #7
+2026/03/29-23:12:36.503 24b8 Delete type=2 #8
+2026/03/29-23:12:36.503 24b8 Delete type=0 #10
+2026/03/29-23:12:36.504 24b8 Delete type=2 #11
+2026/03/29-23:12:36.504 24b8 Delete type=0 #13
+2026/03/29-23:12:36.504 24b8 Delete type=2 #14
+2026/03/29-23:12:36.912 24b8 Delete type=0 #16
+2026/03/29-23:12:37.047 24b8 Delete type=2 #17
+2026/03/29-23:12:37.283 24b8 Delete type=0 #19
+2026/03/29-23:12:37.297 24b8 Delete type=0 #23
+2026/03/29-23:12:37.311 24b8 Delete type=0 #26
+2026/03/29-23:15:06.150 396c Level-0 table #33: started
+2026/03/29-23:15:06.214 396c Level-0 table #33: 682087 bytes OK
+2026/03/29-23:15:06.273 396c Delete type=0 #29
+2026/03/29-23:15:06.274 396c Compacting 4@0 + 1@1 files
+2026/03/29-23:15:06.340 396c Generated table #34@0: 4 keys, 682087 bytes
+2026/03/29-23:15:06.340 396c Compacted 4@0 + 1@1 files => 682087 bytes
+2026/03/29-23:15:06.395 396c compacted to: files[ 0 1 1 0 0 0 0 ]
+2026/03/29-23:15:06.396 396c Delete type=2 #21
+2026/03/29-23:15:06.396 396c Delete type=2 #24
+2026/03/29-23:15:06.396 396c Delete type=2 #27
+2026/03/29-23:15:06.396 396c Delete type=2 #30
+2026/03/29-23:15:06.396 396c Delete type=2 #33
