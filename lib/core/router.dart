@@ -28,7 +28,6 @@ import '/screen/driver/banking_screen.dart';
 import '/screen/driver/settings_screen.dart' as driver_settings;
 import '/screen/driver/support_screen.dart' as driver_support;
 import '/screen/driver/legal_screen.dart';
-import '/screen/admin/app/admin_app.dart';
 
 final router = GoRouter(
   initialLocation: '/login',
