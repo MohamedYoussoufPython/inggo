@@ -170,15 +170,5 @@ final router = GoRouter(
       path: '/driver-legal',
       builder: (context, state) => LegalScreen(type: state.extra as LegalType),
     ),
-
-    // ── Routes Admin ──
-    GoRoute(
-      path: '/admin',
-      redirect: (context, state) => '/admin/dashboard',
-    ),
-    GoRoute(
-      path: '/admin/dashboard',
-      builder: (context, state) => const AdminApp(),
-    ),
   ],
 );
