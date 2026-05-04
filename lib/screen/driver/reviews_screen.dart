@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/providers/driver_reviews_provider.dart';
-import '../../core/providers/driver_provider.dart';
-import '../../core/providers/driver_rides_provider.dart';
+import '../../provider/driver_reviews_provider.dart';
+import '../../provider/driver_provider.dart';
+import '../../provider/driver_rides_provider.dart';
 
 class ReviewsScreen extends ConsumerWidget {
   const ReviewsScreen({super.key});

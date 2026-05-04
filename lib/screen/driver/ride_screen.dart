@@ -272,7 +272,7 @@ class _RideScreenState extends State<RideScreen>
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.08),
+                      color: Colors.black.withValues(alpha: 0.08),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
@@ -341,7 +341,7 @@ class _RideScreenState extends State<RideScreen>
                   const BorderRadius.vertical(top: Radius.circular(28)),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withValues(alpha: 0.1),
                   blurRadius: 30,
                   offset: const Offset(0, -10),
                 ),
@@ -388,7 +388,7 @@ class _RideScreenState extends State<RideScreen>
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: _actionColor.withOpacity(0.35),
+                            color: _actionColor.withValues(alpha: 0.35),
                             blurRadius: 12,
                             offset: const Offset(0, 4),
                           ),
@@ -547,7 +547,7 @@ class _RideScreenState extends State<RideScreen>
       opacity: _showRating ? 1.0 : 0.0,
       duration: const Duration(milliseconds: 300),
       child: Container(
-        color: Colors.black.withOpacity(0.6),
+        color: Colors.black.withValues(alpha: 0.6),
         child: Center(
           child: _ratingSubmitted ? _buildRatingSuccess() : _buildRatingCard(),
         ),
@@ -564,7 +564,7 @@ class _RideScreenState extends State<RideScreen>
         borderRadius: BorderRadius.circular(28),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withValues(alpha: 0.2),
             blurRadius: 30,
             offset: const Offset(0, 10),
           ),
@@ -660,7 +660,7 @@ class _RideScreenState extends State<RideScreen>
                 boxShadow: _selectedStars > 0
                     ? [
                         BoxShadow(
-                          color: const Color(0xFFFFC107).withOpacity(0.3),
+                          color: const Color(0xFFFFC107).withValues(alpha: 0.3),
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),
@@ -779,7 +779,7 @@ class _CircleBtn extends StatelessWidget {
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.08),
+              color: Colors.black.withValues(alpha: 0.08),
               blurRadius: 10,
               offset: const Offset(0, 3),
             ),
@@ -826,53 +826,4 @@ class _StatItem extends StatelessWidget {
       ),
     );
   }
-}
-
-// --- Map Grid Painter (simulates a map background) ---
-
-class _MapGridPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = const Color(0xFFD0D0D0)
-      ..strokeWidth = 0.5;
-
-    // Horizontal lines
-    for (double y = 0; y < size.height; y += 40) {
-      canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
-    }
-    // Vertical lines
-    for (double x = 0; x < size.width; x += 40) {
-      canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
-    }
-
-    // Thicker "roads"
-    final roadPaint = Paint()
-      ..color = const Color(0xFFBBBBBB)
-      ..strokeWidth = 3;
-
-    canvas.drawLine(
-      Offset(0, size.height * 0.3),
-      Offset(size.width, size.height * 0.3),
-      roadPaint,
-    );
-    canvas.drawLine(
-      Offset(size.width * 0.4, 0),
-      Offset(size.width * 0.4, size.height),
-      roadPaint,
-    );
-    canvas.drawLine(
-      Offset(0, size.height * 0.7),
-      Offset(size.width, size.height * 0.7),
-      roadPaint,
-    );
-    canvas.drawLine(
-      Offset(size.width * 0.75, 0),
-      Offset(size.width * 0.75, size.height),
-      roadPaint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

@@ -39,13 +39,13 @@ class RideBookingCard extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 24,
             spreadRadius: 0,
             offset: const Offset(0, -6),
           ),
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 8,
             spreadRadius: 0,
             offset: const Offset(0, -2),
@@ -186,7 +186,7 @@ class RideBookingCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(14),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFFFFC700).withOpacity(0.30),
+                  color: const Color(0xFFFFC700).withValues(alpha: 0.30),
                   blurRadius: 14,
                   offset: const Offset(0, 5),
                 ),

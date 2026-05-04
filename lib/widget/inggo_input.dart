@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../core/theme/inggo_theme.dart';
+import '../theme/inggo_theme.dart';
 
 class InggoInput extends StatefulWidget {
   final String? label;
@@ -97,7 +97,7 @@ class _InggoInputState extends State<InggoInput> {
               boxShadow: _focused && !hasError
                   ? [
                       BoxShadow(
-                        color: InggoColors.primary.withOpacity(0.12),
+                        color: InggoColors.primary.withValues(alpha: 0.12),
                         blurRadius: 8,
                         offset: const Offset(0, 0),
                       ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../core/theme/inggo_theme.dart';
+import '../theme/inggo_theme.dart';
 import 'inggo_button.dart';
 
 Future<T?> showInggoModal<T>({
@@ -14,7 +14,7 @@ Future<T?> showInggoModal<T>({
     context: context,
     barrierDismissible: dismissible,
     barrierLabel: 'InggoModal',
-    barrierColor: Colors.black.withOpacity(0.08),
+    barrierColor: Colors.black.withValues(alpha: 0.08),
     transitionDuration: const Duration(milliseconds: 300),
     transitionBuilder: (context, a1, a2, child) {
       return Transform.scale(
@@ -114,7 +114,7 @@ Future<T?> showInggoCenterModal<T>({
     context: context,
     barrierDismissible: true,
     barrierLabel: 'InggoCenterModal',
-    barrierColor: Colors.black.withOpacity(0.7),
+    barrierColor: Colors.black.withValues(alpha: 0.7),
     transitionDuration: const Duration(milliseconds: 300),
     transitionBuilder: (context, a1, a2, child) {
       return Transform.scale(
@@ -138,7 +138,7 @@ Future<T?> showInggoCenterModal<T>({
               borderRadius: BorderRadius.circular(InggoSpacing.lg),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withValues(alpha: 0.1),
                   blurRadius: 24,
                   offset: const Offset(0, 8),
                 ),

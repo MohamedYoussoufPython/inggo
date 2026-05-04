@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/theme/inggo_theme.dart';
-import '../../core/providers/history_provider.dart';
-import '../../models/ride_model.dart';
+import '../../theme/inggo_theme.dart';
+import '../../provider/history_provider.dart';
+import '../../model/ride_model.dart';
 import '../shared/widgets/profile_scaffold.dart';
 
 class HistoryScreen extends ConsumerWidget {
@@ -66,10 +66,10 @@ class _RideCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.black.withOpacity(0.03)),
+        border: Border.all(color: Colors.black.withValues(alpha: 0.03)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),

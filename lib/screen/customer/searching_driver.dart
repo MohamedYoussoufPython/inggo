@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../core/theme/inggo_theme.dart';
-import '../../core/providers/ride_provider.dart';
+import '../../theme/inggo_theme.dart';
+import '../../provider/ride_provider.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
   final int? rideId;
@@ -261,7 +261,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
-                color: InggoColors.primary.withOpacity(opacity * 0.6),
+                color: InggoColors.primary.withValues(alpha: opacity * 0.6),
                 width: 2,
               ),
             ),
@@ -305,7 +305,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
               boxShadow: [
                 BoxShadow(
                   color: InggoColors.primary
-                      .withOpacity(0.35 + _pulse.value * 0.15),
+                      .withValues(alpha: 0.35 + _pulse.value * 0.15),
                   blurRadius: 24 + _pulse.value * 12,
                   spreadRadius: 2,
                 ),
@@ -371,7 +371,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
                                 border: Border.all(color: InggoColors.border1),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withOpacity(0.04),
+                                    color: Colors.black.withValues(alpha: 0.04),
                                     blurRadius: 8,
                                   ),
                                 ],
@@ -474,7 +474,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
                                 border: Border.all(color: InggoColors.border1),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withOpacity(0.04),
+                                    color: Colors.black.withValues(alpha: 0.04),
                                     blurRadius: 12,
                                     offset: const Offset(0, 2),
                                   ),
@@ -536,7 +536,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
                               border: Border.all(color: InggoColors.border2),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.04),
+                                  color: Colors.black.withValues(alpha: 0.04),
                                   blurRadius: 8,
                                 ),
                               ],
@@ -615,7 +615,7 @@ class _DriverFoundOverlayState extends State<_DriverFoundOverlay>
     return FadeTransition(
       opacity: _fade,
       child: Container(
-        color: Colors.black.withOpacity(0.55),
+        color: Colors.black.withValues(alpha: 0.55),
         child: Center(
           child: SlideTransition(
             position: _slide,
@@ -627,7 +627,7 @@ class _DriverFoundOverlayState extends State<_DriverFoundOverlay>
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.12),
+                    color: Colors.black.withValues(alpha: 0.12),
                     blurRadius: 40,
                     offset: const Offset(0, 12),
                   ),
@@ -880,7 +880,7 @@ class _DashedRingPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = const Color(0xFFFFC700).withOpacity(0.5)
+      ..color = const Color(0xFFFFC700).withValues(alpha: 0.5)
       ..strokeWidth = 2
       ..style = PaintingStyle.stroke;
 

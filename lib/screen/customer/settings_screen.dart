@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../core/theme/inggo_theme.dart';
-import '../../core/providers/user_provider.dart';
+import '../../theme/inggo_theme.dart';
+import '../../provider/user_provider.dart';
 import '../../widget/inggo_modal.dart';
 import '../shared/widgets/profile_scaffold.dart';
 
@@ -534,7 +534,7 @@ class _NotificationSwitchRowState extends State<_NotificationSwitchRow> {
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
+                        color: Colors.black.withValues(alpha: 0.2),
                         blurRadius: 4,
                         offset: const Offset(0, 2),
                       ),

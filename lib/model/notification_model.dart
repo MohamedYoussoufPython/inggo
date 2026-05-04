@@ -28,7 +28,7 @@ class NotificationModel {
   // Constructeur depuis Supabase
   factory NotificationModel.fromMap(Map<String, dynamic> map) {
     return NotificationModel(
-      id: map['id'],
+      id: (map['id'] as num).toInt(),
       title: map['title'] ?? '',
       description: map['description'] ?? '',
       occurredAt: DateTime.parse(

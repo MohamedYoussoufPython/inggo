@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:inggo/core/theme/inggo_theme.dart';
+import 'package:inggo/theme/inggo_theme.dart';
 
 enum TripPhase {
   driverOnTheWay,
@@ -489,57 +489,6 @@ class _ActionButton extends StatelessWidget {
               label,
               style: InggoTextStyles.buttonSmall.copyWith(
                 color: textColor,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _QuickActionChip extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-  final bool isPrimary;
-
-  const _QuickActionChip({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-    required this.isPrimary,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: InggoSpacing.lg,
-          vertical: InggoSpacing.md,
-        ),
-        decoration: BoxDecoration(
-          color: isPrimary ? InggoColors.primary : InggoColors.background,
-          borderRadius: BorderRadius.circular(InggoSpacing.sm),
-          border: Border.all(
-            color: isPrimary ? InggoColors.primary : InggoColors.border2,
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: 20,
-              color: isPrimary ? InggoColors.text1 : InggoColors.text2,
-            ),
-            const SizedBox(width: InggoSpacing.sm),
-            Text(
-              label,
-              style: InggoTextStyles.buttonSmall.copyWith(
-                color: isPrimary ? InggoColors.text1 : InggoColors.text2,
               ),
             ),
           ],

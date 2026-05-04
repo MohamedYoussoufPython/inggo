@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../core/theme/inggo_theme.dart';
-import '../../core/providers/user_provider.dart';
+import '../../theme/inggo_theme.dart';
+import '../../provider/user_provider.dart';
 import '../../widget/inggo_modal.dart';
-import 'widgets/avatar_picker.dart';
+import '../../widget/avatar_picker.dart';
 
 class ProfilScreen extends ConsumerWidget {
   const ProfilScreen({super.key});
@@ -95,7 +95,7 @@ class ProfilScreen extends ConsumerWidget {
                                           color: Colors.white, width: 4),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.black.withOpacity(0.05),
+                                          color: Colors.black.withValues(alpha: 0.05),
                                           blurRadius: 20,
                                           offset: const Offset(0, 4),
                                         ),
@@ -129,7 +129,7 @@ class ProfilScreen extends ConsumerWidget {
                                         boxShadow: [
                                           BoxShadow(
                                             color:
-                                                Colors.black.withOpacity(0.2),
+                                                Colors.black.withValues(alpha: 0.2),
                                             blurRadius: 5,
                                             offset: const Offset(0, 2),
                                           ),
@@ -174,7 +174,7 @@ class ProfilScreen extends ConsumerWidget {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 12, vertical: 5),
                               decoration: BoxDecoration(
-                                color: Colors.black.withOpacity(0.05),
+                                color: Colors.black.withValues(alpha: 0.05),
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               child: Text(
@@ -204,7 +204,7 @@ class ProfilScreen extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(24),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.03),
+                          color: Colors.black.withValues(alpha: 0.03),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),

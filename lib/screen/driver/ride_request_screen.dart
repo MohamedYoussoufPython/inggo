@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../core/theme/inggo_theme.dart';
+import '../../theme/inggo_theme.dart';
 import '../../widget/inggo_button.dart';
 import 'package:go_router/go_router.dart';
 
@@ -158,12 +158,12 @@ class _RideRequestScreenState extends State<RideRequestScreen>
             borderRadius: BorderRadius.circular(28),
             boxShadow: [
               BoxShadow(
-                color: _timerColor.withOpacity(0.15 + pulseValue * 0.15),
+                color: _timerColor.withValues(alpha: 0.15 + pulseValue * 0.15),
                 blurRadius: 40 + pulseValue * 20,
                 spreadRadius: pulseValue * 4,
               ),
               BoxShadow(
-                color: Colors.black.withOpacity(0.3),
+                color: Colors.black.withValues(alpha: 0.3),
                 blurRadius: 30,
                 offset: const Offset(0, 15),
               ),
@@ -224,7 +224,7 @@ class _RideRequestScreenState extends State<RideRequestScreen>
                 CircularProgressIndicator(
                   value: _progress,
                   strokeWidth: 4,
-                  backgroundColor: Colors.black.withOpacity(0.1),
+                  backgroundColor: Colors.black.withValues(alpha: 0.1),
                   valueColor: AlwaysStoppedAnimation<Color>(
                     _secondsLeft <= 5
                         ? InggoColors.error
@@ -274,7 +274,7 @@ class _RideRequestScreenState extends State<RideRequestScreen>
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.15),
+              color: Colors.black.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(20),
             ),
             child: const Text(
@@ -494,7 +494,7 @@ class _RideRequestScreenState extends State<RideRequestScreen>
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.3),
+                    color: Colors.black.withValues(alpha: 0.3),
                     blurRadius: 30,
                     offset: const Offset(0, 10),
                   ),

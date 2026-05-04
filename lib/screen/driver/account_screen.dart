@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/providers/driver_provider.dart';
-import '../../core/providers/driver_rides_provider.dart';
+import '../../provider/driver_provider.dart';
+import '../../provider/driver_rides_provider.dart';
 
 class AccountScreen extends ConsumerStatefulWidget {
   const AccountScreen({super.key});

@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../models/earning_model.dart';
+import '../../model/earning_model.dart';
 import 'user_provider.dart';
 
 final driverEarningsProvider = FutureProvider<List<EarningModel>>((ref) async {

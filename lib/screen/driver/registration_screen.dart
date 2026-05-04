@@ -44,10 +44,6 @@ class _DriverRegistrationScreenState extends State<DriverRegistrationScreen> {
     'assurance': null,
     'moto': null,
   };
-  // Pour afficher l'état visuel des cards
-  Map<String, bool> get _documents => {
-        for (final e in _documentFiles.entries) e.key: e.value != null,
-      };
 
   // Step 4
   bool _cguChecked = false;
@@ -1040,7 +1036,7 @@ class _DriverRegistrationScreenState extends State<DriverRegistrationScreen> {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 20,
             offset: const Offset(0, -4),
           ),
@@ -1250,7 +1246,7 @@ class _UploadCard extends StatelessWidget {
                         width: w,
                         height: h,
                         fit: BoxFit.cover,
-                        color: Colors.black.withOpacity(0.30),
+                        color: Colors.black.withValues(alpha: 0.30),
                         colorBlendMode: BlendMode.darken,
                         // errorBuilder évite le crash si le fichier est corrompu
                         errorBuilder: (_, __, ___) => Container(
@@ -1279,7 +1275,7 @@ class _UploadCard extends StatelessWidget {
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.08),
+                              color: Colors.black.withValues(alpha: 0.08),
                               blurRadius: 8,
                               offset: const Offset(0, 2),
                             ),
