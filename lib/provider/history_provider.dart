@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../models/ride_model.dart';
+import '../../model/ride_model.dart';
 import 'user_provider.dart';
 
 final historyProvider = FutureProvider<List<RideModel>>((ref) async {

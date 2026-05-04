@@ -4,7 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/providers/user_provider.dart';
+import '../../../provider/user_provider.dart';
 
 Future<void> showAvatarOptions(BuildContext context, WidgetRef ref) async {
   showModalBottomSheet(

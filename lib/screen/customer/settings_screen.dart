@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../core/theme/inggo_theme.dart';
-import '../../core/providers/user_provider.dart';
+import '../../theme/inggo_theme.dart';
+import '../../provider/user_provider.dart';
 import '../../widget/inggo_modal.dart';
 import '../shared/widgets/profile_scaffold.dart';
 

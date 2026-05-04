@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/providers/driver_provider.dart';
-import '../../core/providers/driver_rides_provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../provider/driver_provider.dart';
+import '../../provider/driver_rides_provider.dart';
 
 class AccountScreen extends ConsumerStatefulWidget {
   const AccountScreen({super.key});
@@ -86,9 +87,12 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
             child: const Text('Annuler'),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.pop(context);
-              context.go('/login');
+              try {
+                await Supabase.instance.client.auth.signOut();
+              } catch (_) {}
+              if (context.mounted) context.go('/login');
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFD32F2F),

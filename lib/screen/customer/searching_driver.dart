@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../core/theme/inggo_theme.dart';
-import '../../core/providers/ride_provider.dart';
+import '../../theme/inggo_theme.dart';
+import '../../provider/ride_provider.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
   final int? rideId;

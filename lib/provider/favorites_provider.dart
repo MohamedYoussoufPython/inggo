@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../../models/favorite_model.dart';
+import '../../model/favorite_model.dart';
 import 'user_provider.dart';
 
 class FavoritesNotifier extends StateNotifier<AsyncValue<List<FavoriteModel>>> {

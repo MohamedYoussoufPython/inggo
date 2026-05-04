@@ -8,8 +8,8 @@ import '../../widget/profil_icon.dart';
 import '../../widget/pulsating_location_pin.dart';
 import '../../widget/selection_pin.dart';
 import '../../widget/notification_icon.dart';
-import '../../core/providers/notifications_provider.dart';
-import '../../core/providers/ride_provider.dart';
+import '../../provider/notifications_provider.dart';
+import '../../provider/ride_provider.dart';
 
 class RideBookingScreen extends ConsumerStatefulWidget {
   const RideBookingScreen({super.key});

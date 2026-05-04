@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../core/theme/inggo_theme.dart';
-import '../../core/providers/user_provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../theme/inggo_theme.dart';
+import '../../provider/user_provider.dart';
 import '../../widget/inggo_modal.dart';
 import 'widgets/avatar_picker.dart';
 
@@ -411,9 +412,12 @@ class ProfilScreen extends ConsumerWidget {
         InggoModalButton(
           label: 'Déconnexion',
           backgroundColor: InggoColors.error,
-          onPressed: () {
+          onPressed: () async {
             Navigator.of(context).pop();
-            context.go('/login');
+            try {
+              await Supabase.instance.client.auth.signOut();
+            } catch (_) {}
+            if (context.mounted) context.go('/login');
           },
         ),
       ],

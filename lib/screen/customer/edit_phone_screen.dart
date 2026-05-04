@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/providers/user_provider.dart';
+import '../../provider/user_provider.dart';
 import '../../widget/inggo_modal.dart';
 import '../shared/widgets/profile_scaffold.dart';
 

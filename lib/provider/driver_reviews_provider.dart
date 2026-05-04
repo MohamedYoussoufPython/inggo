@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../models/review_model.dart';
+import '../../model/review_model.dart';
 import 'user_provider.dart';
 
 final driverReviewsProvider = FutureProvider<List<ReviewModel>>((ref) async {

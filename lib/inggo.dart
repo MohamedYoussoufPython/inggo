@@ -1,4 +1,4 @@
-export 'core/theme/inggo_theme.dart';
+export 'theme/inggo_theme.dart';
 export 'widget/inggo_button.dart';
 export 'widget/inggo_input.dart';
 export 'widget/inggo_modal.dart';
