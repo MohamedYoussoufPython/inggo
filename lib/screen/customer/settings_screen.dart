@@ -97,7 +97,7 @@ class SettingsScreen extends ConsumerWidget {
                     margin: const EdgeInsets.symmetric(horizontal: 20),
                     padding: const EdgeInsets.all(18),
                     decoration: BoxDecoration(
-                      border: const Border.all(color: InggoColors.errorLight),
+                      border: Border.all(color: InggoColors.errorLight),
                       borderRadius: BorderRadius.circular(18),
                     ),
                     child: const Row(
@@ -425,7 +425,7 @@ class SettingsScreen extends ConsumerWidget {
         decoration: BoxDecoration(
           color: InggoColors.errorLight,
           borderRadius: BorderRadius.circular(12),
-          border: const Border.all(color: InggoColors.error.withValues(alpha: 0.3)),
+          border: Border.all(color: InggoColors.error.withValues(alpha: 0.3)),
         ),
         child: const Column(
           crossAxisAlignment: CrossAxisAlignment.start,

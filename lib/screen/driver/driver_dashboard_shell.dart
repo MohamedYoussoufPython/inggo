@@ -64,7 +64,7 @@ class _DriverDashboardShellState extends ConsumerState<DriverDashboardShell> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 shape: BoxShape.circle,
-                border: const Border.all(color: Color(0xFFF0F0F0)),
+                border: Border.all(color: Color(0xFFF0F0F0)),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.08),
@@ -139,7 +139,7 @@ class _DriverDashboardShellState extends ConsumerState<DriverDashboardShell> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 shape: BoxShape.circle,
-                border: const Border.all(color: Color(0xFFF0F0F0)),
+                border: Border.all(color: Color(0xFFF0F0F0)),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.08),
@@ -162,7 +162,7 @@ class _DriverDashboardShellState extends ConsumerState<DriverDashboardShell> {
                       decoration: BoxDecoration(
                         color: const Color(0xFFD32F2F),
                         shape: BoxShape.circle,
-                        border: const Border.all(color: Colors.white, width: 1),
+                        border: Border.all(color: Colors.white, width: 1),
                       ),
                     ),
                   ),

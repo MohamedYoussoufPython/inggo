@@ -127,9 +127,11 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
       final diff = now.difference(d).inDays;
       if (diff == 0 && now.day == d.day) {
         todayCount++;
-      } else if (diff == 1 || (diff == 0 && now.day != d.day))
+      } else if (diff == 1 || (diff == 0 && now.day != d.day)) {
         yesterdayCount++;
-      else if (diff == 2) beforeCount++;
+      } else if (diff == 2) {
+        beforeCount++;
+      }
     }
 
     _todayCount = todayCount;
@@ -223,7 +225,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: const Color(0xFFFFEBEE),
-                      border: const Border.all(color: Color(0xFFFFCDD2)),
+                      border: Border.all(color: Color(0xFFFFCDD2)),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Row(
@@ -284,7 +286,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
               decoration: BoxDecoration(
                 color: const Color(0xFFF0F0F0),
                 shape: BoxShape.circle,
-                border: const Border.all(color: Colors.white, width: 3),
+                border: Border.all(color: Colors.white, width: 3),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.1),
@@ -310,7 +312,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                   decoration: BoxDecoration(
                     color: const Color(0xFFFFC107),
                     shape: BoxShape.circle,
-                    border: const Border.all(color: Colors.white, width: 2),
+                    border: Border.all(color: Colors.white, width: 2),
                   ),
                   child: const Icon(
                     Icons.photo_camera,
@@ -402,7 +404,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Colors.white,
-              border: const Border.all(color: Color(0xFFF5F5F5)),
+              border: Border.all(color: Color(0xFFF5F5F5)),
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
@@ -545,7 +547,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: Colors.white,
-            border: const Border.all(color: Color(0xFFF5F5F5)),
+            border: Border.all(color: Color(0xFFF5F5F5)),
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(

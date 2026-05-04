@@ -65,7 +65,7 @@ class _DriverSettingsScreenState extends State<DriverSettingsScreen> {
                     margin: EdgeInsets.only(right: i < 3 ? 8 : 0),
                     height: 48,
                     decoration: BoxDecoration(
-                      border: const Border.all(color: Color(0xFFDDDDDD)),
+                      border: Border.all(color: Color(0xFFDDDDDD)),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: const Center(
@@ -205,19 +205,21 @@ class _DriverSettingsScreenState extends State<DriverSettingsScreen> {
             'Application GPS',
             style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18),
           ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: ['Google Maps', 'Waze']
-                .map(
-                  (app) => RadioListTile<String>(
-                    value: app,
-                    groupValue: selected,
-                    title: Text(app),
-                    activeColor: const Color(0xFFFFC107),
-                    onChanged: (v) => ss(() => selected = v!),
-                  ),
-                )
-                .toList(),
+          content: RadioGroup<String>(
+            groupValue: selected,
+            onChanged: (v) => ss(() => selected = v!),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: ['Google Maps', 'Waze']
+                  .map(
+                    (app) => RadioListTile<String>(
+                      value: app,
+                      title: Text(app),
+                      activeColor: const Color(0xFFFFC107),
+                    ),
+                  )
+                  .toList(),
+            ),
           ),
           actions: [
             TextButton(
@@ -429,7 +431,7 @@ class _DriverSettingsScreenState extends State<DriverSettingsScreen> {
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: const Color(0xFFFFEBEE),
-                      border: const Border.all(color: Color(0xFFFFCDD2)),
+                      border: Border.all(color: Color(0xFFFFCDD2)),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Row(
@@ -512,7 +514,7 @@ class _DriverSettingsScreenState extends State<DriverSettingsScreen> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(16),
-            border: const Border.all(color: Color(0xFFF5F5F5)),
+            border: Border.all(color: Color(0xFFF5F5F5)),
           ),
           child: Row(
             children: [
@@ -560,7 +562,7 @@ class _DriverSettingsScreenState extends State<DriverSettingsScreen> {
         decoration: BoxDecoration(
           color: const Color(0xFFFAFAFA),
           borderRadius: BorderRadius.circular(16),
-          border: const Border.all(color: Color(0xFFF5F5F5)),
+          border: Border.all(color: Color(0xFFF5F5F5)),
         ),
         child: Row(
           children: [
@@ -604,7 +606,7 @@ class _DriverSettingsScreenState extends State<DriverSettingsScreen> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
-          border: const Border.all(color: Color(0xFFF5F5F5)),
+          border: Border.all(color: Color(0xFFF5F5F5)),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -633,7 +635,7 @@ class _DriverSettingsScreenState extends State<DriverSettingsScreen> {
         decoration: BoxDecoration(
           color: Colors.white,
           shape: BoxShape.circle,
-          border: const Border.all(color: Color(0xFFDDDDDD)),
+          border: Border.all(color: Color(0xFFDDDDDD)),
         ),
         child: const Icon(Icons.arrow_back, color: Color(0xFF121212), size: 20),
       ),

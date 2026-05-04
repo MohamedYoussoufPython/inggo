@@ -82,7 +82,7 @@ class _PulsatingLocationPinState extends State<PulsatingLocationPin>
             decoration: BoxDecoration(
               color: const Color(0xFF1A1A1A),
               shape: BoxShape.circle,
-              border: const Border.all(                color: Colors.white,
+              border: Border.all(                color: Colors.white,
                 width: 3,
               ),
               boxShadow: [

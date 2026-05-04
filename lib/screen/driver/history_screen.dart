@@ -59,7 +59,7 @@ class DriverHistoryScreen extends ConsumerWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           shape: BoxShape.circle,
-          border: const Border.all(color: Color(0xFFDDDDDD)),
+          border: Border.all(color: Color(0xFFDDDDDD)),
         ),
         child: const Icon(Icons.arrow_back, color: Color(0xFF121212), size: 20),
       ),
@@ -82,7 +82,7 @@ class _RideCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
-          border: const Border.all(color: Color(0xFFF0F0F0)),
+          border: Border.all(color: Color(0xFFF0F0F0)),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.03),

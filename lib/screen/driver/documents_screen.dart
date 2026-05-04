@@ -53,7 +53,7 @@ class DocumentsScreen extends ConsumerWidget {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(16),
-                        border: const Border.all(color: Color(0xFFF5F5F5)),
+                        border: Border.all(color: Color(0xFFF5F5F5)),
                       ),
                       child: Column(
                         children: List.generate(docs.length, (i) {
@@ -89,7 +89,7 @@ class DocumentsScreen extends ConsumerWidget {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
-                    border: const Border.all(color: Color(0xFFF5F5F5)),
+                    border: Border.all(color: Color(0xFFF5F5F5)),
                   ),
                   child: Column(
                     children: [
@@ -235,7 +235,7 @@ class DocumentsScreen extends ConsumerWidget {
               decoration: BoxDecoration(
                 color: const Color(0xFFF0F0F0),
                 borderRadius: BorderRadius.circular(12),
-                border: const Border.all(                  color: const Color(0xFFCCCCCC),
+                border: Border.all(                  color: Color(0xFFCCCCCC),
                   style: BorderStyle.solid,
                   strokeAlign: BorderSide.strokeAlignInside,
                 ),
@@ -307,7 +307,7 @@ class DocumentsScreen extends ConsumerWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           shape: BoxShape.circle,
-          border: const Border.all(color: Color(0xFFDDDDDD)),
+          border: Border.all(color: Color(0xFFDDDDDD)),
         ),
         child:
             const Icon(Icons.arrow_back, color: Color(0xFF121212), size: 20),

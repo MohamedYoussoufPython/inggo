@@ -300,7 +300,7 @@ class _RideRequestScreenState extends State<RideRequestScreen>
           decoration: BoxDecoration(
             color: InggoColors.border1,
             shape: BoxShape.circle,
-            border: const Border.all(color: InggoColors.primary, width: 2),
+            border: Border.all(color: InggoColors.primary, width: 2),
           ),
           child: const Icon(Icons.person, color: Color(0xFF757575), size: 28),
         ),

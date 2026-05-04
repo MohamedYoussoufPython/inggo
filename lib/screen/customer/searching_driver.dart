@@ -262,7 +262,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
             height: size,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: const Border.all(                color: InggoColors.primary.withValues(alpha: opacity * 0.6),
+              border: Border.all(color: InggoColors.primary.withValues(alpha: opacity * 0.6),
                 width: 2,
               ),
             ),
@@ -369,7 +369,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
                               decoration: BoxDecoration(
                                 color: InggoColors.surface,
                                 borderRadius: BorderRadius.circular(12),
-                                border: const Border.all(color: InggoColors.border1),
+                                border: Border.all(color: InggoColors.border1),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.black.withValues(alpha: 0.04),
@@ -472,7 +472,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
                               decoration: BoxDecoration(
                                 color: InggoColors.surface,
                                 borderRadius: BorderRadius.circular(16),
-                                border: const Border.all(color: InggoColors.border1),
+                                border: Border.all(color: InggoColors.border1),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.black.withValues(alpha: 0.04),
@@ -534,7 +534,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen>
                             decoration: BoxDecoration(
                               color: InggoColors.surface,
                               borderRadius: BorderRadius.circular(14),
-                              border: const Border.all(color: InggoColors.border2),
+                              border: Border.all(color: InggoColors.border2),
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.black.withValues(alpha: 0.04),
@@ -687,7 +687,7 @@ class _DriverFoundOverlayState extends State<_DriverFoundOverlay>
                     decoration: BoxDecoration(
                       color: InggoColors.primaryLight,
                       borderRadius: BorderRadius.circular(100),
-                      border: const Border.all(color: InggoColors.primaryBorder),
+                      border: Border.all(color: InggoColors.primaryBorder),
                     ),
                     child: const Text(
                       'Arrive dans 3 min',
@@ -824,7 +824,7 @@ class _OutlineBtn extends StatelessWidget {
         decoration: BoxDecoration(
           color: InggoColors.surface,
           borderRadius: BorderRadius.circular(13),
-          border: const Border.all(color: InggoColors.border2),
+          border: Border.all(color: InggoColors.border2),
         ),
         child: Center(
           child: Text(
@@ -856,7 +856,7 @@ class _DangerBtn extends StatelessWidget {
         decoration: BoxDecoration(
           color: InggoColors.errorLight,
           borderRadius: BorderRadius.circular(13),
-          border: const Border.all(color: Color(0xFFFECACA)),
+          border: Border.all(color: Color(0xFFFECACA)),
         ),
         child: Center(
           child: Text(

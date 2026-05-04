@@ -30,9 +30,6 @@ class _RideScreenState extends State<RideScreen>
     with SingleTickerProviderStateMixin {
   static const LatLng _pickupLocation = LatLng(11.5750, 43.1450);
   static const LatLng _destinationLocation = LatLng(11.5880, 43.1470);
-  static const LatLng _djiboutiCenter = LatLng(11.5850, 43.1460);
-
-  GoogleMapController? _mapController;
   RideState _state = RideState.enRoute;
   bool _sheetExpanded = false;
   bool _showRating = false;
@@ -203,9 +200,7 @@ class _RideScreenState extends State<RideScreen>
         target: target,
         zoom: zoom,
       ),
-      onMapCreated: (controller) {
-        _mapController = controller;
-      },
+      onMapCreated: (_) {},
       myLocationEnabled: false,
       myLocationButtonEnabled: false,
       zoomControlsEnabled: false,
@@ -434,7 +429,7 @@ class _RideScreenState extends State<RideScreen>
           decoration: BoxDecoration(
             color: const Color(0xFFF0F0F0),
             shape: BoxShape.circle,
-            border: const Border.all(color: Color(0xFFFFC107), width: 2),
+            border: Border.all(color: Color(0xFFFFC107), width: 2),
           ),
           child: const Icon(Icons.person, color: Color(0xFF757575), size: 26),
         ),
@@ -580,7 +575,7 @@ class _RideScreenState extends State<RideScreen>
             decoration: BoxDecoration(
               color: const Color(0xFFF0F0F0),
               shape: BoxShape.circle,
-              border: const Border.all(color: Color(0xFFFFC107), width: 3),
+              border: Border.all(color: Color(0xFFFFC107), width: 3),
             ),
             child: const Icon(Icons.person, color: Color(0xFF757575), size: 36),
           ),

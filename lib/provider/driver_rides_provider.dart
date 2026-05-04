@@ -166,7 +166,6 @@ final currentRideRequestProvider = StreamProvider<DriverRideRequest?>((ref) {
         
         final ride = data.first;
         String? userName;
-        double? userRating;
         
         if (ride['user_id'] != null) {
           final profile = await supabase
