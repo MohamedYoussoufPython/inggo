@@ -35,8 +35,7 @@ class ProfilScreen extends ConsumerWidget {
                     decoration: BoxDecoration(
                       color: InggoColors.surface,
                       shape: BoxShape.circle,
-                      border: Border.all(
-                        color: InggoColors.border1,
+                      border: const Border.all(                        color: InggoColors.border1,
                       ),
                       boxShadow: InggoShadows.level1,
                     ),
@@ -91,8 +90,7 @@ class ProfilScreen extends ConsumerWidget {
                                     height: 100,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      border: Border.all(
-                                          color: Colors.white, width: 4),
+                                      border: const Border.all(                                          color: Colors.white, width: 4),
                                       boxShadow: [
                                         BoxShadow(
                                           color: Colors.black.withValues(alpha: 0.05),
@@ -124,8 +122,7 @@ class ProfilScreen extends ConsumerWidget {
                                       decoration: BoxDecoration(
                                         color: InggoColors.text1,
                                         shape: BoxShape.circle,
-                                        border: Border.all(
-                                            color: Colors.white, width: 3),
+                                        border: const Border.all(                                            color: Colors.white, width: 3),
                                         boxShadow: [
                                           BoxShadow(
                                             color:

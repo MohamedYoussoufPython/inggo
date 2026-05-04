@@ -66,7 +66,7 @@ class _RideCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.black.withValues(alpha: 0.03)),
+        border: const Border.all(color: Colors.black.withValues(alpha: 0.03)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.03),

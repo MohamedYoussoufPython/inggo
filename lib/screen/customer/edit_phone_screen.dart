@@ -206,7 +206,10 @@ class _EditPhoneScreenState extends ConsumerState<EditPhoneScreen> {
         InggoModalButton(
           label: 'Annuler',
           isOutline: true,
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () {
+            codeController.dispose();
+            Navigator.of(context).pop();
+          },
         ),
         InggoModalButton(
           label: 'Valider',
@@ -214,6 +217,7 @@ class _EditPhoneScreenState extends ConsumerState<EditPhoneScreen> {
           textColor: Colors.black,
           onPressed: () {
             if (codeController.text == '1234') {
+              codeController.dispose();
               ref.read(userProvider.notifier).updateProfile(phone: fullPhone);
               Navigator.of(context).pop(); // Fermer la modale
               Navigator.of(context).pop(); // Fermer la page edit-phone

@@ -141,7 +141,7 @@ class _InggoInputState extends State<InggoInput> {
                         fontWeight: FontWeight.w400,
                         fontFamily: InggoTextStyles.fontFamily,
                       ),
-                      prefixIcon: widget.prefixIcon != null ? null : null,
+                      prefixIcon: null,
                       suffixIcon: widget.suffix ??
                           (widget.showToggleVisibility
                               ? GestureDetector(

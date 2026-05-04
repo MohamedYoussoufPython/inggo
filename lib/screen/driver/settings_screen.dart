@@ -65,7 +65,7 @@ class _DriverSettingsScreenState extends State<DriverSettingsScreen> {
                     margin: EdgeInsets.only(right: i < 3 ? 8 : 0),
                     height: 48,
                     decoration: BoxDecoration(
-                      border: Border.all(color: const Color(0xFFDDDDDD)),
+                      border: const Border.all(color: Color(0xFFDDDDDD)),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: const Center(
@@ -429,7 +429,7 @@ class _DriverSettingsScreenState extends State<DriverSettingsScreen> {
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: const Color(0xFFFFEBEE),
-                      border: Border.all(color: const Color(0xFFFFCDD2)),
+                      border: const Border.all(color: Color(0xFFFFCDD2)),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Row(
@@ -512,7 +512,7 @@ class _DriverSettingsScreenState extends State<DriverSettingsScreen> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: const Color(0xFFF5F5F5)),
+            border: const Border.all(color: Color(0xFFF5F5F5)),
           ),
           child: Row(
             children: [
@@ -560,7 +560,7 @@ class _DriverSettingsScreenState extends State<DriverSettingsScreen> {
         decoration: BoxDecoration(
           color: const Color(0xFFFAFAFA),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFFF5F5F5)),
+          border: const Border.all(color: Color(0xFFF5F5F5)),
         ),
         child: Row(
           children: [
@@ -604,7 +604,7 @@ class _DriverSettingsScreenState extends State<DriverSettingsScreen> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFFF5F5F5)),
+          border: const Border.all(color: Color(0xFFF5F5F5)),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -633,7 +633,7 @@ class _DriverSettingsScreenState extends State<DriverSettingsScreen> {
         decoration: BoxDecoration(
           color: Colors.white,
           shape: BoxShape.circle,
-          border: Border.all(color: const Color(0xFFDDDDDD)),
+          border: const Border.all(color: Color(0xFFDDDDDD)),
         ),
         child: const Icon(Icons.arrow_back, color: Color(0xFF121212), size: 20),
       ),
