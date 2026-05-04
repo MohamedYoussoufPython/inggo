@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:inggo/core/theme/inggo_theme.dart';
-import 'package:inggo/core/providers/ride_provider.dart';
+import 'package:inggo/provider/ride_provider.dart';
 import 'package:inggo/widget/inggo_button.dart';
 import 'package:inggo/widget/inggo_card.dart';
 

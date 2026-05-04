@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../models/driver_model.dart';
+import '../../model/driver_model.dart';
 import 'user_provider.dart';
 
 class DriverNotifier extends StateNotifier<AsyncValue<DriverModel?>> {

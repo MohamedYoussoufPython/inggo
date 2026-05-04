@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/providers/user_provider.dart';
+import '../../provider/user_provider.dart';
 import '../../widget/inggo_modal.dart';
 import '../shared/widgets/profile_scaffold.dart';
 
@@ -123,7 +123,7 @@ class _EditPhoneScreenState extends ConsumerState<EditPhoneScreen> {
                   borderRadius: BorderRadius.circular(14),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFFFFC107).withOpacity(0.3),
+                      color: const Color(0xFFFFC107).withValues(alpha: 0.3),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),

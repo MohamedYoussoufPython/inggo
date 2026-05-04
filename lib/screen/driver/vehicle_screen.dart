@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../widget/inggo_input.dart';
-import '../../core/providers/driver_provider.dart';
+import '../../provider/driver_provider.dart';
 
 class VehicleScreen extends ConsumerStatefulWidget {
   const VehicleScreen({super.key});

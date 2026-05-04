@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../../models/ride_model.dart';
+import '../../model/ride_model.dart';
 import 'user_provider.dart';
 
 class DriverRideRequest {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/providers/driver_provider.dart';
+import '../../provider/driver_provider.dart';
 
 class BankingScreen extends ConsumerStatefulWidget {
   const BankingScreen({super.key});

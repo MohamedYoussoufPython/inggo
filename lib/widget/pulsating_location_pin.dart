@@ -57,7 +57,7 @@ class _PulsatingLocationPinState extends State<PulsatingLocationPin>
           height: size,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: const Color(0xFFFFC700).withOpacity(opacity),
+            color: const Color(0xFFFFC700).withValues(alpha: opacity),
           ),
         );
       },
@@ -88,7 +88,7 @@ class _PulsatingLocationPinState extends State<PulsatingLocationPin>
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.20),
+                  color: Colors.black.withValues(alpha: 0.20),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),

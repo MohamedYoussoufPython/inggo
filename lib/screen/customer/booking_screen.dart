@@ -8,8 +8,8 @@ import '../../widget/profil_icon.dart';
 import '../../widget/pulsating_location_pin.dart';
 import '../../widget/selection_pin.dart';
 import '../../widget/notification_icon.dart';
-import '../../core/providers/notifications_provider.dart';
-import '../../core/providers/ride_provider.dart';
+import '../../provider/notifications_provider.dart';
+import '../../provider/ride_provider.dart';
 
 class RideBookingScreen extends ConsumerStatefulWidget {
   const RideBookingScreen({super.key});
@@ -102,7 +102,7 @@ class _RideBookingScreenState extends ConsumerState<RideBookingScreen> {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.07),
+            color: Colors.black.withValues(alpha: 0.07),
             blurRadius: 12,
             offset: const Offset(0, 3),
           ),
@@ -245,7 +245,7 @@ class _RideBookingScreenState extends ConsumerState<RideBookingScreen> {
               child: Stack(
                 children: [
                   // Fond semi-transparent
-                  Container(color: Colors.black.withOpacity(0.1)),
+                  Container(color: Colors.black.withValues(alpha: 0.1)),
 
                   // Épingle centrale
                   Align(
@@ -277,7 +277,7 @@ class _RideBookingScreenState extends ConsumerState<RideBookingScreen> {
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.10),
+                                color: Colors.black.withValues(alpha: 0.10),
                                 blurRadius: 12,
                                 offset: const Offset(0, 3),
                               ),
@@ -310,7 +310,7 @@ class _RideBookingScreenState extends ConsumerState<RideBookingScreen> {
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.12),
+                              color: Colors.black.withValues(alpha: 0.12),
                               blurRadius: 20,
                               offset: const Offset(0, 6),
                             ),
@@ -352,7 +352,7 @@ class _RideBookingScreenState extends ConsumerState<RideBookingScreen> {
                                   boxShadow: [
                                     BoxShadow(
                                       color: const Color(0xFFFFC700)
-                                          .withOpacity(0.30),
+                                          .withValues(alpha: 0.30),
                                       blurRadius: 10,
                                       offset: const Offset(0, 3),
                                     ),

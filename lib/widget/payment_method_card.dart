@@ -33,7 +33,7 @@ class _PaymentMethodCardState extends State<PaymentMethodCard> {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 24,
             offset: const Offset(0, -6),
           ),
@@ -172,7 +172,7 @@ class _PaymentMethodCardState extends State<PaymentMethodCard> {
                   borderRadius: BorderRadius.circular(14),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFFFFC700).withOpacity(0.30),
+                      color: const Color(0xFFFFC700).withValues(alpha: 0.30),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),

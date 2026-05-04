@@ -97,7 +97,7 @@ class _InggoInputState extends State<InggoInput> {
               boxShadow: _focused && !hasError
                   ? [
                       BoxShadow(
-                        color: InggoColors.primary.withOpacity(0.12),
+                        color: InggoColors.primary.withValues(alpha: 0.12),
                         blurRadius: 8,
                         offset: const Offset(0, 0),
                       ),

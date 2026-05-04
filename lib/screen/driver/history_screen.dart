@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/providers/driver_rides_provider.dart';
-import '../../models/ride_model.dart';
+import '../../provider/driver_rides_provider.dart';
+import '../../model/ride_model.dart';
 
 class DriverHistoryScreen extends ConsumerWidget {
   const DriverHistoryScreen({super.key});

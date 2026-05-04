@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/providers/driver_earnings_provider.dart';
+import '../../provider/driver_earnings_provider.dart';
 
 class RevenueScreen extends ConsumerWidget {
   const RevenueScreen({super.key});
