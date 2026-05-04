@@ -90,7 +90,7 @@ class InggoBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(InggoSpacing.xs),
         border: variant == InggoBadgeVariant.pending ||
                 variant == InggoBadgeVariant.rating
-            ? Border.all(color: InggoColors.primaryBorder, width: 1)
+            ? const Border.all(color: InggoColors.primaryBorder, width: 1)
             : null,
       ),
       child: Row(
@@ -143,7 +143,7 @@ class InggoRatingBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: InggoColors.primaryLight,
         borderRadius: BorderRadius.circular(InggoSpacing.xs),
-        border: Border.all(color: InggoColors.primaryBorder, width: 1),
+        border: const Border.all(color: InggoColors.primaryBorder, width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

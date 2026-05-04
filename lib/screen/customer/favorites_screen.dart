@@ -104,7 +104,11 @@ class FavoritesScreen extends ConsumerWidget {
         InggoModalButton(
           label: 'Annuler',
           isOutline: true,
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () {
+            nameController.dispose();
+            addrController.dispose();
+            Navigator.of(context).pop();
+          },
         ),
         InggoModalButton(
           label: 'Ajouter',
@@ -114,6 +118,8 @@ class FavoritesScreen extends ConsumerWidget {
             final name = nameController.text.trim();
             final addr = addrController.text.trim();
             if (name.isNotEmpty && addr.isNotEmpty) {
+              nameController.dispose();
+              addrController.dispose();
               ref.read(favoritesProvider.notifier).addFavorite(name, addr);
               Navigator.of(context).pop();
               ScaffoldMessenger.of(context).showSnackBar(

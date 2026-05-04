@@ -333,7 +333,7 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
         Container(
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(color: InggoColors.primary, width: 2.5),
+            border: const Border.all(color: InggoColors.primary, width: 2.5),
           ),
           child: CircleAvatar(
             radius: 28,
@@ -389,7 +389,7 @@ class _TripInProgressScreenState extends State<TripInProgressScreen> {
       decoration: BoxDecoration(
         color: InggoColors.primaryLight,
         borderRadius: BorderRadius.circular(InggoSpacing.xs),
-        border: Border.all(color: InggoColors.primaryBorder),
+        border: const Border.all(color: InggoColors.primaryBorder),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

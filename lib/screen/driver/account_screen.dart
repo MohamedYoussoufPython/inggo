@@ -223,7 +223,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: const Color(0xFFFFEBEE),
-                      border: Border.all(color: const Color(0xFFFFCDD2)),
+                      border: const Border.all(color: Color(0xFFFFCDD2)),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Row(
@@ -284,7 +284,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
               decoration: BoxDecoration(
                 color: const Color(0xFFF0F0F0),
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 3),
+                border: const Border.all(color: Colors.white, width: 3),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.1),
@@ -310,7 +310,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                   decoration: BoxDecoration(
                     color: const Color(0xFFFFC107),
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 2),
+                    border: const Border.all(color: Colors.white, width: 2),
                   ),
                   child: const Icon(
                     Icons.photo_camera,
@@ -402,7 +402,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Colors.white,
-              border: Border.all(color: const Color(0xFFF5F5F5)),
+              border: const Border.all(color: Color(0xFFF5F5F5)),
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
@@ -545,7 +545,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: Colors.white,
-            border: Border.all(color: const Color(0xFFF5F5F5)),
+            border: const Border.all(color: Color(0xFFF5F5F5)),
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(

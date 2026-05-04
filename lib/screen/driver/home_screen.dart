@@ -90,7 +90,7 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: InggoColors.border1),
+              border: const Border.all(color: InggoColors.border1),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.08),

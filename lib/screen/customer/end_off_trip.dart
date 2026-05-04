@@ -215,7 +215,7 @@ class _EndOfTripScreenState extends ConsumerState<EndOfTripScreen> {
       decoration: BoxDecoration(
         color: InggoColors.surface,
         borderRadius: BorderRadius.circular(InggoSpacing.md),
-        border: Border.all(color: InggoColors.border1),
+        border: const Border.all(color: InggoColors.border1),
       ),
       child: Column(
         children: [
@@ -353,7 +353,7 @@ class _EndOfTripScreenState extends ConsumerState<EndOfTripScreen> {
       decoration: BoxDecoration(
         color: InggoColors.surface,
         borderRadius: BorderRadius.circular(InggoSpacing.sm),
-        border: Border.all(color: InggoColors.border1),
+        border: const Border.all(color: InggoColors.border1),
       ),
       child: TextFormField(
         controller: _commentController,

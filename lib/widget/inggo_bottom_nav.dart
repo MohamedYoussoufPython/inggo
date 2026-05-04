@@ -37,7 +37,7 @@ class InggoBottomNav extends StatelessWidget {
       decoration: BoxDecoration(
         color: InggoColors.surface,
         borderRadius: BorderRadius.circular(InggoSpacing.lg),
-        border: Border.all(color: InggoColors.border1),
+        border: const Border.all(color: InggoColors.border1),
         boxShadow: InggoShadows.level3,
       ),
       child: Row(

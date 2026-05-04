@@ -40,8 +40,7 @@ class ProfileScaffold extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Colors.black.withValues(alpha: 0.05),
+                      border: const Border.all(                        color: Colors.black.withValues(alpha: 0.05),
                       ),
                       boxShadow: [
                         BoxShadow(

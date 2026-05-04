@@ -53,8 +53,7 @@ class SelectionPin extends StatelessWidget {
                     bottomLeft: Radius.zero,
                     bottomRight: Radius.circular(23),
                   ),
-                  border: Border.all(
-                    color: Colors.white,
+                  border: const Border.all(                    color: Colors.white,
                     width: 3,
                   ),
                   boxShadow: [

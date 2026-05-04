@@ -197,6 +197,7 @@ class _LoginScreenState extends State<LoginScreen> {
         } else if (status == 'rejected') {
           // Compte rejeté
           await SupabaseConfig.client.auth.signOut();
+          if (!mounted) return;
           _showSnackBar('Votre dossier a été refusé. Contactez le support.',
               InggoColors.error);
         } else {
@@ -634,8 +635,7 @@ class _RegisterRoleModal extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.96),
               borderRadius: BorderRadius.circular(28),
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.8),
+              border: const Border.all(                color: Colors.white.withValues(alpha: 0.8),
                 width: 1.5,
               ),
               boxShadow: [
