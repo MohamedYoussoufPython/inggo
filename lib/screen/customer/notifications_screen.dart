@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/theme/inggo_theme.dart';
+import '../../theme/inggo_theme.dart';
 import '../../provider/notifications_provider.dart';
 import '../../model/notification_model.dart';
 

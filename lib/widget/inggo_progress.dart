@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../core/theme/inggo_theme.dart';
+import '../theme/inggo_theme.dart';
 
 class InggoProgressBar extends StatelessWidget {
   final double value;

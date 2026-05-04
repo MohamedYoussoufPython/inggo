@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../core/theme/inggo_theme.dart';
+import '../../theme/inggo_theme.dart';
 import '../../provider/history_provider.dart';
 import '../../model/ride_model.dart';
 import '../shared/widgets/profile_scaffold.dart';

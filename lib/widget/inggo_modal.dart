@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../core/theme/inggo_theme.dart';
+import '../theme/inggo_theme.dart';
 import 'inggo_button.dart';
 
 Future<T?> showInggoModal<T>({

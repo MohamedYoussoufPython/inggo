@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/supabase.dart';
-import '../../core/theme/inggo_theme.dart';
+import '../../theme/inggo_theme.dart';
 import '../../widget/inggo_button.dart';
 
 class LoginScreen extends StatefulWidget {

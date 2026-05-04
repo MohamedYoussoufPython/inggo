@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import '../../core/theme/inggo_theme.dart';
+import '../../theme/inggo_theme.dart';
 import '../../provider/driver_provider.dart';
 import '../../provider/driver_earnings_provider.dart';
 import '../../provider/driver_rides_provider.dart';
