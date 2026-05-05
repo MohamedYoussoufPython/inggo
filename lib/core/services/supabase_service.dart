@@ -40,19 +40,24 @@ class SupabaseService {
     bool ascending = true,
     int? limit,
   }) async {
-    PostgrestFilterBuilder<PostgrestList> select = client.from(table).select();
+    var filter = client.from(table).select();
     if (query != null) {
       query.forEach((key, value) {
-        select = select.eq(key, value);
+        filter = filter.eq(key, value);
       });
     }
+    // Apply ordering and limit via transform builder
     if (orderBy != null) {
-      select = select.order(orderBy, ascending: ascending);
+      final sorted = filter.order(orderBy, ascending: ascending);
+      if (limit != null) {
+        return List<Map<String, dynamic>>.from(await sorted.limit(limit));
+      }
+      return List<Map<String, dynamic>>.from(await sorted);
     }
     if (limit != null) {
-      select = select.limit(limit);
+      return List<Map<String, dynamic>>.from(await filter.limit(limit));
     }
-    return List<Map<String, dynamic>>.from(await select);
+    return List<Map<String, dynamic>>.from(await filter);
   }
 
   Future<Map<String, dynamic>> getById(String table, String id) async {
