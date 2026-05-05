@@ -429,7 +429,7 @@ class _RideScreenState extends State<RideScreen>
           decoration: BoxDecoration(
             color: const Color(0xFFF0F0F0),
             shape: BoxShape.circle,
-            border: Border.all(color: Color(0xFFFFC107), width: 2),
+            border: const Border.all(color: Color(0xFFFFC107), width: 2),
           ),
           child: const Icon(Icons.person, color: Color(0xFF757575), size: 26),
         ),
@@ -575,7 +575,7 @@ class _RideScreenState extends State<RideScreen>
             decoration: BoxDecoration(
               color: const Color(0xFFF0F0F0),
               shape: BoxShape.circle,
-              border: Border.all(color: Color(0xFFFFC107), width: 3),
+              border: const Border.all(color: Color(0xFFFFC107), width: 3),
             ),
             child: const Icon(Icons.person, color: Color(0xFF757575), size: 36),
           ),
