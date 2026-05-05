@@ -202,7 +202,7 @@ class _RideBookingScreenState extends ConsumerState<RideBookingScreen> {
                           pickupLat: _currentMapCenter.latitude,
                           pickupLng: _currentMapCenter.longitude,
                         );
-                        if (!mounted) return;
+                        if (!context.mounted) return;
                         if (rideId != null) {
                           context.go('/searching', extra: {'rideId': rideId});
                         }
