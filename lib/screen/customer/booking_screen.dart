@@ -97,7 +97,7 @@ class _RideBookingScreenState extends ConsumerState<RideBookingScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         shape: BoxShape.circle,
-        border: Border.all(color: Color(0xFFE8E8E8),
+        border: const Border.all(color: Color(0xFFE8E8E8),
           width: 1,
         ),
         boxShadow: [
@@ -202,7 +202,7 @@ class _RideBookingScreenState extends ConsumerState<RideBookingScreen> {
                           pickupLat: _currentMapCenter.latitude,
                           pickupLng: _currentMapCenter.longitude,
                         );
-                        if (!mounted) return;
+                        if (!context.mounted) return;
                         if (rideId != null) {
                           context.go('/searching', extra: {'rideId': rideId});
                         }
@@ -273,7 +273,7 @@ class _RideBookingScreenState extends ConsumerState<RideBookingScreen> {
                           decoration: BoxDecoration(
                             color: Colors.white,
                             shape: BoxShape.circle,
-                            border: Border.all(color: Color(0xFFE8E8E8),
+                            border: const Border.all(color: Color(0xFFE8E8E8),
                             ),
                             boxShadow: [
                               BoxShadow(
@@ -305,7 +305,7 @@ class _RideBookingScreenState extends ConsumerState<RideBookingScreen> {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(50),
-                          border: Border.all(color: Color(0xFFE8E8E8),
+                          border: const Border.all(color: Color(0xFFE8E8E8),
                           ),
                           boxShadow: [
                             BoxShadow(

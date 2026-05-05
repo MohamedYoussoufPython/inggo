@@ -21,7 +21,7 @@ class NotificationIcon extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.white,
                 shape: BoxShape.circle,
-                border: Border.all(                  color: Color(0xFFE8E8E8),
+                border: const Border.all(                  color: Color(0xFFE8E8E8),
                   width: 1,
                 ),
                 boxShadow: [

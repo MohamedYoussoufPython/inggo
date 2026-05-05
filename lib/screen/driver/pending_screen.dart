@@ -29,7 +29,7 @@ class DriverPendingScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: const Color(0xFFFFF8E1),
                     shape: BoxShape.circle,
-                    border: Border.all(                      color: Color(0xFFFFC107),
+                    border: const Border.all(                      color: Color(0xFFFFC107),
                       width: 3,
                     ),
                   ),
@@ -96,7 +96,7 @@ class DriverPendingScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: const Color(0xFFF9FAFB),
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Color(0xFFE5E7EB)),
+                  border: const Border.all(color: Color(0xFFE5E7EB)),
                 ),
                 child: Row(
                   children: [

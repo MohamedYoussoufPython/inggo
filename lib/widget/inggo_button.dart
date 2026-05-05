@@ -144,7 +144,7 @@ class _InggoButtonState extends State<InggoButton>
       case InggoButtonVariant.ghost:
         return null;
       case InggoButtonVariant.danger:
-        return Border.all(color: Color(0xFFfecaca), width: 1);
+        return const Border.all(color: Color(0xFFfecaca), width: 1);
     }
   }
 
