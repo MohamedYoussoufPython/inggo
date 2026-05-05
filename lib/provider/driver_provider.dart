@@ -1,132 +1,147 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../model/driver_model.dart';
-import 'user_provider.dart';
+import '../core/services/supabase_service.dart';
+import '../core/services/location_service.dart';
+import '../core/constants/app_constants.dart';
+import '../model/driver_model.dart';
 
-class DriverNotifier extends StateNotifier<AsyncValue<DriverModel?>> {
-  final Ref ref;
+class DriverState {
+  final bool isLoading;
+  final DriverModel? driver;
+  final bool isOnline;
+  final double totalEarnings;
+  final int totalRides;
+  final String? error;
 
-  DriverNotifier(this.ref) : super(const AsyncValue.loading()) {
-    fetchDriver();
+  const DriverState({
+    this.isLoading = false,
+    this.driver,
+    this.isOnline = false,
+    this.totalEarnings = 0.0,
+    this.totalRides = 0,
+    this.error,
+  });
+
+  DriverState copyWith({
+    bool? isLoading,
+    DriverModel? driver,
+    bool? isOnline,
+    double? totalEarnings,
+    int? totalRides,
+    String? error,
+  }) {
+    return DriverState(
+      isLoading: isLoading ?? this.isLoading,
+      driver: driver ?? this.driver,
+      isOnline: isOnline ?? this.isOnline,
+      totalEarnings: totalEarnings ?? this.totalEarnings,
+      totalRides: totalRides ?? this.totalRides,
+      error: error,
+    );
   }
+}
 
-  Future<void> fetchDriver() async {
-    state = const AsyncValue.loading();
+class DriverNotifier extends StateNotifier<DriverState> {
+  DriverNotifier() : super(const DriverState());
+
+  Future<void> loadDriver() async {
+    state = state.copyWith(isLoading: true);
     try {
-      final supabase = ref.read(supabaseProvider);
-      final user = supabase.auth.currentUser;
-      if (user == null) {
-        state = const AsyncValue.data(null);
-        return;
-      }
+      final userId = SupabaseService.instance.currentUserId;
+      if (userId == null) return;
 
-      final data = await supabase
-          .from('drivers')
-          .select()
-          .eq('id', user.id)
-          .maybeSingle();
-
-      if (data == null) {
-        state = const AsyncValue.data(null);
-        return;
-      }
-
-      state = AsyncValue.data(DriverModel.fromJson(data));
+      final data =
+          await SupabaseService.instance.getById('drivers', userId);
+      final driver = DriverModel.fromJson(data);
+      state = state.copyWith(
+        isLoading: false,
+        driver: driver,
+        isOnline: driver.isOnline,
+        totalEarnings: driver.totalEarnings,
+        totalRides: driver.totalRides,
+      );
     } catch (e) {
-      state = AsyncValue.error(e, StackTrace.current);
+      state = state.copyWith(isLoading: false, error: e.toString());
     }
   }
 
   Future<void> toggleOnline() async {
-    final driverValue = state.value;
-    if (driverValue == null) return;
-    
-    final newStatus = !driverValue.isOnline;
-    
+    final newOnline = !state.isOnline;
+    state = state.copyWith(isLoading: true);
     try {
-      final supabase = ref.read(supabaseProvider);
-      final user = supabase.auth.currentUser;
-      if (user == null) return;
-      
-      await supabase
-          .from('drivers')
-          .update({'is_online': newStatus, 'updated_at': DateTime.now().toIso8601String()})
-          .eq('id', user.id);
-          
-      state = AsyncValue.data(DriverModel(
-        id: driverValue.id,
-        fullName: driverValue.fullName,
-        phone: driverValue.phone,
-        email: driverValue.email,
-        address: driverValue.address,
-        vehicle: driverValue.vehicle,
-        licensePlate: driverValue.licensePlate,
-        status: driverValue.status,
-        isOnline: newStatus,
-        rating: driverValue.rating,
-        totalRides: driverValue.totalRides,
-        avatarUrl: driverValue.avatarUrl,
-        bankName: driverValue.bankName,
-        bankNumber: driverValue.bankNumber,
-      ));
-    } catch (e) {
-      // Handle error
-    }
-  }
-  
-  Future<void> updateVehicleInfo(String vehicle, String licensePlate) async {
-    final driverValue = state.value;
-    if (driverValue == null) return;
+      final userId = SupabaseService.instance.currentUserId;
+      if (userId == null) return;
 
-    try {
-      final supabase = ref.read(supabaseProvider);
-      final user = supabase.auth.currentUser;
-      if (user == null) return;
-      
-      await supabase
-          .from('drivers')
-          .update({
-            'vehicle': vehicle,
-            'license_plate': licensePlate,
-            'updated_at': DateTime.now().toIso8601String()
-          })
-          .eq('id', user.id);
-          
-      await fetchDriver();
+      await SupabaseService.instance.update('drivers', userId, {
+        'is_online': newOnline,
+      });
+
+      if (newOnline) {
+        final position =
+            await LocationService.instance.getCurrentPosition();
+        if (position != null) {
+          await SupabaseService.instance.update('drivers', userId, {
+            'current_lat': position.latitude,
+            'current_lng': position.longitude,
+            'last_location_update': DateTime.now().toIso8601String(),
+          });
+        }
+        LocationService.instance.startTracking(onPositionUpdate: (pos) {
+          SupabaseService.instance.update('drivers', userId, {
+            'current_lat': pos.latitude,
+            'current_lng': pos.longitude,
+            'last_location_update': DateTime.now().toIso8601String(),
+          });
+        });
+      } else {
+        LocationService.instance.stopTracking();
+      }
+
+      state = state.copyWith(isLoading: false, isOnline: newOnline);
     } catch (e) {
-      // Handle error
+      state = state.copyWith(isLoading: false, error: e.toString());
     }
   }
 
-  Future<void> updateBankingInfo(String bankName, String bankNumber) async {
-    final driverValue = state.value;
-    if (driverValue == null) return;
-
+  Future<void> acceptRide(String rideId) async {
     try {
-      final supabase = ref.read(supabaseProvider);
-      final user = supabase.auth.currentUser;
-      if (user == null) return;
+      final userId = SupabaseService.instance.currentUserId;
+      if (userId == null) return;
 
-      await supabase
-          .from('drivers')
-          .update({
-            'bank_name': bankName,
-            'bank_number': bankNumber,
-            'updated_at': DateTime.now().toIso8601String()
-          })
-          .eq('id', user.id);
-
-      await fetchDriver();
+      await SupabaseService.instance.update('rides', rideId, {
+        'driver_id': userId,
+        'status': 'accepted',
+        'accepted_at': DateTime.now().toIso8601String(),
+      });
     } catch (e) {
-      // Handle error
+      state = state.copyWith(error: e.toString());
+    }
+  }
+
+  Future<void> completeRide(String rideId) async {
+    try {
+      await SupabaseService.instance.update('rides', rideId, {
+        'status': 'completed',
+        'completed_at': DateTime.now().toIso8601String(),
+      });
+
+      final driver = state.driver;
+      if (driver != null) {
+        await SupabaseService.instance.update('drivers', driver.id, {
+          'total_rides': driver.totalRides + 1,
+          'total_earnings': driver.totalEarnings + AppConstants.driverEarning,
+        });
+        state = state.copyWith(
+          totalRides: driver.totalRides + 1,
+          totalEarnings: driver.totalEarnings + AppConstants.driverEarning,
+        );
+      }
+    } catch (e) {
+      state = state.copyWith(error: e.toString());
     }
   }
 }
 
-final driverProvider = StateNotifierProvider<DriverNotifier, AsyncValue<DriverModel?>>((ref) {
-  return DriverNotifier(ref);
-});
-
-final driverIsOnlineProvider = Provider<bool>((ref) {
-  final driverAsync = ref.watch(driverProvider);
-  return driverAsync.value?.isOnline ?? false;
+final driverProvider =
+    StateNotifierProvider<DriverNotifier, DriverState>((ref) {
+  return DriverNotifier();
 });

@@ -1,221 +1,80 @@
 import 'package:flutter/material.dart';
-import '../theme/inggo_theme.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pinput/pinput.dart';
+import '../core/constants/constants.dart';
 
-class InggoInput extends StatefulWidget {
+class InggoInput extends StatelessWidget {
   final String? label;
-  final String placeholder;
+  final String? hint;
   final TextEditingController? controller;
-  final String? errorText;
-  final String? hintText;
-  final IconData? prefixIcon;
-  final Widget? prefix;
-  final Widget? suffix;
-  final bool obscureText;
-  final bool showToggleVisibility;
-  final TextInputType keyboardType;
-  final int? maxLength;
-  final bool readOnly;
-  final ValueChanged<String>? onChanged;
   final String? Function(String?)? validator;
+  final VoidCallback? onTap;
+  final ValueChanged<String>? onChanged;
+  final TextInputType? keyboardType;
+  final bool obscureText;
+  final bool readOnly;
   final bool enabled;
+  final int maxLines;
+  final IconData? prefixIcon;
+  final IconData? suffixIcon;
+  final VoidCallback? onSuffixTap;
+  final String? prefixText;
 
   const InggoInput({
     super.key,
     this.label,
-    required this.placeholder,
+    this.hint,
     this.controller,
-    this.errorText,
-    this.hintText,
-    this.prefixIcon,
-    this.prefix,
-    this.suffix,
-    this.obscureText = false,
-    this.showToggleVisibility = false,
-    this.keyboardType = TextInputType.text,
-    this.maxLength,
-    this.readOnly = false,
-    this.onChanged,
     this.validator,
+    this.onTap,
+    this.onChanged,
+    this.keyboardType,
+    this.obscureText = false,
+    this.readOnly = false,
     this.enabled = true,
+    this.maxLines = 1,
+    this.prefixIcon,
+    this.suffixIcon,
+    this.onSuffixTap,
+    this.prefixText,
   });
 
   @override
-  State<InggoInput> createState() => _InggoInputState();
-}
-
-class _InggoInputState extends State<InggoInput> {
-  bool _obscured = true;
-  bool _focused = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _obscured = widget.obscureText;
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final hasError = widget.errorText != null && widget.errorText!.isNotEmpty;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (widget.label != null) ...[
-          Padding(
-            padding: const EdgeInsets.only(left: 4, bottom: 8),
-            child: Text(
-              widget.label!.toUpperCase(),
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w700,
-                color: InggoColors.text2,
-                letterSpacing: 0.04,
-                fontFamily: InggoTextStyles.fontFamily,
-              ),
-            ),
-          ),
+        if (label != null) ...[
+          Text(label!, style: AppTextStyles.labelMedium),
+          SizedBox(height: 6.h),
         ],
-        Focus(
-          onFocusChange: (focused) => setState(() => _focused = focused),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            decoration: BoxDecoration(
-              color: hasError
-                  ? const Color(0xFFfff8f8)
-                  : _focused
-                      ? InggoColors.surface
-                      : InggoColors.surface,
-              borderRadius: BorderRadius.circular(InggoSpacing.sm),
-              border: Border.all(
-                color: hasError
-                    ? InggoColors.error
-                    : _focused
-                        ? InggoColors.primary
-                        : InggoColors.border1,
-                width: hasError ? 1.5 : 1,
-              ),
-              boxShadow: _focused && !hasError
-                  ? [
-                      BoxShadow(
-                        color: InggoColors.primary.withValues(alpha: 0.12),
-                        blurRadius: 8,
-                        offset: const Offset(0, 0),
-                      ),
-                    ]
-                  : null,
-            ),
-            child: Row(
-              children: [
-                if (widget.prefix != null) widget.prefix!,
-                if (widget.prefixIcon != null)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 14),
-                    child: Icon(
-                      widget.prefixIcon,
-                      color: InggoColors.text3,
-                      size: 20,
-                    ),
-                  ),
-                Expanded(
-                  child: TextFormField(
-                    controller: widget.controller,
-                    obscureText: widget.showToggleVisibility
-                        ? _obscured
-                        : widget.obscureText,
-                    keyboardType: widget.keyboardType,
-                    maxLength: widget.maxLength,
-                    readOnly: widget.readOnly,
-                    onChanged: widget.onChanged,
-                    validator: widget.validator,
-                    enabled: widget.enabled,
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w400,
-                      color: InggoColors.text1,
-                      fontFamily: InggoTextStyles.fontFamily,
-                    ),
-                    decoration: InputDecoration(
-                      hintText: widget.placeholder,
-                      hintStyle: TextStyle(
-                        color: InggoColors.text3,
-                        fontWeight: FontWeight.w400,
-                        fontFamily: InggoTextStyles.fontFamily,
-                      ),
-                      prefixIcon: null,
-                      suffixIcon: widget.suffix ??
-                          (widget.showToggleVisibility
-                              ? GestureDetector(
-                                  onTap: () =>
-                                      setState(() => _obscured = !_obscured),
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(right: 14),
-                                    child: Icon(
-                                      _obscured
-                                          ? Icons.visibility_off
-                                          : Icons.visibility,
-                                      color: InggoColors.text3,
-                                      size: 20,
-                                    ),
-                                  ),
-                                )
-                              : null),
-                      border: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      errorBorder: InputBorder.none,
-                      focusedErrorBorder: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal:
-                            widget.prefixIcon != null || widget.prefix != null
-                                ? 0
-                                : 14,
-                        vertical: 14,
-                      ),
-                      counterText: '',
-                    ),
-                  ),
-                ),
-              ],
-            ),
+        TextFormField(
+          controller: controller,
+          validator: validator,
+          onTap: onTap,
+          onChanged: onChanged,
+          keyboardType: keyboardType,
+          obscureText: obscureText,
+          readOnly: readOnly,
+          enabled: enabled,
+          maxLines: maxLines,
+          style: AppTextStyles.bodyLarge,
+          decoration: InputDecoration(
+            hintText: hint,
+            prefixIcon: prefixIcon != null
+                ? Icon(prefixIcon, color: AppColors.textSecondary, size: 22.w)
+                : null,
+            suffixIcon: suffixIcon != null
+                ? GestureDetector(
+                    onTap: onSuffixTap,
+                    child: Icon(suffixIcon, color: AppColors.textSecondary, size: 22.w),
+                  )
+                : null,
+            prefixText: prefixText,
+            prefixStyle:
+                AppTextStyles.bodyLarge.copyWith(color: AppColors.textSecondary),
           ),
         ),
-        if (hasError) ...[
-          Padding(
-            padding: const EdgeInsets.only(left: 4, top: 6),
-            child: Row(
-              children: [
-                const Icon(
-                  Icons.warning_amber_rounded,
-                  color: InggoColors.error,
-                  size: 14,
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  widget.errorText!,
-                  style: TextStyle(
-                    color: InggoColors.error,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: InggoTextStyles.fontFamily,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-        if (widget.hintText != null && !hasError) ...[
-          Padding(
-            padding: const EdgeInsets.only(left: 4, top: 6),
-            child: Text(
-              widget.hintText!,
-              style: TextStyle(
-                color: InggoColors.text3,
-                fontSize: 12,
-                fontFamily: InggoTextStyles.fontFamily,
-              ),
-            ),
-          ),
-        ],
       ],
     );
   }
@@ -223,57 +82,72 @@ class _InggoInputState extends State<InggoInput> {
 
 class InggoPhoneInput extends StatelessWidget {
   final TextEditingController? controller;
-  final String? errorText;
+  final String? Function(String?)? validator;
   final ValueChanged<String>? onChanged;
-  final String countryCode;
-  final String countryFlag;
 
   const InggoPhoneInput({
     super.key,
     this.controller,
-    this.errorText,
+    this.validator,
     this.onChanged,
-    this.countryCode = '+253',
-    this.countryFlag = '🇩🇯',
   });
 
   @override
   Widget build(BuildContext context) {
     return InggoInput(
-      label: 'Téléphone',
-      placeholder: '77 XX XX XX',
+      label: 'Numéro de téléphone',
+      hint: '77 00 00 00',
       controller: controller,
-      errorText: errorText,
+      validator: validator,
       onChanged: onChanged,
       keyboardType: TextInputType.phone,
-      maxLength: 8,
-      prefix: Container(
-        padding: const EdgeInsets.only(left: 12),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              countryFlag,
-              style: const TextStyle(fontSize: 18),
-            ),
-            const SizedBox(width: 8),
-            Text(
-              countryCode,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-                color: InggoColors.text1,
-              ),
-            ),
-            Container(
-              width: 1,
-              height: 20,
-              color: InggoColors.border1,
-              margin: const EdgeInsets.symmetric(horizontal: 12),
-            ),
-          ],
-        ),
+      prefixIcon: Icons.phone_android,
+      prefixText: '+253 ',
+    );
+  }
+}
+
+class InggoOtpInput extends StatelessWidget {
+  final int length;
+  final ValueChanged<String>? onCompleted;
+  final ValueChanged<String>? onChanged;
+
+  const InggoOtpInput({
+    super.key,
+    this.length = 6,
+    this.onCompleted,
+    this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final defaultPinTheme = PinTheme(
+      width: 48.w,
+      height: 56.h,
+      textStyle: AppTextStyles.headline3,
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        border: Border.all(color: AppColors.border),
       ),
+    );
+
+    final focusedPinTheme = defaultPinTheme.copyWith(
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        border: Border.all(color: AppColors.primary, width: 2),
+      ),
+    );
+
+    return Pinput(
+      length: length,
+      defaultPinTheme: defaultPinTheme,
+      focusedPinTheme: focusedPinTheme,
+      onCompleted: onCompleted,
+      onChanged: onChanged,
+      hapticFeedbackType: HapticFeedbackType.lightImpact,
+      autofocus: true,
     );
   }
 }

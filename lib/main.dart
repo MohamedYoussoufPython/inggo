@@ -1,25 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'core/router.dart';
-import 'core/supabase.dart';
-import 'theme/inggo_theme.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'app.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await SupabaseConfig.initialize();
-  runApp(const ProviderScope(child: MyApp()));
-}
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  // Load environment
+  await dotenv.load(fileName: '.env');
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'Inggo',
-      debugShowCheckedModeBanner: false,
-      theme: InggoTheme.theme,
-      routerConfig: router,
-    );
-  }
+  // Init Supabase
+  await Supabase.initialize(
+    url: dotenv.env['SUPABASE_URL'] ?? '',
+    anonKey: dotenv.env['SUPABASE_ANON_KEY'] ?? '',
+  );
+
+  // System UI
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+    ),
+  );
+
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
+  runApp(const ProviderScope(child: InggoApp()));
 }

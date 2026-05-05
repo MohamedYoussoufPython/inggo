@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inggo Admin - Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="sidebar-logo">
+            <span class="logo-icon">🏍️</span>
+            <span class="logo-text">INGGO</span>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="active"><a href="/"><span class="icon">📊</span> Dashboard</a></li>
+            <li><a href="/drivers"><span class="icon">🏍️</span> Chauffeurs</a></li>
+            <li><a href="/rides"><span class="icon">🚗</span> Courses</a></li>
+            <li><a href="/clients"><span class="icon">👥</span> Clients</a></li>
+            <li><a href="/landmarks"><span class="icon">📍</span> Lieux</a></li>
+            <li><a href="/notifications/send"><span class="icon">🔔</span> Notifications</a></li>
+            <li><a href="/logout"><span class="icon">🚪</span> Déconnexion</a></li>
+        </ul>
+    </nav>
+    <main class="content">
+        <header class="top-bar">
+            <h1>Dashboard</h1>
+            <span>{{ now.strftime('%d/%m/%Y') if now else '' }}</span>
+        </header>
+        {% if error %}
+        <div class="alert alert-error">Erreur: {{ error }}</div>
+        {% endif %}
+        <div class="stats-grid">
+            <div class="stat-card stat-yellow">
+                <div class="stat-icon">🚗</div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ rides_today }}</span>
+                    <span class="stat-label">Courses aujourd'hui</span>
+                </div>
+            </div>
+            <div class="stat-card stat-green">
+                <div class="stat-icon">🏍️</div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ drivers_online }}</span>
+                    <span class="stat-label">Chauffeurs en ligne</span>
+                </div>
+            </div>
+            <div class="stat-card stat-orange">
+                <div class="stat-icon">⏳</div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ drivers_pending }}</span>
+                    <span class="stat-label">En attente vérification</span>
+                </div>
+            </div>
+            <div class="stat-card stat-blue">
+                <div class="stat-icon">👥</div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ total_clients }}</span>
+                    <span class="stat-label">Clients</span>
+                </div>
+            </div>
+            <div class="stat-card stat-purple">
+                <div class="stat-icon">💰</div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ revenue_today }} FDJ</span>
+                    <span class="stat-label">Revenus aujourd'hui</span>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <h2>Courses récentes</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Client</th>
+                        <th>Chauffeur</th>
+                        <th>Prix</th>
+                        <th>Statut</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ride in recent_rides %}
+                    <tr>
+                        <td>{{ ride.id[:8] }}...</td>
+                        <td>{{ ride.client.full_name if ride.client else '-' }}</td>
+                        <td>{{ ride.driver.full_name if ride.driver else 'En attente' }}</td>
+                        <td>{{ ride.price }} FDJ</td>
+                        <td><span class="badge badge-{{ ride.status }}">{{ ride.status }}</span></td>
+                        <td>{{ ride.created_at[:16] if ride.created_at else '-' }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% if not recent_rides %}
+                    <tr><td colspan="6" class="empty">Aucune course</td></tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+</html>

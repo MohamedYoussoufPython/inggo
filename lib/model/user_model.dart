@@ -1,35 +1,25 @@
-class UserModel {
-  final String name;
-  final String phone;
-  final String email;
-  final String gender;
-  final String country;
-  final String avatarUrl;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  const UserModel({
-    required this.name,
-    required this.phone,
-    required this.email,
-    required this.gender,
-    required this.country,
-    required this.avatarUrl,
-  });
+part 'user_model.freezed.dart';
+part 'user_model.g.dart';
 
-  UserModel copyWith({
-    String? name,
-    String? phone,
+enum UserRole { client, driver, admin }
+
+@freezed
+class UserModel with _$UserModel {
+  const factory UserModel({
+    required String id,
+    required String fullName,
+    required String phone,
     String? email,
-    String? gender,
-    String? country,
+    @Default(UserRole.client) UserRole role,
     String? avatarUrl,
-  }) {
-    return UserModel(
-      name: name ?? this.name,
-      phone: phone ?? this.phone,
-      email: email ?? this.email,
-      gender: gender ?? this.gender,
-      country: country ?? this.country,
-      avatarUrl: avatarUrl ?? this.avatarUrl,
-    );
-  }
+    @Default('fr') String language,
+    @Default(false) bool isOnline,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) = _UserModel;
+
+  factory UserModel.fromJson(Map<String, dynamic> json) =>
+      _$UserModelFromJson(json);
 }

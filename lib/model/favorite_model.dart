@@ -1,19 +1,20 @@
-import 'package:flutter/material.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class FavoriteModel {
-  final int id;
-  final String name;
-  final String address;
-  final IconData icon;
-  final Color bgColor;
-  final Color iconColor;
+part 'favorite_model.freezed.dart';
+part 'favorite_model.g.dart';
 
-  const FavoriteModel({
-    required this.id,
-    required this.name,
-    required this.address,
-    this.icon = Icons.place,
-    this.bgColor = const Color(0xFFF5F7FA),
-    this.iconColor = const Color(0xFF121212),
-  });
+@freezed
+class FavoriteModel with _$FavoriteModel {
+  const factory FavoriteModel({
+    required String id,
+    required String userId,
+    required String label,
+    required String address,
+    required double lat,
+    required double lng,
+    DateTime? createdAt,
+  }) = _FavoriteModel;
+
+  factory FavoriteModel.fromJson(Map<String, dynamic> json) =>
+      _$FavoriteModelFromJson(json);
 }

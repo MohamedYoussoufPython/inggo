@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inggo Admin - Courses</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="sidebar-logo"><span class="logo-icon">🏍️</span><span class="logo-text">INGGO</span></div>
+        <ul class="sidebar-menu">
+            <li><a href="/"><span class="icon">📊</span> Dashboard</a></li>
+            <li><a href="/drivers"><span class="icon">🏍️</span> Chauffeurs</a></li>
+            <li class="active"><a href="/rides"><span class="icon">🚗</span> Courses</a></li>
+            <li><a href="/clients"><span class="icon">👥</span> Clients</a></li>
+            <li><a href="/landmarks"><span class="icon">📍</span> Lieux</a></li>
+            <li><a href="/notifications/send"><span class="icon">🔔</span> Notifications</a></li>
+            <li><a href="/logout"><span class="icon">🚪</span> Déconnexion</a></li>
+        </ul>
+    </nav>
+    <main class="content">
+        <header class="top-bar">
+            <h1>Gestion des Courses</h1>
+            <div class="filters">
+                <a href="/rides?status=all" class="btn btn-sm {% if filter_status == 'all' %}btn-primary{% else %}btn-outline{% endif %}">Toutes</a>
+                <a href="/rides?status=searching" class="btn btn-sm {% if filter_status == 'searching' %}btn-primary{% else %}btn-outline{% endif %}">Recherche</a>
+                <a href="/rides?status=in_progress" class="btn btn-sm {% if filter_status == 'in_progress' %}btn-primary{% else %}btn-outline{% endif %}">En cours</a>
+                <a href="/rides?status=completed" class="btn btn-sm {% if filter_status == 'completed' %}btn-primary{% else %}btn-outline{% endif %}">Terminées</a>
+                <a href="/rides?status=cancelled" class="btn btn-sm {% if filter_status == 'cancelled' %}btn-primary{% else %}btn-outline{% endif %}">Annulées</a>
+            </div>
+        </header>
+        <div class="card">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Client</th>
+                        <th>Chauffeur</th>
+                        <th>Départ</th>
+                        <th>Arrivée</th>
+                        <th>Prix</th>
+                        <th>Statut</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ride in rides %}
+                    <tr>
+                        <td>{{ ride.id[:8] }}...</td>
+                        <td>{{ ride.client.full_name if ride.client else '-' }}</td>
+                        <td>{{ ride.driver.full_name if ride.driver else '—' }}</td>
+                        <td>{{ ride.pickup_address[:25] }}...</td>
+                        <td>{{ ride.dropoff_address[:25] }}...</td>
+                        <td>{{ ride.price }} FDJ</td>
+                        <td><span class="badge badge-{{ ride.status }}">{{ ride.status }}</span></td>
+                        <td>{{ ride.created_at[:16] if ride.created_at else '-' }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% if not rides %}
+                    <tr><td colspan="8" class="empty">Aucune course</td></tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+</html>

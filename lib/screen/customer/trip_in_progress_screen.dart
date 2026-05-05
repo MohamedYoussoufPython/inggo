@@ -1,0 +1,135 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/constants/constants.dart';
+import '../../core/utils/formatters.dart';
+import '../../widget/widgets.dart';
+import '../../provider/ride_provider.dart';
+
+class TripInProgressScreen extends ConsumerWidget {
+  const TripInProgressScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ride = ref.watch(rideProvider);
+
+    ref.listen<RideState>(rideProvider, (prev, next) {
+      if (next.currentRide?.status.name == 'completed') {
+        context.go('/client/end-trip');
+      }
+      if (next.currentRide?.status.name == 'cancelled') {
+        context.go('/client/home');
+      }
+    });
+
+    final currentRide = ride.currentRide;
+
+    return Scaffold(
+      body: Stack(
+        children: [
+          MapWidget(
+            pickupLat: currentRide?.pickupLat,
+            pickupLng: currentRide?.pickupLng,
+            dropoffLat: currentRide?.dropoffLat,
+            dropoffLng: currentRide?.dropoffLng,
+          ),
+          // Top info
+          SafeArea(
+            child: Padding(
+              padding: EdgeInsets.all(16.w),
+              child: Container(
+                padding: EdgeInsets.all(12.w),
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.motorcycle,
+                        color: AppColors.secondary, size: 24.w),
+                    SizedBox(width: 12.w),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('Course en cours',
+                              style: AppTextStyles.labelMedium.copyWith(
+                                  color: AppColors.secondary)),
+                          Text(
+                            Formatters.formatPrice(
+                                currentRide?.price ?? 250),
+                            style: AppTextStyles.headline4.copyWith(
+                                color: AppColors.secondary),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          // Bottom driver info
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Container(
+              padding: EdgeInsets.all(AppSpacing.screenPadding),
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(AppSpacing.radiusXl)),
+                boxShadow: [AppShadows.lg],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('Votre chauffeur arrive',
+                      style: AppTextStyles.labelLarge),
+                  SizedBox(height: 12.h),
+                  const DriverCard(
+                    name: 'Chauffeur',
+                    rating: 5.0,
+                    totalRides: 0,
+                    plateNumber: 'DJ 0000',
+                  ),
+                  SizedBox(height: 12.h),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: InggoButton(
+                          label: 'Appeler',
+                          type: InggoButtonType.outline,
+                          size: InggoButtonSize.medium,
+                          icon: Icons.phone,
+                          onPressed: () {},
+                        ),
+                      ),
+                      SizedBox(width: 12.w),
+                      Expanded(
+                        child: InggoButton(
+                          label: 'Annuler',
+                          type: InggoButtonType.danger,
+                          size: InggoButtonSize.medium,
+                          onPressed: () {
+                            ref
+                                .read(rideProvider.notifier)
+                                .cancelRide('Annulée par le client');
+                            context.go('/client/home');
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

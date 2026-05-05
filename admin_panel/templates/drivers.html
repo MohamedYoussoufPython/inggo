@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inggo Admin - Chauffeurs</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="sidebar-logo"><span class="logo-icon">🏍️</span><span class="logo-text">INGGO</span></div>
+        <ul class="sidebar-menu">
+            <li><a href="/"><span class="icon">📊</span> Dashboard</a></li>
+            <li class="active"><a href="/drivers"><span class="icon">🏍️</span> Chauffeurs</a></li>
+            <li><a href="/rides"><span class="icon">🚗</span> Courses</a></li>
+            <li><a href="/clients"><span class="icon">👥</span> Clients</a></li>
+            <li><a href="/landmarks"><span class="icon">📍</span> Lieux</a></li>
+            <li><a href="/notifications/send"><span class="icon">🔔</span> Notifications</a></li>
+            <li><a href="/logout"><span class="icon">🚪</span> Déconnexion</a></li>
+        </ul>
+    </nav>
+    <main class="content">
+        <header class="top-bar">
+            <h1>Gestion des Chauffeurs</h1>
+            <div class="filters">
+                <a href="/drivers?status=all" class="btn btn-sm {% if filter_status == 'all' %}btn-primary{% else %}btn-outline{% endif %}">Tous</a>
+                <a href="/drivers?status=pending" class="btn btn-sm {% if filter_status == 'pending' %}btn-primary{% else %}btn-outline{% endif %}">En attente</a>
+                <a href="/drivers?status=verified" class="btn btn-sm {% if filter_status == 'verified' %}btn-primary{% else %}btn-outline{% endif %}">Vérifiés</a>
+            </div>
+        </header>
+        {% if error %}<div class="alert alert-error">{{ error }}</div>{% endif %}
+        <div class="card">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Téléphone</th>
+                        <th>Plaque</th>
+                        <th>Courses</th>
+                        <th>Note</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for driver in drivers %}
+                    <tr>
+                        <td>{{ driver.profile.full_name if driver.profile else '-' }}</td>
+                        <td>{{ driver.profile.phone if driver.profile else '-' }}</td>
+                        <td>{{ driver.plate_number }}</td>
+                        <td>{{ driver.total_rides }}</td>
+                        <td>{{ driver.rating }}/5</td>
+                        <td>
+                            {% if driver.is_verified %}
+                            <span class="badge badge-completed">Vérifié</span>
+                            {% else %}
+                            <span class="badge badge-pending">En attente</span>
+                            {% endif %}
+                        </td>
+                        <td class="actions">
+                            {% if not driver.is_verified %}
+                            <form method="POST" action="/drivers/{{ driver.id }}/verify" style="display:inline">
+                                <button type="submit" class="btn btn-sm btn-success">✅ Vérifier</button>
+                            </form>
+                            {% endif %}
+                            {% if driver.is_verified %}
+                            <form method="POST" action="/drivers/{{ driver.id }}/ban" style="display:inline">
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Suspendre ce chauffeur ?')">🚫 Suspendre</button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% if not drivers %}
+                    <tr><td colspan="7" class="empty">Aucun chauffeur</td></tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+</html>

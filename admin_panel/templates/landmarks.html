@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inggo Admin - Lieux</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="sidebar-logo"><span class="logo-icon">🏍️</span><span class="logo-text">INGGO</span></div>
+        <ul class="sidebar-menu">
+            <li><a href="/"><span class="icon">📊</span> Dashboard</a></li>
+            <li><a href="/drivers"><span class="icon">🏍️</span> Chauffeurs</a></li>
+            <li><a href="/rides"><span class="icon">🚗</span> Courses</a></li>
+            <li><a href="/clients"><span class="icon">👥</span> Clients</a></li>
+            <li class="active"><a href="/landmarks"><span class="icon">📍</span> Lieux</a></li>
+            <li><a href="/notifications/send"><span class="icon">🔔</span> Notifications</a></li>
+            <li><a href="/logout"><span class="icon">🚪</span> Déconnexion</a></li>
+        </ul>
+    </nav>
+    <main class="content">
+        <header class="top-bar"><h1>Gestion des Lieux</h1></header>
+        <div class="card">
+            <h2>Ajouter un lieu</h2>
+            <form method="POST" action="/landmarks/add" class="form-inline">
+                <input type="text" name="name_fr" placeholder="Nom (FR)" required>
+                <input type="text" name="name_en" placeholder="Nom (EN)" required>
+                <select name="category">
+                    <option value="quartier">Quartier</option>
+                    <option value="marche">Marché</option>
+                    <option value="mosquee">Mosquée</option>
+                    <option value="hopital">Hôpital</option>
+                    <option value="gare">Gare</option>
+                    <option value="ecole">École</option>
+                    <option value="hotel">Hôtel</option>
+                    <option value="restaurant">Restaurant</option>
+                    <option value="banque">Banque</option>
+                    <option value="autre">Autre</option>
+                </select>
+                <input type="number" step="0.0001" name="lat" placeholder="Latitude" required>
+                <input type="number" step="0.0001" name="lng" placeholder="Longitude" required>
+                <label><input type="checkbox" name="is_popular"> Populaire</label>
+                <button type="submit" class="btn btn-primary">Ajouter</button>
+            </form>
+        </div>
+        <div class="card">
+            <table class="table">
+                <thead>
+                    <tr><th>Nom (FR)</th><th>Nom (EN)</th><th>Catégorie</th><th>Lat</th><th>Lng</th><th>Populaire</th><th>Actions</th></tr>
+                </thead>
+                <tbody>
+                    {% for lm in landmarks %}
+                    <tr>
+                        <td>{{ lm.name_fr }}</td>
+                        <td>{{ lm.name_en }}</td>
+                        <td>{{ lm.category }}</td>
+                        <td>{{ lm.lat }}</td>
+                        <td>{{ lm.lng }}</td>
+                        <td>{{ '⭐' if lm.is_popular else '' }}</td>
+                        <td>
+                            <form method="POST" action="/landmarks/{{ lm.id }}/delete" style="display:inline">
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Supprimer ce lieu ?')">🗑️</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,112 +1,179 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'user_provider.dart';
+import '../core/services/supabase_service.dart';
+import '../core/services/location_service.dart';
+import '../core/constants/app_constants.dart';
+import '../model/ride_model.dart';
 
-/// Manages ride lifecycle: creation, cancellation, review submission.
-class RideNotifier extends StateNotifier<AsyncValue<Map<String, dynamic>?>> {
-  final SupabaseClient _supabase;
+class RideState {
+  final bool isLoading;
+  final RideModel? currentRide;
+  final List<RideModel> rideHistory;
+  final String? error;
+  final String selectedPaymentMethod;
+  final String? pickupAddress;
+  final double? pickupLat;
+  final double? pickupLng;
+  final String? dropoffAddress;
+  final double? dropoffLat;
+  final double? dropoffLng;
 
-  RideNotifier(this._supabase) : super(const AsyncValue.data(null));
+  const RideState({
+    this.isLoading = false,
+    this.currentRide,
+    this.rideHistory = const [],
+    this.error,
+    this.selectedPaymentMethod = AppConstants.paymentCash,
+    this.pickupAddress,
+    this.pickupLat,
+    this.pickupLng,
+    this.dropoffAddress,
+    this.dropoffLat,
+    this.dropoffLng,
+  });
 
-  /// Create a new ride and return the ride ID
-  Future<int?> createRide({
-    required String pickupAddress,
-    required String dropoffAddress,
+  RideState copyWith({
+    bool? isLoading,
+    RideModel? currentRide,
+    List<RideModel>? rideHistory,
+    String? error,
+    String? selectedPaymentMethod,
+    String? pickupAddress,
     double? pickupLat,
     double? pickupLng,
+    String? dropoffAddress,
     double? dropoffLat,
     double? dropoffLng,
-    int price = 250,
-    String paymentMethod = 'cash',
-  }) async {
-    state = const AsyncValue.loading();
-    try {
-      final user = _supabase.auth.currentUser;
-      if (user == null) throw Exception('Utilisateur non connecté');
-
-      final now = DateTime.now();
-      final response = await _supabase.from('rides').insert({
-        'user_id': user.id,
-        'pickup_address': pickupAddress,
-        'dropoff_address': dropoffAddress,
-        'pickup_lat': pickupLat,
-        'pickup_lng': pickupLng,
-        'dropoff_lat': dropoffLat,
-        'dropoff_lng': dropoffLng,
-        'price': price,
-        'fare': price,
-        'status': 'searching',
-        'payment_method': paymentMethod,
-        'date': '${now.day}/${now.month}/${now.year}',
-        'timestamp': now.millisecondsSinceEpoch,
-      }).select().single();
-
-      state = AsyncValue.data(response);
-      return response['id'] as int;
-    } catch (e, st) {
-      state = AsyncValue.error(e, st);
-      return null;
-    }
-  }
-
-  /// Cancel the current ride
-  Future<void> cancelRide(int rideId) async {
-    try {
-      await _supabase.from('rides').update({
-        'status': 'cancelled',
-        'updated_at': DateTime.now().toIso8601String(),
-      }).eq('id', rideId);
-      state = const AsyncValue.data(null);
-    } catch (e, st) {
-      state = AsyncValue.error(e, st);
-    }
-  }
-
-  /// Submit a review after a completed ride
-  Future<void> submitReview({
-    required int rideId,
-    required String driverUserId,
-    required int rating,
-    String? comment,
-  }) async {
-    try {
-      final user = _supabase.auth.currentUser;
-      if (user == null) return;
-
-      await _supabase.from('reviews').insert({
-        'ride_id': rideId,
-        'reviewer_id': user.id,
-        'reviewed_id': driverUserId,
-        'rating': rating.toDouble(),
-        'comment': comment,
-      });
-
-      // Also update ride rating
-      await _supabase.from('rides').update({
-        'rating': rating.toDouble(),
-      }).eq('id', rideId);
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  /// Listen for ride status changes (polling-based for simplicity)
-  Stream<Map<String, dynamic>?> watchRide(int rideId) {
-    return _supabase
-        .from('rides')
-        .stream(primaryKey: ['id'])
-        .eq('id', rideId)
-        .map((list) => list.isNotEmpty ? list.first : null);
-  }
-
-  /// Clear active ride state
-  void clearRide() {
-    state = const AsyncValue.data(null);
+  }) {
+    return RideState(
+      isLoading: isLoading ?? this.isLoading,
+      currentRide: currentRide ?? this.currentRide,
+      rideHistory: rideHistory ?? this.rideHistory,
+      error: error,
+      selectedPaymentMethod:
+          selectedPaymentMethod ?? this.selectedPaymentMethod,
+      pickupAddress: pickupAddress ?? this.pickupAddress,
+      pickupLat: pickupLat ?? this.pickupLat,
+      pickupLng: pickupLng ?? this.pickupLng,
+      dropoffAddress: dropoffAddress ?? this.dropoffAddress,
+      dropoffLat: dropoffLat ?? this.dropoffLat,
+      dropoffLng: dropoffLng ?? this.dropoffLng,
+    );
   }
 }
 
-final rideProvider =
-    StateNotifierProvider<RideNotifier, AsyncValue<Map<String, dynamic>?>>(
-        (ref) {
-  return RideNotifier(ref.watch(supabaseProvider));
+class RideNotifier extends StateNotifier<RideState> {
+  RideNotifier() : super(const RideState());
+
+  void setPickup(String address, double lat, double lng) {
+    state = state.copyWith(
+      pickupAddress: address,
+      pickupLat: lat,
+      pickupLng: lng,
+    );
+  }
+
+  void setDropoff(String address, double lat, double lng) {
+    state = state.copyWith(
+      dropoffAddress: address,
+      dropoffLat: lat,
+      dropoffLng: lng,
+    );
+  }
+
+  void setPaymentMethod(String method) {
+    state = state.copyWith(selectedPaymentMethod: method);
+  }
+
+  Future<void> createRide() async {
+    state = state.copyWith(isLoading: true, error: null);
+    try {
+      final userId = SupabaseService.instance.currentUserId;
+      if (userId == null) throw Exception('Non authentifié');
+
+      final position = await LocationService.instance.getCurrentPosition();
+      final pickupLat = state.pickupLat ?? position?.latitude ?? AppConstants.defaultLat;
+      final pickupLng = state.pickupLng ?? position?.longitude ?? AppConstants.defaultLng;
+
+      final data = await SupabaseService.instance.insert('rides', {
+        'client_id': userId,
+        'pickup_address': state.pickupAddress ?? 'Position actuelle',
+        'pickup_lat': pickupLat,
+        'pickup_lng': pickupLng,
+        'dropoff_address': state.dropoffAddress ?? '',
+        'dropoff_lat': state.dropoffLat ?? 0.0,
+        'dropoff_lng': state.dropoffLng ?? 0.0,
+        'price': AppConstants.ridePrice,
+        'commission': AppConstants.rideCommission,
+        'payment_method': state.selectedPaymentMethod,
+        'status': 'searching',
+      });
+
+      final ride = RideModel.fromJson(data);
+      state = state.copyWith(isLoading: false, currentRide: ride);
+    } catch (e) {
+      state = state.copyWith(isLoading: false, error: e.toString());
+    }
+  }
+
+  Future<void> cancelRide(String reason) async {
+    if (state.currentRide == null) return;
+    try {
+      await SupabaseService.instance.update(
+        'rides',
+        state.currentRide!.id,
+        {'status': 'cancelled', 'cancel_reason': reason},
+      );
+      state = state.copyWith(
+        currentRide: state.currentRide!.copyWith(
+          status: RideStatus.cancelled,
+          cancelReason: reason,
+        ),
+      );
+    } catch (e) {
+      state = state.copyWith(error: e.toString());
+    }
+  }
+
+  Future<void> rateDriver(double rating, {String? review}) async {
+    if (state.currentRide == null) return;
+    try {
+      await SupabaseService.instance.update(
+        'rides',
+        state.currentRide!.id,
+        {'rating': rating, 'review': review},
+      );
+      state = state.copyWith(
+        currentRide: state.currentRide!.copyWith(rating: rating, review: review),
+      );
+    } catch (e) {
+      state = state.copyWith(error: e.toString());
+    }
+  }
+
+  Future<void> loadHistory() async {
+    state = state.copyWith(isLoading: true);
+    try {
+      final userId = SupabaseService.instance.currentUserId;
+      if (userId == null) return;
+
+      final data = await SupabaseService.instance.getAll(
+        'rides',
+        query: {'client_id': userId},
+        orderBy: 'created_at',
+        ascending: false,
+      );
+      final rides = data.map((e) => RideModel.fromJson(e)).toList();
+      state = state.copyWith(isLoading: false, rideHistory: rides);
+    } catch (e) {
+      state = state.copyWith(isLoading: false, error: e.toString());
+    }
+  }
+
+  void reset() {
+    state = const RideState();
+  }
+}
+
+final rideProvider = StateNotifierProvider<RideNotifier, RideState>((ref) {
+  return RideNotifier();
 });

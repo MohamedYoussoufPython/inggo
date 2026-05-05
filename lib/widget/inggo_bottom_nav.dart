@@ -1,125 +1,102 @@
 import 'package:flutter/material.dart';
-import '../theme/inggo_theme.dart';
-
-class InggoBottomNavItem {
-  final IconData icon;
-  final IconData? activeIcon;
-  final String label;
-  final String? badge;
-
-  const InggoBottomNavItem({
-    required this.icon,
-    this.activeIcon,
-    required this.label,
-    this.badge,
-  });
-}
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import '../core/constants/constants.dart';
+import '../core/constants/app_shadows.dart';
 
 class InggoBottomNav extends StatelessWidget {
   final int currentIndex;
-  final List<InggoBottomNavItem> items;
-  final ValueChanged<int> onTap;
+  final bool isDriver;
 
   const InggoBottomNav({
     super.key,
     required this.currentIndex,
-    required this.items,
+    this.isDriver = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final items = isDriver ? _driverItems : _clientItems;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        boxShadow: [AppShadows.bottomNav],
+        border: Border(top: BorderSide(color: AppColors.border, width: 0.5)),
+      ),
+      child: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: items.asMap().entries.map((entry) {
+              final idx = entry.key;
+              final item = entry.value;
+              final selected = idx == currentIndex;
+              return _NavItem(
+                icon: item['icon'] as IconData,
+                label: item['label'] as String,
+                isSelected: selected,
+                onTap: () => context.go(item['route'] as String),
+              );
+            }).toList(),
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<Map<String, dynamic>> get _clientItems => [
+        {'icon': Icons.home, 'label': 'Accueil', 'route': '/client/home'},
+        {'icon': Icons.history, 'label': 'Historique', 'route': '/client/history'},
+        {'icon': Icons.favorite, 'label': 'Favoris', 'route': '/client/favorites'},
+        {'icon': Icons.person, 'label': 'Profil', 'route': '/client/profile'},
+      ];
+
+  List<Map<String, dynamic>> get _driverItems => [
+        {'icon': Icons.home, 'label': 'Accueil', 'route': '/driver/home'},
+        {'icon': Icons.account_balance_wallet, 'label': 'Revenus', 'route': '/driver/earnings'},
+        {'icon': Icons.description, 'label': 'Docs', 'route': '/driver/documents'},
+        {'icon': Icons.person, 'label': 'Profil', 'route': '/driver/profile'},
+      ];
+}
+
+class _NavItem extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _NavItem({
+    required this.icon,
+    required this.label,
+    required this.isSelected,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: InggoSpacing.sm,
-        vertical: 10,
-      ),
-      decoration: BoxDecoration(
-        color: InggoColors.surface,
-        borderRadius: BorderRadius.circular(InggoSpacing.lg),
-        border: Border.all(color: InggoColors.border1),
-        boxShadow: InggoShadows.level3,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: List.generate(items.length, (index) {
-          final item = items[index];
-          final isActive = index == currentIndex;
-
-          return Expanded(
-            child: InkWell(
-              onTap: () => onTap(index),
-              borderRadius: BorderRadius.circular(InggoSpacing.sm),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: InggoSpacing.sm,
-                  vertical: 6,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        Icon(
-                          isActive ? (item.activeIcon ?? item.icon) : item.icon,
-                          size: 22,
-                          color:
-                              isActive ? InggoColors.text1 : InggoColors.text3,
-                        ),
-                        if (item.badge != null)
-                          Positioned(
-                            right: -6,
-                            top: -4,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 4,
-                                vertical: 2,
-                              ),
-                              decoration: BoxDecoration(
-                                color: InggoColors.error,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Text(
-                                item.badge!,
-                                style: const TextStyle(
-                                  fontSize: 9,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: 3),
-                    Text(
-                      item.label,
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight:
-                            isActive ? FontWeight.w700 : FontWeight.w500,
-                        color: isActive ? InggoColors.text1 : InggoColors.text3,
-                        fontFamily: InggoTextStyles.fontFamily,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 150),
-                      width: 20,
-                      height: 3,
-                      decoration: BoxDecoration(
-                        color:
-                            isActive ? InggoColors.primary : Colors.transparent,
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                  ],
-                ),
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon,
+                color: isSelected ? AppColors.primary : AppColors.textHint,
+                size: 24.w),
+            SizedBox(height: 2.h),
+            Text(
+              label,
+              style: (isSelected ? AppTextStyles.labelSmall : AppTextStyles.caption)
+                  .copyWith(
+                color: isSelected ? AppColors.primary : AppColors.textHint,
               ),
             ),
-          );
-        }),
+          ],
+        ),
       ),
     );
   }
