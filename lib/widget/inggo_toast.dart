@@ -75,11 +75,11 @@ class InggoToast extends StatelessWidget {
         color: _backgroundColor,
         borderRadius: BorderRadius.circular(InggoSpacing.lg),
         border: type == InggoToastType.warning
-            ? const Border.all(color: InggoColors.primaryBorder)
+            ? Border.all(color: InggoColors.primaryBorder)
             : (type == InggoToastType.success
-                ? const Border.all(color: Color(0xFFbbf7d0))
+                ? Border.all(color: Color(0xFFbbf7d0))
                 : (type == InggoToastType.error
-                    ? const Border.all(color: Color(0xFFfecaca))
+                    ? Border.all(color: Color(0xFFfecaca))
                     : null)),
       ),
       child: Row(

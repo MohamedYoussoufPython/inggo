@@ -28,9 +28,11 @@ class ReviewsScreen extends ConsumerWidget {
       final diff = now.difference(d).inDays;
       if (diff == 0 && now.day == d.day) {
         todayCount++;
-      } else if (diff == 1 || (diff == 0 && now.day != d.day))
+      } else if (diff == 1 || (diff == 0 && now.day != d.day)) {
         yesterdayCount++;
-      else if (diff == 2) beforeCount++;
+      } else if (diff == 2) {
+        beforeCount++;
+      }
     }
     return Scaffold(
       backgroundColor: Colors.white,
@@ -56,7 +58,7 @@ class ReviewsScreen extends ConsumerWidget {
                   padding: const EdgeInsets.symmetric(vertical: 24),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    border: const Border.all(color: Color(0xFFF5F5F5)),
+                    border: Border.all(color: Color(0xFFF5F5F5)),
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
@@ -109,7 +111,7 @@ class ReviewsScreen extends ConsumerWidget {
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    border: const Border.all(color: Color(0xFFF5F5F5)),
+                    border: Border.all(color: Color(0xFFF5F5F5)),
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
@@ -189,7 +191,7 @@ class ReviewsScreen extends ConsumerWidget {
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: Colors.white,
-          border: const Border.all(color: Color(0xFFF5F5F5)),
+          border: Border.all(color: Color(0xFFF5F5F5)),
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(

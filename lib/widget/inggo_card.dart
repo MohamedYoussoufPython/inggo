@@ -120,7 +120,7 @@ class InggoValueCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: InggoColors.surface,
         borderRadius: BorderRadius.circular(InggoSpacing.md),
-        border: const Border.all(color: InggoColors.border1),
+        border: Border.all(color: InggoColors.border1),
       ),
       child: Column(
         children: [

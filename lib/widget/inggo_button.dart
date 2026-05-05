@@ -138,13 +138,13 @@ class _InggoButtonState extends State<InggoButton>
       case InggoButtonVariant.primary:
         return null;
       case InggoButtonVariant.primaryLight:
-        return const Border.all(color: InggoColors.primaryBorder, width: 1.5);
+        return Border.all(color: InggoColors.primaryBorder, width: 1.5);
       case InggoButtonVariant.outline:
-        return const Border.all(color: InggoColors.border2, width: 1.5);
+        return Border.all(color: InggoColors.border2, width: 1.5);
       case InggoButtonVariant.ghost:
         return null;
       case InggoButtonVariant.danger:
-        return const Border.all(color: Color(0xFFfecaca), width: 1);
+        return Border.all(color: Color(0xFFfecaca), width: 1);
     }
   }
 
@@ -304,7 +304,7 @@ class _InggoIconButtonState extends State<InggoIconButton>
                 : (widget.backgroundColor ?? InggoColors.primaryLight),
             borderRadius: BorderRadius.circular(InggoSpacing.sm),
             border: widget.isOutlined
-                ? const Border.all(color: InggoColors.primaryBorder, width: 1.5)
+                ? Border.all(color: InggoColors.primaryBorder, width: 1.5)
                 : null,
           ),
           child: Center(

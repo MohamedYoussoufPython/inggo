@@ -75,7 +75,7 @@ class _PaymentMethodCardState extends State<PaymentMethodCard> {
                     decoration: BoxDecoration(
                       color: const Color(0xFFFAFAFA),
                       borderRadius: BorderRadius.circular(10),
-                      border: const Border.all(                        color: const Color(0xFFE8E8E8),
+                      border: Border.all(                        color: Color(0xFFE8E8E8),
                       ),
                     ),
                     child: const Icon(
@@ -241,7 +241,7 @@ class _PaymentOption extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(8),
-                border: const Border.all(color: Color(0xFFE8E8E8)),
+                border: Border.all(color: Color(0xFFE8E8E8)),
               ),
               child: icon,
             ),

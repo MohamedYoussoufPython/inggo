@@ -15,9 +15,6 @@ class DriverHomeScreen extends ConsumerStatefulWidget {
 
 class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
   static const LatLng _djiboutiCenter = LatLng(11.5985, 43.1510);
-  GoogleMapController? _mapController;
-
-
 
   Set<Marker> _buildMarkers() {
     return {
@@ -39,9 +36,7 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
             target: _djiboutiCenter,
             zoom: 14.5,
           ),
-          onMapCreated: (controller) {
-            _mapController = controller;
-          },
+          onMapCreated: (_) {},
           myLocationEnabled: false,
           myLocationButtonEnabled: false,
           zoomControlsEnabled: false,
@@ -90,7 +85,7 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(20),
-              border: const Border.all(color: InggoColors.border1),
+              border: Border.all(color: InggoColors.border1),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.08),

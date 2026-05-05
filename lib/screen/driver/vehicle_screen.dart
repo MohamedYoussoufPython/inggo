@@ -194,7 +194,7 @@ class _VehicleScreenState extends ConsumerState<VehicleScreen> {
                           decoration: BoxDecoration(
                             color: const Color(0xFFFFC107),
                             shape: BoxShape.circle,
-                            border: const Border.all(                              color: Colors.white.withValues(alpha: 0.2),
+                            border: Border.all(                              color: Colors.white.withValues(alpha: 0.2),
                             ),
                           ),
                           child: const Icon(
@@ -218,7 +218,7 @@ class _VehicleScreenState extends ConsumerState<VehicleScreen> {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
-                    border: const Border.all(color: Color(0xFFF5F5F5)),
+                    border: Border.all(color: Color(0xFFF5F5F5)),
                   ),
                   child: Column(
                     children: [
@@ -331,7 +331,7 @@ class _VehicleScreenState extends ConsumerState<VehicleScreen> {
         decoration: BoxDecoration(
           color: Colors.white,
           shape: BoxShape.circle,
-          border: const Border.all(color: Color(0xFFDDDDDD)),
+          border: Border.all(color: Color(0xFFDDDDDD)),
         ),
         child: const Icon(Icons.arrow_back, color: Color(0xFF121212), size: 20),
       ),
