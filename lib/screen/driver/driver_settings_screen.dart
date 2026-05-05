@@ -39,7 +39,7 @@ class _DriverSettingsScreenState extends ConsumerState<DriverSettingsScreen> {
               subtitle: Text('Nouvelles demandes de course',
                   style: AppTextStyles.bodySmall),
               value: _notificationsEnabled,
-              activeColor: AppColors.primary,
+              activeThumbColor: AppColors.primary,
               onChanged: (val) => setState(() => _notificationsEnabled = val),
             ),
           ],

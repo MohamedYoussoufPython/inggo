@@ -13,7 +13,7 @@ class LocationService {
   StreamSubscription<Position>? _positionStream;
 
   static const int _throttleSeconds = 5;
-  static const double _distanceFilter = 10.0;
+  static const int _distanceFilterMeters = 10;
 
   final _locationController = StreamController<Position>.broadcast();
   Stream<Position> get locationStream => _locationController.stream;
@@ -39,8 +39,10 @@ class LocationService {
       if (!hasPermission) return null;
 
       final position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-        timeLimit: const Duration(seconds: 10),
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          timeLimit: Duration(seconds: 10),
+        ),
       );
       _lastPosition = position;
       _throttledPosition = position;
@@ -55,9 +57,9 @@ class LocationService {
   void startTracking({void Function(Position)? onPositionUpdate}) {
     _log.i('Starting GPS tracking (throttle ${_throttleSeconds}s)');
     _positionStream = Geolocator.getPositionStream(
-      locationSettings: const LocationSettings(
+      locationSettings: LocationSettings(
         accuracy: LocationAccuracy.high,
-        distanceFilter: _distanceFilter,
+        distanceFilter: _distanceFilterMeters,
       ),
     ).listen((Position position) {
       _lastPosition = position;

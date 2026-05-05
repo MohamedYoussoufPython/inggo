@@ -39,7 +39,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               subtitle: Text('Recevoir les notifications push',
                   style: AppTextStyles.bodySmall),
               value: _notificationsEnabled,
-              activeColor: AppColors.primary,
+              activeThumbColor: AppColors.primary,
               onChanged: (val) => setState(() => _notificationsEnabled = val),
             ),
             SizedBox(height: 24.h),

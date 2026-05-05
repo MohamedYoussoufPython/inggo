@@ -2,21 +2,26 @@ include: package:flutter_lints/flutter.yaml
 
 linter:
   rules:
-    # 12 Règles Inggo
+    # Code quality rules
     prefer_const_constructors: false
     prefer_const_literals_to_create_immutables: false
     prefer_const_declarations: true
     avoid_print: true
     prefer_single_quotes: true
     always_declare_return_types: true
-    require_trailing_commas: true
-    sort_constructors_first: true
-    sort_unnamed_constructors_first: true
+    # Relaxed style rules (info-level noise)
+    require_trailing_commas: false
+    sort_constructors_first: false
+    sort_unnamed_constructors_first: false
+    always_put_required_named_parameters_first: false
+    avoid_positional_boolean_parameters: false
+    # Widget rules
     use_key_in_widget_constructors: true
     sized_box_for_whitespace: true
     avoid_unnecessary_containers: true
     annotate_overrides: true
     avoid_empty_else: true
+    # Safety rules
     cancel_subscriptions: true
     close_sinks: true
     no_duplicate_case_values: true
@@ -25,8 +30,6 @@ linter:
     unnecessary_overrides: true
     unrelated_type_equality_checks: true
     valid_regexps: true
-    always_put_required_named_parameters_first: true
-    avoid_positional_boolean_parameters: true
 
 analyzer:
   errors:

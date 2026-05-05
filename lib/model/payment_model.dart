@@ -1,23 +1,51 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+class PaymentModel {
+  final String id;
+  final String rideId;
+  final String method;
+  final double amount;
+  final String status;
+  final String? transactionId;
+  final String? phoneNumber;
+  final DateTime? createdAt;
 
-part 'payment_model.freezed.dart';
-part 'payment_model.g.dart';
+  const PaymentModel({
+    required this.id,
+    required this.rideId,
+    required this.method,
+    required this.amount,
+    this.status = 'pending',
+    this.transactionId,
+    this.phoneNumber,
+    this.createdAt,
+  });
 
-@freezed
-class PaymentModel with _$PaymentModel {
-  const factory PaymentModel({
-    required String id,
-    required String rideId,
-    required String method,
-    required double amount,
-    @Default('pending') String status,
-    String? transactionId,
-    String? phoneNumber,
-    DateTime? createdAt,
-  }) = _PaymentModel;
+  factory PaymentModel.fromJson(Map<String, dynamic> json) {
+    return PaymentModel(
+      id: json['id'] as String? ?? '',
+      rideId: json['ride_id'] as String? ?? '',
+      method: json['method'] as String? ?? 'cash',
+      amount: (json['amount'] as num?)?.toDouble() ?? 0.0,
+      status: json['status'] as String? ?? 'pending',
+      transactionId: json['transaction_id'] as String?,
+      phoneNumber: json['phone_number'] as String?,
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'] as String)
+          : null,
+    );
+  }
 
-  factory PaymentModel.fromJson(Map<String, dynamic> json) =>
-      _$PaymentModelFromJson(json);
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'ride_id': rideId,
+      'method': method,
+      'amount': amount,
+      'status': status,
+      'transaction_id': transactionId,
+      'phone_number': phoneNumber,
+      'created_at': createdAt?.toIso8601String(),
+    };
+  }
 }
 
 class PaymentMethods {

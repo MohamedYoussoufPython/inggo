@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/constants.dart';
+import '../../core/utils/formatters.dart';
 import '../../widget/widgets.dart';
 import '../../provider/driver_provider.dart';
 
@@ -79,7 +80,8 @@ class _RideRequestScreenState extends ConsumerState<RideRequestScreen>
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Prix', style: AppTextStyles.bodyMedium),
-                        Text(Formatters.formatPrice(250), style: AppTextStyles.priceSmall),
+                        Text(Formatters.formatPrice(250),
+                        style: AppTextStyles.priceSmall),
                       ],
                     ),
                   ],

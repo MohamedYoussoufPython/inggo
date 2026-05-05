@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:logger/logger.dart';
 
@@ -8,9 +9,9 @@ class SupabaseService {
   static final _log = Logger();
 
   // Auth
-  Future<AuthResponse> signInWithOtp(String phone) async {
+  Future<void> signInWithOtp(String phone) async {
     _log.i('Sending OTP to $phone');
-    return await client.auth.signInWithOtp(phone: phone);
+    await client.auth.signInWithOtp(phone: phone);
   }
 
   Future<AuthResponse> verifyOtp(String phone, String token) async {
@@ -39,7 +40,7 @@ class SupabaseService {
     bool ascending = true,
     int? limit,
   }) async {
-    var select = client.from(table).select();
+    PostgrestFilterBuilder<PostgrestList> select = client.from(table).select();
     if (query != null) {
       query.forEach((key, value) {
         select = select.eq(key, value);
@@ -59,13 +60,18 @@ class SupabaseService {
   }
 
   Future<Map<String, dynamic>> insert(
-      String table, Map<String, dynamic> data) async {
+    String table,
+    Map<String, dynamic> data,
+  ) async {
     _log.i('Inserting into $table');
     return await client.from(table).insert(data).select().single();
   }
 
   Future<Map<String, dynamic>> update(
-      String table, String id, Map<String, dynamic> data) async {
+    String table,
+    String id,
+    Map<String, dynamic> data,
+  ) async {
     _log.i('Updating $table/$id');
     return await client.from(table).update(data).eq('id', id).select().single();
   }
@@ -89,7 +95,7 @@ class SupabaseService {
     String table, {
     String? filterColumn,
     String? filterValue,
-    required void Function(PostgrestChangePayload) onChange,
+    required void Function(PostgresChangePayload) onChange,
   }) {
     _log.i('Subscribing to $table');
     final channel = client.channel('public:$table');
@@ -116,8 +122,12 @@ class SupabaseService {
 
   // Storage
   Future<String> uploadFile(
-      String bucket, String path, List<int> bytes) async {
-    await client.storage.from(bucket).uploadBinary(path, bytes);
+    String bucket,
+    String path,
+    List<int> bytes,
+  ) async {
+    final uint8List = Uint8List.fromList(bytes);
+    await client.storage.from(bucket).uploadBinary(path, uint8List);
     return client.storage.from(bucket).getPublicUrl(path);
   }
 

@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:uuid/uuid.dart';
 
 class Helpers {
@@ -37,13 +38,11 @@ class Helpers {
             _toRadians(lat2) *
             (dLng / 2) *
             (dLng / 2);
-    final c = 2 * _atan2(_sqrt(a), _sqrt(1 - a));
+    final c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
     return earthRadius * c;
   }
 
   static double _toRadians(double degrees) => degrees * 0.017453292519943295;
-  static double _sqrt(double x) => x;
-  static double _atan2(double y, double x) => _atan2(y, x);
 
   static int estimateDuration(double distanceMeters) {
     final avgSpeedMps = 8.33; // ~30 km/h

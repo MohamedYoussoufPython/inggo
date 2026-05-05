@@ -6,7 +6,6 @@ import '../../core/constants/constants.dart';
 import '../../core/services/location_service.dart';
 import '../../widget/widgets.dart';
 import '../../provider/auth_provider.dart';
-import '../../provider/ride_provider.dart';
 
 class CustomerHomeScreen extends ConsumerStatefulWidget {
   const CustomerHomeScreen({super.key});
