@@ -856,7 +856,7 @@ class _DangerBtn extends StatelessWidget {
         decoration: BoxDecoration(
           color: InggoColors.errorLight,
           borderRadius: BorderRadius.circular(13),
-          border: const Border.all(color: Color(0xFFFECACA)),
+          border: Border.all(color: Color(0xFFFECACA)),
         ),
         child: Center(
           child: Text(

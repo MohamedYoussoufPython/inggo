@@ -254,7 +254,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       decoration: BoxDecoration(
         color: const Color(0xFFFFFFFF),
         borderRadius: BorderRadius.circular(16),
-        border: const Border.all(color: Color(0xFFF0F0F0)),
+        border: Border.all(color: Color(0xFFF0F0F0)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -287,7 +287,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           decoration: BoxDecoration(
             color: const Color(0xFFFFFFFF),
             borderRadius: BorderRadius.circular(16),
-            border: const Border.all(color: Color(0xFFF0F0F0)),
+            border: Border.all(color: Color(0xFFF0F0F0)),
           ),
           child: const Column(
             children: [
@@ -389,7 +389,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       decoration: BoxDecoration(
         color: const Color(0xFFFFFFFF),
         borderRadius: BorderRadius.circular(16),
-        border: const Border.all(color: Color(0xFFF0F0F0)),
+        border: Border.all(color: Color(0xFFF0F0F0)),
       ),
       child: ListTile(
         leading: Container(

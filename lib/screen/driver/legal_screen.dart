@@ -27,7 +27,7 @@ class LegalScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: const Color(0xFFF5F5F5),
                         shape: BoxShape.circle,
-                        border: const Border.all(color: Color(0xFFDDDDDD)),
+                        border: Border.all(color: Color(0xFFDDDDDD)),
                       ),
                       child: const Icon(
                         Icons.arrow_back,

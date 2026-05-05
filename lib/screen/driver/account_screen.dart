@@ -225,7 +225,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: const Color(0xFFFFEBEE),
-                      border: const Border.all(color: Color(0xFFFFCDD2)),
+                      border: Border.all(color: Color(0xFFFFCDD2)),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Row(
@@ -404,7 +404,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Colors.white,
-              border: const Border.all(color: Color(0xFFF5F5F5)),
+              border: Border.all(color: Color(0xFFF5F5F5)),
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
@@ -547,7 +547,7 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: Colors.white,
-            border: const Border.all(color: Color(0xFFF5F5F5)),
+            border: Border.all(color: Color(0xFFF5F5F5)),
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(

@@ -41,7 +41,7 @@ class DriverSupportScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
-                    border: const Border.all(color: Color(0xFFF5F5F5)),
+                    border: Border.all(color: Color(0xFFF5F5F5)),
                   ),
                   child: Column(
                     children: [
@@ -80,7 +80,7 @@ class DriverSupportScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
-                    border: const Border.all(color: Color(0xFFF5F5F5)),
+                    border: Border.all(color: Color(0xFFF5F5F5)),
                   ),
                   child: const Column(
                     children: [
@@ -190,7 +190,7 @@ class DriverSupportScreen extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(16),
-            border: const Border.all(color: Color(0xFFF5F5F5)),
+            border: Border.all(color: Color(0xFFF5F5F5)),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -223,7 +223,7 @@ class DriverSupportScreen extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           shape: BoxShape.circle,
-          border: const Border.all(color: Color(0xFFDDDDDD)),
+          border: Border.all(color: Color(0xFFDDDDDD)),
         ),
         child: const Icon(Icons.arrow_back, color: Color(0xFF121212), size: 20),
       ),
