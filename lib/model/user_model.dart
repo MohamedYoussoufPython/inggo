@@ -1,5 +1,3 @@
-import 'package:json_annotation/json_annotation.dart';
-
 enum UserRole { client, driver, admin }
 
 class UserModel {

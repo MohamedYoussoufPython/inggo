@@ -31,6 +31,7 @@ class MapWidget extends StatefulWidget {
 }
 
 class _MapWidgetState extends State<MapWidget> {
+  // ignore: unused_field
   GoogleMapController? _mapController;
   Set<Marker> _markers = {};
 

@@ -45,7 +45,7 @@ class Helpers {
   static double _toRadians(double degrees) => degrees * 0.017453292519943295;
 
   static int estimateDuration(double distanceMeters) {
-    final avgSpeedMps = 8.33; // ~30 km/h
+    const avgSpeedMps = 8.33; // ~30 km/h
     return (distanceMeters / avgSpeedMps / 60).round().clamp(1, 120);
   }
 }
