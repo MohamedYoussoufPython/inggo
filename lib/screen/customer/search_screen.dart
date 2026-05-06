@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../core/constants/constants.dart';
+import '../../core/services/location_service.dart';
 import '../../core/services/supabase_service.dart';
 import '../../widget/widgets.dart';
 import '../../provider/ride_provider.dart';
@@ -26,7 +27,21 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   @override
   void initState() {
     super.initState();
+    _setPickupFromGps();
     _loadLandmarks();
+  }
+
+  /// Set the pickup point from the client's current GPS position
+  /// so that createRide() uses the real location instead of a fallback.
+  Future<void> _setPickupFromGps() async {
+    final position = await LocationService.instance.getCurrentPosition();
+    if (position != null) {
+      ref.read(rideProvider.notifier).setPickup(
+            'Position actuelle',
+            position.latitude,
+            position.longitude,
+          );
+    }
   }
 
   Future<void> _loadLandmarks() async {

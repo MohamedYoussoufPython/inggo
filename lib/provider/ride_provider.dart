@@ -27,6 +27,10 @@ class RideState {
   final int driverTotalRides;
   final String? driverAvatarUrl;
 
+  // Driver live position — updated via Realtime subscription on drivers table
+  final double? driverLat;
+  final double? driverLng;
+
   const RideState({
     this.isLoading = false,
     this.currentRide,
@@ -45,6 +49,8 @@ class RideState {
     this.driverRating = 5.0,
     this.driverTotalRides = 0,
     this.driverAvatarUrl,
+    this.driverLat,
+    this.driverLng,
   });
 
   RideState copyWith({
@@ -65,6 +71,8 @@ class RideState {
     double? driverRating,
     int? driverTotalRides,
     String? driverAvatarUrl,
+    double? driverLat,
+    double? driverLng,
     bool clearDriverInfo = false,
   }) {
     return RideState(
@@ -91,6 +99,8 @@ class RideState {
           clearDriverInfo ? 0 : (driverTotalRides ?? this.driverTotalRides),
       driverAvatarUrl:
           clearDriverInfo ? null : (driverAvatarUrl ?? this.driverAvatarUrl),
+      driverLat: clearDriverInfo ? null : (driverLat ?? this.driverLat),
+      driverLng: clearDriverInfo ? null : (driverLng ?? this.driverLng),
     );
   }
 }
@@ -100,6 +110,7 @@ class RideNotifier extends StateNotifier<RideState> {
 
   static final _log = Logger();
   RealtimeChannel? _rideChannel;
+  RealtimeChannel? _driverLocationChannel;
 
   void setPickup(String address, double lat, double lng) {
     state = state.copyWith(
@@ -159,7 +170,7 @@ class RideNotifier extends StateNotifier<RideState> {
 
   /// Subscribe to Realtime updates on the current ride
   void _subscribeToRideUpdates(String rideId) {
-    _stopRideSubscription(); // clean any previous subscription
+    _stopRideSubscription();
 
     _log.i('Subscribing to ride updates for $rideId');
 
@@ -191,13 +202,44 @@ class RideNotifier extends StateNotifier<RideState> {
 
         state = state.copyWith(currentRide: updatedRide);
 
-        // When a driver accepts the ride, fetch their profile info
+        // When a driver accepts the ride, fetch their profile + start tracking
         final newDriverId = payload.newRecord['driver_id'] as String?;
         if (newDriverId != null && currentRide.driverId == null) {
           _fetchDriverInfo(newDriverId);
+          _subscribeToDriverLocation(newDriverId);
         }
       },
     );
+  }
+
+  /// Subscribe to Realtime updates on the driver's location
+  /// so the client can see the driver moving on the map
+  void _subscribeToDriverLocation(String driverId) {
+    _stopDriverLocationSubscription();
+
+    _log.i('Subscribing to driver location for $driverId');
+
+    _driverLocationChannel = SupabaseService.instance.subscribeToTable(
+      'drivers',
+      filterColumn: 'id',
+      filterValue: driverId,
+      onChange: (payload) {
+        final newLat = (payload.newRecord['current_lat'] as num?)?.toDouble();
+        final newLng = (payload.newRecord['current_lng'] as num?)?.toDouble();
+
+        if (newLat != null && newLng != null) {
+          state = state.copyWith(driverLat: newLat, driverLng: newLng);
+        }
+      },
+    );
+  }
+
+  void _stopDriverLocationSubscription() {
+    if (_driverLocationChannel != null) {
+      SupabaseService.instance.unsubscribe(_driverLocationChannel!);
+      _driverLocationChannel = null;
+      _log.i('Unsubscribed from driver location');
+    }
   }
 
   /// Fetch driver profile and vehicle info from Supabase
@@ -205,7 +247,6 @@ class RideNotifier extends StateNotifier<RideState> {
     try {
       _log.i('Fetching driver info for $driverId');
 
-      // Fetch profile (name, phone, avatar) and driver record (plate, rating, rides)
       final results = await Future.wait([
         SupabaseService.instance.getById('profiles', driverId),
         SupabaseService.instance.getById('drivers', driverId),
@@ -221,6 +262,8 @@ class RideNotifier extends StateNotifier<RideState> {
         driverPlateNumber: driver['plate_number'] as String?,
         driverRating: (driver['rating'] as num?)?.toDouble() ?? 5.0,
         driverTotalRides: driver['total_rides'] as int? ?? 0,
+        driverLat: (driver['current_lat'] as num?)?.toDouble(),
+        driverLng: (driver['current_lng'] as num?)?.toDouble(),
       );
 
       _log.i('Driver info loaded: ${state.driverName}');
@@ -235,6 +278,7 @@ class RideNotifier extends StateNotifier<RideState> {
       _rideChannel = null;
       _log.i('Unsubscribed from ride updates');
     }
+    _stopDriverLocationSubscription();
   }
 
   Future<void> cancelRide(String reason) async {

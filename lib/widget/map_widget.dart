@@ -9,6 +9,8 @@ class MapWidget extends StatefulWidget {
   final double? pickupLng;
   final double? dropoffLat;
   final double? dropoffLng;
+  final double? driverLat;
+  final double? driverLng;
   final bool enableTap;
   final ValueChanged<LatLng>? onTapPosition;
   final double zoom;
@@ -21,6 +23,8 @@ class MapWidget extends StatefulWidget {
     this.pickupLng,
     this.dropoffLat,
     this.dropoffLng,
+    this.driverLat,
+    this.driverLng,
     this.enableTap = false,
     this.onTapPosition,
     this.zoom = 14.0,
@@ -31,7 +35,6 @@ class MapWidget extends StatefulWidget {
 }
 
 class _MapWidgetState extends State<MapWidget> {
-  // ignore: unused_field
   GoogleMapController? _mapController;
   Set<Marker> _markers = {};
 
@@ -44,7 +47,15 @@ class _MapWidgetState extends State<MapWidget> {
   @override
   void didUpdateWidget(covariant MapWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _updateMarkers();
+    // Only rebuild markers if location data actually changed
+    if (oldWidget.pickupLat != widget.pickupLat ||
+        oldWidget.pickupLng != widget.pickupLng ||
+        oldWidget.dropoffLat != widget.dropoffLat ||
+        oldWidget.dropoffLng != widget.dropoffLng ||
+        oldWidget.driverLat != widget.driverLat ||
+        oldWidget.driverLng != widget.driverLng) {
+      _updateMarkers();
+    }
   }
 
   void _updateMarkers() {
@@ -63,6 +74,15 @@ class _MapWidgetState extends State<MapWidget> {
         position: LatLng(widget.dropoffLat!, widget.dropoffLng!),
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
         infoWindow: const InfoWindow(title: 'Destination'),
+      ));
+    }
+    // Driver live marker — green to distinguish from pickup/dropoff
+    if (widget.driverLat != null && widget.driverLng != null) {
+      markers.add(Marker(
+        markerId: const MarkerId('driver'),
+        position: LatLng(widget.driverLat!, widget.driverLng!),
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+        infoWindow: const InfoWindow(title: 'Votre chauffeur'),
       ));
     }
     setState(() => _markers = markers);
