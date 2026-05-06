@@ -6,7 +6,6 @@ import '../../core/constants/constants.dart';
 import '../../core/utils/formatters.dart';
 import '../../widget/widgets.dart';
 import '../../provider/driver_provider.dart';
-import '../../model/ride_model.dart';
 
 class DriverRideScreen extends ConsumerStatefulWidget {
   const DriverRideScreen({super.key});

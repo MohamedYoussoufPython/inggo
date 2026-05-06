@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/constants.dart';
 import '../../core/utils/formatters.dart';
+import '../../model/ride_model.dart';
 import '../../widget/widgets.dart';
 import '../../provider/ride_provider.dart';
 

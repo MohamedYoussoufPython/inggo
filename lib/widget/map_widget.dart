@@ -35,6 +35,7 @@ class MapWidget extends StatefulWidget {
 }
 
 class _MapWidgetState extends State<MapWidget> {
+  // ignore: unused_field — reserved for camera animations
   GoogleMapController? _mapController;
   Set<Marker> _markers = {};
 

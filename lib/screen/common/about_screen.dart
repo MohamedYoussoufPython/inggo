@@ -44,7 +44,7 @@ class AboutScreen extends StatelessWidget {
                   _aboutRow(Icons.location_city, 'Ville', 'Djibouti'),
                   Divider(height: 24.h),
                   _aboutRow(Icons.phone_android, 'Contact',
-                      AppConstants.countryCode + ' 77 00 00 00'),
+                      '${AppConstants.countryCode} 77 00 00 00'),
                   Divider(height: 24.h),
                   _aboutRow(Icons.email_outlined, 'Email',
                       'contact@inggo.dj'),

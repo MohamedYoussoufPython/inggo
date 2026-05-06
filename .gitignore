@@ -25,3 +25,5 @@ Thumbs.db
 *.g.dart
 *.freezed.dart
 *.mocks.dart
+.dart_tool/
+.dart_tool/

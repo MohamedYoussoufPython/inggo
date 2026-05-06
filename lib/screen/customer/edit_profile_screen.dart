@@ -55,17 +55,14 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
       if (mounted) {
         // Update the auth state with the new user data
-        final authState = ref.read(authProvider);
         ref.read(authProvider.notifier).updateUser(updatedUser);
 
-        InggoToast.show(context,
-            message: 'Profil mis à jour', type: InggoToastType.success);
+        InggoToast.success(context, 'Profil mis à jour');
         Navigator.pop(context);
       }
     } catch (e) {
       if (mounted) {
-        InggoToast.show(context,
-            message: 'Erreur: $e', type: InggoToastType.error);
+        InggoToast.error(context, 'Erreur: $e');
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);
