@@ -20,3 +20,10 @@ lib/
 ├── screen/        # Écrans (splash, auth, customer, driver)
 └── widget/        # Widgets réutilisables
 ```
+cd ~/inggo && git pull origin main && cd android && ./gradlew clean && cd .. && flutter build apk --debug
+rm -rf ~/.gradle/caches/8.11.1/transforms
+rm -rf ~/.gradle/caches/journal-*
+rm -rf ~/inggo/build
+rm -rf ~/inggo/android/.gradle
+rm -rf ~/inggo/android/app/build
+flutter clean
