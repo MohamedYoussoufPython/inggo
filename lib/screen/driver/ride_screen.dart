@@ -140,15 +140,17 @@ class _DriverRideScreenState extends ConsumerState<DriverRideScreen> {
                             icon: Icons.flag,
                             onPressed: () async {
                               setState(() => _isCompleting = true);
+                              final router = GoRouter.of(context);
+                              final messenger = ScaffoldMessenger.of(context);
                               final success = await ref
                                   .read(driverProvider.notifier)
                                   .completeRide();
                               if (!mounted) return;
                               if (success) {
-                                context.go('/driver/end-ride');
+                                router.go('/driver/end-ride');
                               } else {
                                 setState(() => _isCompleting = false);
-                                ScaffoldMessenger.of(context).showSnackBar(
+                                messenger.showSnackBar(
                                   const SnackBar(
                                     content: Text('Erreur lors de la finalisation de la course.'),
                                     backgroundColor: AppColors.error,
