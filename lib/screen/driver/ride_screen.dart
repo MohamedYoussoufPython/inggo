@@ -18,6 +18,9 @@ class _DriverRideScreenState extends ConsumerState<DriverRideScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final driverState = ref.watch(driverProvider);
+    final rideId = driverState.currentRideId;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -62,7 +65,9 @@ class _DriverRideScreenState extends ConsumerState<DriverRideScreen> {
                       label: 'Terminer la course',
                       icon: Icons.flag,
                       onPressed: () {
-                        ref.read(driverProvider.notifier).completeRide('ride_id');
+                        if (rideId != null) {
+                          ref.read(driverProvider.notifier).completeRide(rideId);
+                        }
                         context.go('/driver/end-ride');
                       },
                     ),

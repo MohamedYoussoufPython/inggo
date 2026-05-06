@@ -29,6 +29,7 @@ import '../../screen/driver/earnings_screen.dart';
 import '../../screen/driver/documents_screen.dart';
 import '../../screen/driver/driver_profile_screen.dart';
 import '../../screen/driver/driver_settings_screen.dart';
+import '../../model/ride_model.dart';
 
 class AppRouter {
   AppRouter._();
@@ -154,7 +155,15 @@ class AppRouter {
       ),
       GoRoute(
         path: '/driver/ride-request',
-        builder: (context, state) => const RideRequestScreen(),
+        builder: (context, state) {
+          // Receive the RideModel from navigation extra
+          final ride = state.extra as RideModel?;
+          if (ride == null) {
+            // Fallback: should never happen if navigation is correct
+            return const DriverHomeScreen();
+          }
+          return RideRequestScreen(ride: ride);
+        },
       ),
       GoRoute(
         path: '/driver/ride',
