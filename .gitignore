@@ -1,29 +1,68 @@
 # Environment
 .env
+admin_panel/.env
+*.env.local
 
 # Dart / Flutter
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
-*.lock
 build/
 .packages
 .pub-cache/
 .pub/
+pubspec.lock
+
+# Android
+android/.gradle/
+android/.kotlin/
+android/local.properties
+android/app/build/
+android/build/
+
+# iOS
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/ephemeral/
+ios/Flutter/AppFrameworkInfo.plist
+ios/Flutter/Debug.xcconfig
+ios/Flutter/Generated.xcconfig
+ios/Flutter/Release.xcconfig
+ios/Flutter/flutter_export_environment.sh
 
 # IDE
 .idea/
 .vscode/
 *.iml
 *.swp
+*.code-workspace
 
 # OS
 .DS_Store
 Thumbs.db
+desktop.ini
 
 # Generated
 *.g.dart
 *.freezed.dart
 *.mocks.dart
-.dart_tool/
-.dart_tool/
+*.reflectable.dart
+
+# Firebase
+.firebase/
+firebase_options.dart
+google-services.json
+GoogleService-Info.plist
+
+# Node (admin panel)
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+
+# Coverage
+coverage/
