@@ -4,14 +4,49 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/theme/inggo_theme.dart';
 import 'core/router/app_router.dart';
+import 'core/services/notification_service.dart';
 import 'l10n/app_localizations.dart';
 import 'provider/auth_provider.dart';
 
-class InggoApp extends ConsumerWidget {
+class InggoApp extends ConsumerStatefulWidget {
   const InggoApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<InggoApp> createState() => _InggoAppState();
+}
+
+class _InggoAppState extends ConsumerState<InggoApp> {
+  @override
+  void initState() {
+    super.initState();
+    // Start listening for notifications as soon as the app builds
+    // and the user is authenticated. We use a post-frame callback
+    // so that the auth state is already resolved.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _maybeStartNotifications();
+    });
+  }
+
+  void _maybeStartNotifications() {
+    final authState = ref.read(authProvider);
+    final userId = authState.user?.id;
+    if (userId != null && authState.isAuthenticated) {
+      NotificationService.instance.startListening(userId);
+    }
+
+    // Listen for auth changes to start/stop notifications
+    ref.listen<AuthState>(authProvider, (prev, next) {
+      final newUserId = next.user?.id;
+      if (next.isAuthenticated && newUserId != null) {
+        NotificationService.instance.startListening(newUserId);
+      } else {
+        NotificationService.instance.stopListening();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
 
     return ScreenUtilInit(

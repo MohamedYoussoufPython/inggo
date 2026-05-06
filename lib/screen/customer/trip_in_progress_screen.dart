@@ -34,6 +34,8 @@ class TripInProgressScreen extends ConsumerWidget {
             pickupLng: currentRide?.pickupLng,
             dropoffLat: currentRide?.dropoffLat,
             dropoffLng: currentRide?.dropoffLng,
+            driverLat: ride.driverLat,
+            driverLng: ride.driverLng,
           ),
           // Top info
           SafeArea(
