@@ -37,12 +37,18 @@ class ProfileScreen extends ConsumerWidget {
             SizedBox(height: 4.h),
             Text(user?.phone ?? '', style: AppTextStyles.bodyMedium),
             SizedBox(height: 32.h),
-            _MenuTile(Icons.person_outline, 'Modifier le profil', () {}),
-            _MenuTile(Icons.phone_android, 'Changer le téléphone', () => context.push('/client/settings')),
-            _MenuTile(Icons.language, 'Langue', () => context.push('/client/settings')),
-            _MenuTile(Icons.notifications_outlined, 'Notifications', () => context.push('/client/notifications')),
-            _MenuTile(Icons.help_outline, 'Support', () => context.push('/client/support')),
-            _MenuTile(Icons.info_outline, 'À propos', () {}),
+            _MenuTile(Icons.person_outline, 'Modifier le profil',
+                () => context.push('/client/edit-profile')),
+            _MenuTile(Icons.phone_android, 'Changer le téléphone',
+                () => context.push('/client/settings')),
+            _MenuTile(Icons.language, 'Langue',
+                () => context.push('/client/settings')),
+            _MenuTile(Icons.notifications_outlined, 'Notifications',
+                () => context.push('/client/notifications')),
+            _MenuTile(Icons.help_outline, 'Support',
+                () => context.push('/client/support')),
+            _MenuTile(Icons.info_outline, 'À propos',
+                () => context.push('/about')),
             SizedBox(height: 16.h),
             InggoButton(
               label: 'Déconnexion',
@@ -54,7 +60,9 @@ class ProfileScreen extends ConsumerWidget {
                     title: const Text('Déconnexion'),
                     content: const Text('Voulez-vous vous déconnecter ?'),
                     actions: [
-                      TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Non')),
+                      TextButton(
+                          onPressed: () => Navigator.pop(ctx),
+                          child: const Text('Non')),
                       TextButton(
                         onPressed: () {
                           Navigator.pop(ctx);

@@ -21,6 +21,7 @@ import '../../screen/customer/profile_screen.dart';
 import '../../screen/customer/settings_screen.dart';
 import '../../screen/customer/notifications_screen.dart';
 import '../../screen/customer/support_screen.dart';
+import '../../screen/customer/edit_profile_screen.dart';
 import '../../screen/driver/home_screen.dart';
 import '../../screen/driver/ride_request_screen.dart';
 import '../../screen/driver/ride_screen.dart';
@@ -29,6 +30,7 @@ import '../../screen/driver/earnings_screen.dart';
 import '../../screen/driver/documents_screen.dart';
 import '../../screen/driver/driver_profile_screen.dart';
 import '../../screen/driver/driver_settings_screen.dart';
+import '../../screen/common/about_screen.dart';
 import '../../model/ride_model.dart';
 
 class AppRouter {
@@ -98,6 +100,12 @@ class AppRouter {
         builder: (context, state) => const PendingVerificationScreen(),
       ),
 
+      // ─── Common Routes ───
+      GoRoute(
+        path: '/about',
+        builder: (context, state) => const AboutScreen(),
+      ),
+
       // ─── Client Routes ───
       GoRoute(
         path: '/client/home',
@@ -134,6 +142,10 @@ class AppRouter {
       GoRoute(
         path: '/client/profile',
         builder: (context, state) => const ProfileScreen(),
+      ),
+      GoRoute(
+        path: '/client/edit-profile',
+        builder: (context, state) => const EditProfileScreen(isDriver: false),
       ),
       GoRoute(
         path: '/client/settings',
@@ -184,6 +196,10 @@ class AppRouter {
       GoRoute(
         path: '/driver/profile',
         builder: (context, state) => const DriverProfileScreen(),
+      ),
+      GoRoute(
+        path: '/driver/edit-profile',
+        builder: (context, state) => const EditProfileScreen(isDriver: true),
       ),
       GoRoute(
         path: '/driver/settings',

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/constants.dart';
 import '../../core/services/location_service.dart';
+import '../../core/services/connectivity_service.dart';
 import '../../widget/widgets.dart';
 import '../../provider/auth_provider.dart';
 
@@ -39,40 +40,57 @@ class _CustomerHomeScreenState extends ConsumerState<CustomerHomeScreen> {
             initialLat: position?.latitude ?? AppConstants.defaultLat,
             initialLng: position?.longitude ?? AppConstants.defaultLng,
           ),
-          // Top bar
+          // Top bar + OfflineBanner
           SafeArea(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () => context.push('/client/profile'),
-                    child: CircleAvatar(
-                      radius: 20.r,
-                      backgroundColor: AppColors.primary,
-                      child: Text(
-                        auth.user?.fullName.substring(0, 1).toUpperCase() ?? 'U',
-                        style: AppTextStyles.headline4.copyWith(
-                            color: AppColors.secondary),
+            child: Column(
+              children: [
+                // Offline banner
+                StreamBuilder<bool>(
+                  stream: ConnectivityService.instance.connectionStream,
+                  initialData: ConnectivityService.instance.isOnline,
+                  builder: (context, snapshot) {
+                    return OfflineBanner(isOnline: snapshot.data ?? true);
+                  },
+                ),
+                Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () => context.push('/client/profile'),
+                        child: CircleAvatar(
+                          radius: 20.r,
+                          backgroundColor: AppColors.primary,
+                          child: Text(
+                            auth.user?.fullName
+                                    .substring(0, 1)
+                                    .toUpperCase() ??
+                                'U',
+                            style: AppTextStyles.headline4
+                                .copyWith(color: AppColors.secondary),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  const Spacer(),
-                  GestureDetector(
-                    onTap: () => context.push('/client/notifications'),
-                    child: Container(
-                      padding: EdgeInsets.all(8.w),
-                      decoration: BoxDecoration(
-                        color: AppColors.surface,
-                        borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
-                        boxShadow: [AppShadows.sm],
+                      const Spacer(),
+                      GestureDetector(
+                        onTap: () => context.push('/client/notifications'),
+                        child: Container(
+                          padding: EdgeInsets.all(8.w),
+                          decoration: BoxDecoration(
+                            color: AppColors.surface,
+                            borderRadius:
+                                BorderRadius.circular(AppSpacing.radiusFull),
+                            boxShadow: [AppShadows.sm],
+                          ),
+                          child: Icon(Icons.notifications_outlined,
+                              color: AppColors.textPrimary, size: 24.w),
+                        ),
                       ),
-                      child: Icon(Icons.notifications_outlined,
-                          color: AppColors.textPrimary, size: 24.w),
-                    ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
           // Bottom card
@@ -91,8 +109,7 @@ class _CustomerHomeScreenState extends ConsumerState<CustomerHomeScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('Où allez-vous ?',
-                      style: AppTextStyles.headline4),
+                  Text('Où allez-vous ?', style: AppTextStyles.headline4),
                   SizedBox(height: 12.h),
                   GestureDetector(
                     onTap: () => context.push('/client/search'),
@@ -110,8 +127,8 @@ class _CustomerHomeScreenState extends ConsumerState<CustomerHomeScreen> {
                               color: AppColors.textHint, size: 20.w),
                           SizedBox(width: 12.w),
                           Text('Rechercher une destination...',
-                              style: AppTextStyles.bodyMedium.copyWith(
-                                  color: AppColors.textHint)),
+                              style: AppTextStyles.bodyMedium
+                                  .copyWith(color: AppColors.textHint)),
                         ],
                       ),
                     ),

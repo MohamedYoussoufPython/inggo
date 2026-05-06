@@ -24,6 +24,24 @@ class _EndTripScreenState extends ConsumerState<EndTripScreen> {
     super.dispose();
   }
 
+  /// Map PaymentMethod enum to a human-readable French label
+  String _paymentMethodLabel(PaymentMethod method) {
+    switch (method) {
+      case PaymentMethod.cash:
+        return 'Espèces';
+      case PaymentMethod.waafi:
+        return 'Waafi';
+      case PaymentMethod.dmoney:
+        return 'D-Money';
+      case PaymentMethod.cacpay:
+        return 'CAC Pay';
+      case PaymentMethod.sabapay:
+        return 'Saba Pay';
+      case PaymentMethod.dahabplus:
+        return 'Dahabplus';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final ride = ref.watch(rideProvider);
@@ -51,7 +69,11 @@ class _EndTripScreenState extends ConsumerState<EndTripScreen> {
                     _infoRow('Prix',
                         Formatters.formatPrice(currentRide?.price ?? 250),
                         valueStyle: AppTextStyles.priceSmall),
-                    _infoRow('Paiement', 'Espèces'),
+                    _infoRow(
+                      'Paiement',
+                      _paymentMethodLabel(
+                          currentRide?.paymentMethod ?? PaymentMethod.cash),
+                    ),
                   ],
                 ),
               ),
@@ -64,7 +86,8 @@ class _EndTripScreenState extends ConsumerState<EndTripScreen> {
                 children: List.generate(
                   5,
                   (index) => GestureDetector(
-                    onTap: () => setState(() => _rating = (index + 1).toDouble()),
+                    onTap: () =>
+                        setState(() => _rating = (index + 1).toDouble()),
                     child: Icon(
                       index < _rating ? Icons.star : Icons.star_border,
                       color: AppColors.primary,

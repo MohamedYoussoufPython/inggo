@@ -45,7 +45,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.motorcycle, size: 80.w, color: AppColors.secondary),
+            // App logo
+            Image.asset(
+              'assets/images/logo.png',
+              width: 120.w,
+              height: 120.w,
+              errorBuilder: (context, error, stackTrace) =>
+                  Icon(Icons.motorcycle, size: 80.w, color: AppColors.secondary),
+            ),
             SizedBox(height: 16.h),
             Text('INGGO',
                 style: AppTextStyles.headline1

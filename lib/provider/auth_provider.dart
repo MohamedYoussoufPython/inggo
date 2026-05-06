@@ -195,6 +195,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = state.copyWith(isOnboarded: true);
   }
 
+  /// Update user data in state (called after profile edit)
+  void updateUser(UserModel user) {
+    state = state.copyWith(user: user);
+  }
+
   Future<void> signOut() async {
     await SupabaseService.instance.signOut();
     state = const AuthState();
