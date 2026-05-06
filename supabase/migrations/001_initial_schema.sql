@@ -262,7 +262,7 @@ INSERT INTO landmarks (name_fr, name_en, category, lat, lng, is_popular) VALUES
 ('Hôtel Acacias', 'Acacias Hotel', 'hotel', 11.5870, 43.1450, false),
 
 -- Restaurants
-('Restaurant l'Atelier', 'L''Atelier Restaurant', 'restaurant', 11.5882, 43.1455, false),
+('Restaurant l''Atelier', 'L''Atelier Restaurant', 'restaurant', 11.5882, 43.1455, false),
 ('Café de la Gare', 'Café de la Gare', 'restaurant', 11.5920, 43.1485, false),
 
 -- Banques
