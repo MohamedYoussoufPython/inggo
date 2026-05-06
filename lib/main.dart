@@ -9,8 +9,12 @@ import 'core/services/connectivity_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Load environment
-  await dotenv.load(fileName: '.env');
+  // Load environment (optional — .env may not exist during CI/debug builds)
+  try {
+    await dotenv.load(fileName: '.env');
+  } catch (_) {
+    // .env file not found — will use empty defaults or fallback values
+  }
 
   // Init Supabase
   await Supabase.initialize(
