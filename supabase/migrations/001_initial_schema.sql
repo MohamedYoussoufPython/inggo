@@ -153,18 +153,31 @@ CREATE POLICY "Anyone can read verified drivers" ON drivers FOR SELECT USING (is
 CREATE POLICY "Driver can update own record" ON drivers FOR UPDATE USING (id = auth.uid());
 CREATE POLICY "Driver can insert own record" ON drivers FOR INSERT WITH CHECK (id = auth.uid());
 
--- Rides: participants can read, client creates, driver updates
-CREATE POLICY "Users can read own rides" ON rides FOR SELECT USING (client_id = auth.uid() OR driver_id = auth.uid());
+-- Rides: participants can read, client creates, driver can see searching & accept
+CREATE POLICY "Users can read own rides" ON rides FOR SELECT USING (
+    client_id = auth.uid() 
+    OR driver_id = auth.uid() 
+    OR (status = 'searching' AND EXISTS (
+        SELECT 1 FROM drivers WHERE id = auth.uid() AND is_verified = true AND is_online = true
+    ))
+);
 CREATE POLICY "Client can create ride" ON rides FOR INSERT WITH CHECK (client_id = auth.uid());
-CREATE POLICY "Driver or client can update ride" ON rides FOR UPDATE USING (client_id = auth.uid() OR driver_id = auth.uid());
+CREATE POLICY "Driver or client can update ride" ON rides FOR UPDATE USING (
+    client_id = auth.uid() 
+    OR driver_id = auth.uid() 
+    OR (status = 'searching' AND EXISTS (
+        SELECT 1 FROM drivers WHERE id = auth.uid() AND is_verified = true AND is_online = true
+    ))
+);
 
 -- Favorites: users can CRUD own
 CREATE POLICY "Users can read own favorites" ON favorites FOR SELECT USING (user_id = auth.uid());
 CREATE POLICY "Users can insert own favorites" ON favorites FOR INSERT WITH CHECK (user_id = auth.uid());
 CREATE POLICY "Users can delete own favorites" ON favorites FOR DELETE USING (user_id = auth.uid());
 
--- Notifications: users can read own, admin can insert
+-- Notifications: users can read own, users can insert, users can update own
 CREATE POLICY "Users can read own notifications" ON notifications FOR SELECT USING (user_id = auth.uid());
+CREATE POLICY "Users can insert own notifications" ON notifications FOR INSERT WITH CHECK (user_id = auth.uid());
 CREATE POLICY "Users can update own notifications" ON notifications FOR UPDATE USING (user_id = auth.uid());
 
 -- Landmarks: anyone can read
@@ -260,3 +273,11 @@ INSERT INTO landmarks (name_fr, name_en, category, lat, lng, is_popular) VALUES
 ('Ambassade de France', 'French Embassy', 'autre', 11.5888, 43.1440, false),
 ('Aéroport de Djibouti', 'Djibouti Airport', 'autre', 11.5470, 43.1590, true),
 ('Camp Lemonnier', 'Camp Lemonnier', 'autre', 11.5400, 43.1650, false);
+
+-- ============================================
+-- REALTIME — Enable for rides table
+-- ============================================
+-- Required for the Realtime Supabase subscription that notifies
+-- drivers of new rides and clients of ride status changes.
+ALTER PUBLICATION supabase_realtime ADD TABLE rides;
+ALTER PUBLICATION supabase_realtime ADD TABLE notifications;

@@ -15,8 +15,8 @@ class DriverState {
   final double totalEarnings;
   final int totalRides;
   final String? error;
-  final RideModel? pendingRide; // New ride request received from Realtime
-  final String? currentRideId; // ID of the ride the driver accepted
+  final RideModel? pendingRide;  // Ride received from Realtime, awaiting driver action
+  final RideModel? currentRide;  // Ride the driver accepted (full data from DB)
 
   const DriverState({
     this.isLoading = false,
@@ -26,7 +26,7 @@ class DriverState {
     this.totalRides = 0,
     this.error,
     this.pendingRide,
-    this.currentRideId,
+    this.currentRide,
   });
 
   DriverState copyWith({
@@ -37,9 +37,10 @@ class DriverState {
     int? totalRides,
     String? error,
     RideModel? pendingRide,
-    String? currentRideId,
+    RideModel? currentRide,
     bool clearPendingRide = false,
-    bool clearCurrentRideId = false,
+    bool clearCurrentRide = false,
+    bool clearError = false,
   }) {
     return DriverState(
       isLoading: isLoading ?? this.isLoading,
@@ -47,9 +48,9 @@ class DriverState {
       isOnline: isOnline ?? this.isOnline,
       totalEarnings: totalEarnings ?? this.totalEarnings,
       totalRides: totalRides ?? this.totalRides,
-      error: error,
+      error: clearError ? null : (error ?? this.error),
       pendingRide: clearPendingRide ? null : (pendingRide ?? this.pendingRide),
-      currentRideId: clearCurrentRideId ? null : (currentRideId ?? this.currentRideId),
+      currentRide: clearCurrentRide ? null : (currentRide ?? this.currentRide),
     );
   }
 }
@@ -60,14 +61,14 @@ class DriverNotifier extends StateNotifier<DriverState> {
   static final _log = Logger();
   RealtimeChannel? _newRidesChannel;
 
+  // ─── Load driver profile ───
   Future<void> loadDriver() async {
     state = state.copyWith(isLoading: true);
     try {
       final userId = SupabaseService.instance.currentUserId;
       if (userId == null) return;
 
-      final data =
-          await SupabaseService.instance.getById('drivers', userId);
+      final data = await SupabaseService.instance.getById('drivers', userId);
       final driver = DriverModel.fromJson(data);
       state = state.copyWith(
         isLoading: false,
@@ -81,6 +82,7 @@ class DriverNotifier extends StateNotifier<DriverState> {
     }
   }
 
+  // ─── Toggle online/offline ───
   Future<void> toggleOnline() async {
     final newOnline = !state.isOnline;
     state = state.copyWith(isLoading: true);
@@ -93,8 +95,8 @@ class DriverNotifier extends StateNotifier<DriverState> {
       });
 
       if (newOnline) {
-        final position =
-            await LocationService.instance.getCurrentPosition();
+        // Update current position
+        final position = await LocationService.instance.getCurrentPosition();
         if (position != null) {
           await SupabaseService.instance.update('drivers', userId, {
             'current_lat': position.latitude,
@@ -102,6 +104,7 @@ class DriverNotifier extends StateNotifier<DriverState> {
             'last_location_update': DateTime.now().toIso8601String(),
           });
         }
+        // Start tracking location
         LocationService.instance.startTracking(onPositionUpdate: (pos) {
           SupabaseService.instance.update('drivers', userId, {
             'current_lat': pos.latitude,
@@ -109,12 +112,10 @@ class DriverNotifier extends StateNotifier<DriverState> {
             'last_location_update': DateTime.now().toIso8601String(),
           });
         });
-
-        // Subscribe to new ride requests
+        // Start listening for new ride requests
         _subscribeToNewRides();
       } else {
         LocationService.instance.stopTracking();
-        // Unsubscribe from new ride requests
         _stopNewRidesSubscription();
       }
 
@@ -124,10 +125,9 @@ class DriverNotifier extends StateNotifier<DriverState> {
     }
   }
 
-  /// Subscribe to Realtime updates on the rides table for new "searching" rides
+  // ─── Realtime: Listen for new searching rides ───
   void _subscribeToNewRides() {
-    _stopNewRidesSubscription(); // clean any previous subscription
-
+    _stopNewRidesSubscription();
     _log.i('Driver subscribing to new ride requests');
 
     _newRidesChannel = SupabaseService.instance.subscribeToTable(
@@ -135,10 +135,8 @@ class DriverNotifier extends StateNotifier<DriverState> {
       filterColumn: 'status',
       filterValue: 'searching',
       onChange: (payload) {
-        // Only react to INSERT events (new ride created)
         if (payload.eventType == PostgresChangeEvent.insert) {
-          _log.i('New ride request received: ${payload.newRecord['id']}');
-
+          _log.i('New ride request: ${payload.newRecord['id']}');
           final ride = RideModel.fromJson(payload.newRecord);
           state = state.copyWith(pendingRide: ride);
         }
@@ -154,45 +152,67 @@ class DriverNotifier extends StateNotifier<DriverState> {
     }
   }
 
-  Future<void> acceptRide(String rideId) async {
+  // ─── Accept a ride ───
+  // Returns true on success, false on failure.
+  // On success, currentRide is populated with full data from DB.
+  Future<bool> acceptRide(String rideId) async {
+    state = state.copyWith(isLoading: true, clearError: true);
     try {
       final userId = SupabaseService.instance.currentUserId;
-      if (userId == null) return;
+      if (userId == null) {
+        state = state.copyWith(isLoading: false, error: 'Non authentifié');
+        return false;
+      }
 
+      // 1. Update the ride in the database
       await SupabaseService.instance.update('rides', rideId, {
         'driver_id': userId,
         'status': 'accepted',
         'accepted_at': DateTime.now().toIso8601String(),
       });
 
-      // Store the current ride ID and clear pending
+      // 2. Fetch the complete ride from DB (guaranteed to have all fields including coords)
+      final rideData = await SupabaseService.instance.getById('rides', rideId);
+      final acceptedRide = RideModel.fromJson(rideData);
+
+      // 3. Store currentRide and clear pendingRide
       state = state.copyWith(
-        currentRideId: rideId,
+        isLoading: false,
+        currentRide: acceptedRide,
         clearPendingRide: true,
       );
 
-      // Stop listening for new rides while in a ride
+      // 4. Stop listening for new rides while in a ride
       _stopNewRidesSubscription();
 
       _log.i('Ride $rideId accepted by driver $userId');
+      return true;
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      _log.e('Failed to accept ride $rideId: $e');
+      state = state.copyWith(isLoading: false, error: e.toString());
+      return false;
     }
   }
 
-  Future<void> rejectRide() async {
-    // Simply clear the pending ride — another driver can pick it up
+  // ─── Reject a ride (just clear pending) ───
+  void rejectRide() {
     state = state.copyWith(clearPendingRide: true);
     _log.i('Ride rejected by driver');
   }
 
-  Future<void> completeRide(String rideId) async {
+  // ─── Complete a ride ───
+  Future<bool> completeRide() async {
+    final ride = state.currentRide;
+    if (ride == null) return false;
+
     try {
-      await SupabaseService.instance.update('rides', rideId, {
+      // 1. Update ride status in DB
+      await SupabaseService.instance.update('rides', ride.id, {
         'status': 'completed',
         'completed_at': DateTime.now().toIso8601String(),
       });
 
+      // 2. Update driver stats in DB
       final driver = state.driver;
       if (driver != null) {
         await SupabaseService.instance.update('drivers', driver.id, {
@@ -202,18 +222,22 @@ class DriverNotifier extends StateNotifier<DriverState> {
         state = state.copyWith(
           totalRides: driver.totalRides + 1,
           totalEarnings: driver.totalEarnings + AppConstants.driverEarning,
-          clearCurrentRideId: true,
         );
       }
 
-      // Re-subscribe to new rides if still online
+      // 3. Clear current ride
+      state = state.copyWith(clearCurrentRide: true);
+
+      // 4. Re-subscribe to new rides if still online
       if (state.isOnline) {
         _subscribeToNewRides();
       }
 
-      _log.i('Ride $rideId completed');
+      _log.i('Ride ${ride.id} completed');
+      return true;
     } catch (e) {
       state = state.copyWith(error: e.toString());
+      return false;
     }
   }
 
