@@ -28,39 +28,6 @@ class _EarningsScreenState extends ConsumerState<EarningsScreen> {
     });
   }
 
-  // ─── Computed stats from real ride history ───
-
-  /// Average price per completed ride (falls back to base price if no rides)
-  double get _avgPrice {
-    if (_rideHistory.isEmpty) return AppConstants.ridePrice;
-    final total = _rideHistory.fold<double>(0, (sum, r) => sum + r.price);
-    return total / _rideHistory.length;
-  }
-
-  /// Average driver earning per ride (50% of average price)
-  double get _avgEarning => _avgPrice / 2;
-
-  /// Average commission per ride (50% of average price)
-  double get _avgCommission => _avgPrice / 2;
-
-  /// Most expensive ride price
-  double get _maxPrice {
-    if (_rideHistory.isEmpty) return AppConstants.ridePrice;
-    return _rideHistory.fold<double>(0, (max, r) => r.price > max ? r.price : max);
-  }
-
-  /// Cheapest ride price
-  double get _minPrice {
-    if (_rideHistory.isEmpty) return AppConstants.ridePrice;
-    return _rideHistory.fold<double>(
-        double.infinity, (min, r) => r.price < min ? r.price : min);
-  }
-
-  /// Formatted labels for the stats card
-  String get _avgPriceLabel => Formatters.formatPrice(_avgPrice);
-  String get _avgEarningLabel => Formatters.formatPrice(_avgEarning);
-  String get _avgCommissionLabel => Formatters.formatPrice(_avgCommission);
-
   Future<void> _loadRideHistory() async {
     setState(() => _isLoadingHistory = true);
     try {
@@ -143,21 +110,14 @@ class _EarningsScreenState extends ConsumerState<EarningsScreen> {
                 ),
               ),
               SizedBox(height: 24.h),
-              Text('Statistiques', style: AppTextStyles.labelLarge),
+              Text('Détails', style: AppTextStyles.labelLarge),
               SizedBox(height: 12.h),
               InggoCard(
                 child: Column(
                   children: [
-                    _row('Prix moyen/course', _avgPriceLabel),
-                    _row('Votre gain moyen', _avgEarningLabel),
-                    _row('Commission moyenne (50%)', _avgCommissionLabel),
-                    if (_rideHistory.isNotEmpty) ...[
-                      const Divider(),
-                      _row('Course la + chère',
-                          Formatters.formatPrice(_maxPrice)),
-                      _row('Course la - chère',
-                          Formatters.formatPrice(_minPrice)),
-                    ],
+                    _row('Prix par course', Formatters.formatPrice(250)),
+                    _row('Votre gain/course', Formatters.formatPrice(125)),
+                    _row('Commission (50%)', Formatters.formatPrice(125)),
                   ],
                 ),
               ),
