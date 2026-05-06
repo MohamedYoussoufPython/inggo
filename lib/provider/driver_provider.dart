@@ -16,7 +16,7 @@ class DriverState {
   final int totalRides;
   final String? error;
   final RideModel? pendingRide; // New ride request received from Realtime
-  final String? currentRideId; // ID of the ride the driver accepted
+  final RideModel? currentRide; // Full ride model after accepting (with coords)
 
   const DriverState({
     this.isLoading = false,
@@ -26,7 +26,7 @@ class DriverState {
     this.totalRides = 0,
     this.error,
     this.pendingRide,
-    this.currentRideId,
+    this.currentRide,
   });
 
   DriverState copyWith({
@@ -37,9 +37,9 @@ class DriverState {
     int? totalRides,
     String? error,
     RideModel? pendingRide,
-    String? currentRideId,
+    RideModel? currentRide,
     bool clearPendingRide = false,
-    bool clearCurrentRideId = false,
+    bool clearCurrentRide = false,
   }) {
     return DriverState(
       isLoading: isLoading ?? this.isLoading,
@@ -49,7 +49,7 @@ class DriverState {
       totalRides: totalRides ?? this.totalRides,
       error: error,
       pendingRide: clearPendingRide ? null : (pendingRide ?? this.pendingRide),
-      currentRideId: clearCurrentRideId ? null : (currentRideId ?? this.currentRideId),
+      currentRide: clearCurrentRide ? null : (currentRide ?? this.currentRide),
     );
   }
 }
@@ -165,9 +165,14 @@ class DriverNotifier extends StateNotifier<DriverState> {
         'accepted_at': DateTime.now().toIso8601String(),
       });
 
-      // Store the current ride ID and clear pending
+      // Store the full current ride with coords (from pendingRide) and clear pending
+      final acceptedRide = state.pendingRide?.copyWith(
+        status: RideStatus.accepted,
+        driverId: userId,
+      );
+
       state = state.copyWith(
-        currentRideId: rideId,
+        currentRide: acceptedRide,
         clearPendingRide: true,
       );
 
@@ -202,7 +207,7 @@ class DriverNotifier extends StateNotifier<DriverState> {
         state = state.copyWith(
           totalRides: driver.totalRides + 1,
           totalEarnings: driver.totalEarnings + AppConstants.driverEarning,
-          clearCurrentRideId: true,
+          clearCurrentRide: true,
         );
       }
 

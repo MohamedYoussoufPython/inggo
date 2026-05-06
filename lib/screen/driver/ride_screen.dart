@@ -19,12 +19,20 @@ class _DriverRideScreenState extends ConsumerState<DriverRideScreen> {
   @override
   Widget build(BuildContext context) {
     final driverState = ref.watch(driverProvider);
-    final rideId = driverState.currentRideId;
+    final ride = driverState.currentRide;
+    final rideId = ride?.id;
 
     return Scaffold(
       body: Stack(
         children: [
-          const MapWidget(),
+          MapWidget(
+            pickupLat: ride?.pickupLat,
+            pickupLng: ride?.pickupLng,
+            dropoffLat: ride?.dropoffLat,
+            dropoffLng: ride?.dropoffLng,
+            initialLat: ride?.pickupLat ?? AppConstants.defaultLat,
+            initialLng: ride?.pickupLng ?? AppConstants.defaultLng,
+          ),
           // Bottom panel
           Positioned(
             left: 0,
@@ -47,9 +55,11 @@ class _DriverRideScreenState extends ConsumerState<DriverRideScreen> {
                   ),
                   SizedBox(height: 8.h),
                   if (!_pickedUp) ...[
-                    Text('Rendez-vous au point de départ',
-                        style: AppTextStyles.bodyMedium.copyWith(
-                            color: AppColors.textSecondary)),
+                    Text(
+                      ride?.pickupAddress ?? 'Rendez-vous au point de départ',
+                      style: AppTextStyles.bodyMedium.copyWith(
+                          color: AppColors.textSecondary),
+                    ),
                     SizedBox(height: 16.h),
                     InggoButton(
                       label: 'Arrivé au départ',
@@ -57,9 +67,11 @@ class _DriverRideScreenState extends ConsumerState<DriverRideScreen> {
                       onPressed: () => setState(() => _pickedUp = true),
                     ),
                   ] else ...[
-                    Text('Conduisez le client à sa destination',
-                        style: AppTextStyles.bodyMedium.copyWith(
-                            color: AppColors.textSecondary)),
+                    Text(
+                      ride?.dropoffAddress ?? 'Conduisez le client à sa destination',
+                      style: AppTextStyles.bodyMedium.copyWith(
+                          color: AppColors.textSecondary),
+                    ),
                     SizedBox(height: 16.h),
                     InggoButton(
                       label: 'Terminer la course',

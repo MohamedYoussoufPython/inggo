@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/constants.dart';
 import '../../core/utils/formatters.dart';
@@ -39,7 +40,7 @@ class _RideRequestScreenState extends ConsumerState<RideRequestScreen>
       if (_remainingSeconds <= 0) {
         timer.cancel();
         ref.read(driverProvider.notifier).rejectRide();
-        Navigator.pop(context);
+        context.go('/driver/home');
       }
     });
   }
@@ -48,13 +49,15 @@ class _RideRequestScreenState extends ConsumerState<RideRequestScreen>
     _timer?.cancel();
     final rideId = widget.ride.id;
     ref.read(driverProvider.notifier).acceptRide(rideId);
-    Navigator.pop(context, true);
+    // Navigate to the active ride screen (not pop — the ride is in progress)
+    context.go('/driver/ride');
   }
 
   void _reject() {
     _timer?.cancel();
     ref.read(driverProvider.notifier).rejectRide();
-    Navigator.pop(context, false);
+    // Return to driver home screen
+    context.go('/driver/home');
   }
 
   @override
