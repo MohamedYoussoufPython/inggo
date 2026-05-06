@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/constants.dart';
 import '../../core/utils/formatters.dart';
 import '../../widget/widgets.dart';
@@ -90,11 +91,12 @@ class TripInProgressScreen extends ConsumerWidget {
                   Text('Votre chauffeur arrive',
                       style: AppTextStyles.labelLarge),
                   SizedBox(height: 12.h),
-                  const DriverCard(
-                    name: 'Chauffeur',
-                    rating: 5.0,
-                    totalRides: 0,
-                    plateNumber: 'DJ 0000',
+                  DriverCard(
+                    name: ride.driverName ?? 'Chauffeur',
+                    rating: ride.driverRating,
+                    totalRides: ride.driverTotalRides,
+                    plateNumber: ride.driverPlateNumber,
+                    avatarUrl: ride.driverAvatarUrl,
                   ),
                   SizedBox(height: 12.h),
                   Row(
@@ -105,7 +107,8 @@ class TripInProgressScreen extends ConsumerWidget {
                           type: InggoButtonType.outline,
                           size: InggoButtonSize.medium,
                           icon: Icons.phone,
-                          onPressed: () {},
+                          onPressed: () => _callDriver(
+                              context, ride.driverPhone),
                         ),
                       ),
                       SizedBox(width: 12.w),
@@ -131,5 +134,35 @@ class TripInProgressScreen extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  /// Launch phone dialer with the driver's phone number
+  Future<void> _callDriver(BuildContext context, String? phone) async {
+    if (phone == null || phone.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Numéro de téléphone du chauffeur non disponible.'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+      return;
+    }
+
+    // Ensure the phone number includes the country code (+253 for Djibouti)
+    final formattedPhone = phone.startsWith('+') ? phone : '+253$phone';
+    final uri = Uri(scheme: 'tel', path: formattedPhone);
+
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Impossible de lancer l\'appel.'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    }
   }
 }

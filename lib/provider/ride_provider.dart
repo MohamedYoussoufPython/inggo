@@ -19,6 +19,14 @@ class RideState {
   final double? dropoffLat;
   final double? dropoffLng;
 
+  // Driver info — fetched from Supabase when a driver accepts the ride
+  final String? driverName;
+  final String? driverPhone;
+  final String? driverPlateNumber;
+  final double driverRating;
+  final int driverTotalRides;
+  final String? driverAvatarUrl;
+
   const RideState({
     this.isLoading = false,
     this.currentRide,
@@ -31,6 +39,12 @@ class RideState {
     this.dropoffAddress,
     this.dropoffLat,
     this.dropoffLng,
+    this.driverName,
+    this.driverPhone,
+    this.driverPlateNumber,
+    this.driverRating = 5.0,
+    this.driverTotalRides = 0,
+    this.driverAvatarUrl,
   });
 
   RideState copyWith({
@@ -45,6 +59,13 @@ class RideState {
     String? dropoffAddress,
     double? dropoffLat,
     double? dropoffLng,
+    String? driverName,
+    String? driverPhone,
+    String? driverPlateNumber,
+    double? driverRating,
+    int? driverTotalRides,
+    String? driverAvatarUrl,
+    bool clearDriverInfo = false,
   }) {
     return RideState(
       isLoading: isLoading ?? this.isLoading,
@@ -59,6 +80,17 @@ class RideState {
       dropoffAddress: dropoffAddress ?? this.dropoffAddress,
       dropoffLat: dropoffLat ?? this.dropoffLat,
       dropoffLng: dropoffLng ?? this.dropoffLng,
+      driverName: clearDriverInfo ? null : (driverName ?? this.driverName),
+      driverPhone: clearDriverInfo ? null : (driverPhone ?? this.driverPhone),
+      driverPlateNumber: clearDriverInfo
+          ? null
+          : (driverPlateNumber ?? this.driverPlateNumber),
+      driverRating:
+          clearDriverInfo ? 5.0 : (driverRating ?? this.driverRating),
+      driverTotalRides:
+          clearDriverInfo ? 0 : (driverTotalRides ?? this.driverTotalRides),
+      driverAvatarUrl:
+          clearDriverInfo ? null : (driverAvatarUrl ?? this.driverAvatarUrl),
     );
   }
 }
@@ -96,8 +128,10 @@ class RideNotifier extends StateNotifier<RideState> {
       if (userId == null) throw Exception('Non authentifié');
 
       final position = await LocationService.instance.getCurrentPosition();
-      final pickupLat = state.pickupLat ?? position?.latitude ?? AppConstants.defaultLat;
-      final pickupLng = state.pickupLng ?? position?.longitude ?? AppConstants.defaultLng;
+      final pickupLat =
+          state.pickupLat ?? position?.latitude ?? AppConstants.defaultLat;
+      final pickupLng =
+          state.pickupLng ?? position?.longitude ?? AppConstants.defaultLng;
 
       final data = await SupabaseService.instance.insert('rides', {
         'client_id': userId,
@@ -134,7 +168,8 @@ class RideNotifier extends StateNotifier<RideState> {
       filterColumn: 'id',
       filterValue: rideId,
       onChange: (payload) {
-        _log.i('Ride update: ${payload.eventType} — new status: ${payload.newRecord['status']}');
+        _log.i(
+            'Ride update: ${payload.eventType} — new status: ${payload.newRecord['status']}');
 
         final newStatus = payload.newRecord['status'] as String?;
         if (newStatus == null) return;
@@ -155,8 +190,43 @@ class RideNotifier extends StateNotifier<RideState> {
         );
 
         state = state.copyWith(currentRide: updatedRide);
+
+        // When a driver accepts the ride, fetch their profile info
+        final newDriverId = payload.newRecord['driver_id'] as String?;
+        if (newDriverId != null && currentRide.driverId == null) {
+          _fetchDriverInfo(newDriverId);
+        }
       },
     );
+  }
+
+  /// Fetch driver profile and vehicle info from Supabase
+  Future<void> _fetchDriverInfo(String driverId) async {
+    try {
+      _log.i('Fetching driver info for $driverId');
+
+      // Fetch profile (name, phone, avatar) and driver record (plate, rating, rides)
+      final results = await Future.wait([
+        SupabaseService.instance.getById('profiles', driverId),
+        SupabaseService.instance.getById('drivers', driverId),
+      ]);
+
+      final profile = results[0];
+      final driver = results[1];
+
+      state = state.copyWith(
+        driverName: profile['full_name'] as String?,
+        driverPhone: profile['phone'] as String?,
+        driverAvatarUrl: profile['avatar_url'] as String?,
+        driverPlateNumber: driver['plate_number'] as String?,
+        driverRating: (driver['rating'] as num?)?.toDouble() ?? 5.0,
+        driverTotalRides: driver['total_rides'] as int? ?? 0,
+      );
+
+      _log.i('Driver info loaded: ${state.driverName}');
+    } catch (e) {
+      _log.e('Failed to fetch driver info: $e');
+    }
   }
 
   void _stopRideSubscription() {
@@ -196,7 +266,8 @@ class RideNotifier extends StateNotifier<RideState> {
         {'rating': rating, 'review': review},
       );
       state = state.copyWith(
-        currentRide: state.currentRide!.copyWith(rating: rating, review: review),
+        currentRide:
+            state.currentRide!.copyWith(rating: rating, review: review),
       );
     } catch (e) {
       state = state.copyWith(error: e.toString());
