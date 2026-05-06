@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/constants.dart';
 import '../../widget/widgets.dart';
 import '../../provider/ride_provider.dart';
+import '../../model/ride_model.dart';
 
 class SearchingDriverScreen extends ConsumerStatefulWidget {
   const SearchingDriverScreen({super.key});
@@ -34,11 +35,20 @@ class _SearchingDriverScreenState extends ConsumerState<SearchingDriverScreen> {
       }
     });
 
-    // Listen for ride changes (driver accepts)
+    // Listen for ride changes — now powered by Realtime Supabase
+    // The RideNotifier subscribes to Realtime when createRide() is called,
+    // so when the driver accepts, the state is updated automatically.
     ref.listenManual(rideProvider, (prev, next) {
-      if (next.currentRide?.status.name == 'accepted') {
+      final status = next.currentRide?.status;
+
+      if (status == RideStatus.accepted) {
+        // Driver accepted the ride → navigate to trip in progress
         _timer?.cancel();
         context.go('/client/trip');
+      } else if (status == RideStatus.cancelled) {
+        // Ride was cancelled
+        _timer?.cancel();
+        context.go('/client/home');
       }
     });
   }

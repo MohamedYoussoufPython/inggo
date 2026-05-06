@@ -91,7 +91,7 @@ class RideModel {
       tipAmount: (json['tip_amount'] as num?)?.toDouble() ?? 0.0,
       paymentMethod: _parsePaymentMethod(json['payment_method'] as String?),
       paymentStatus: _parsePaymentStatus(json['payment_status'] as String?),
-      status: _parseRideStatus(json['status'] as String?),
+      status: parseRideStatus(json['status'] as String?),
       cancelReason: json['cancel_reason'] as String?,
       rating: (json['rating'] as num?)?.toDouble(),
       review: json['review'] as String?,
@@ -110,7 +110,7 @@ class RideModel {
     );
   }
 
-  static RideStatus _parseRideStatus(String? status) {
+  static RideStatus parseRideStatus(String? status) {
     switch (status) {
       case 'searching':
         return RideStatus.searching;

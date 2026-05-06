@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:logger/logger.dart';
 import '../core/services/supabase_service.dart';
 import '../core/services/location_service.dart';
 import '../core/constants/app_constants.dart';
@@ -64,6 +66,9 @@ class RideState {
 class RideNotifier extends StateNotifier<RideState> {
   RideNotifier() : super(const RideState());
 
+  static final _log = Logger();
+  RealtimeChannel? _rideChannel;
+
   void setPickup(String address, double lat, double lng) {
     state = state.copyWith(
       pickupAddress: address,
@@ -110,8 +115,55 @@ class RideNotifier extends StateNotifier<RideState> {
 
       final ride = RideModel.fromJson(data);
       state = state.copyWith(isLoading: false, currentRide: ride);
+
+      // Start listening for ride updates (driver accepts, etc.)
+      _subscribeToRideUpdates(ride.id);
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
+    }
+  }
+
+  /// Subscribe to Realtime updates on the current ride
+  void _subscribeToRideUpdates(String rideId) {
+    _stopRideSubscription(); // clean any previous subscription
+
+    _log.i('Subscribing to ride updates for $rideId');
+
+    _rideChannel = SupabaseService.instance.subscribeToTable(
+      'rides',
+      filterColumn: 'id',
+      filterValue: rideId,
+      onChange: (payload) {
+        _log.i('Ride update: ${payload.eventType} — new status: ${payload.newRecord['status']}');
+
+        final newStatus = payload.newRecord['status'] as String?;
+        if (newStatus == null) return;
+
+        final currentRide = state.currentRide;
+        if (currentRide == null) return;
+
+        final updatedRide = currentRide.copyWith(
+          status: RideModel.parseRideStatus(newStatus),
+          driverId: payload.newRecord['driver_id'] as String?,
+          acceptedAt: payload.newRecord['accepted_at'] != null
+              ? DateTime.parse(payload.newRecord['accepted_at'] as String)
+              : null,
+          completedAt: payload.newRecord['completed_at'] != null
+              ? DateTime.parse(payload.newRecord['completed_at'] as String)
+              : null,
+          cancelReason: payload.newRecord['cancel_reason'] as String?,
+        );
+
+        state = state.copyWith(currentRide: updatedRide);
+      },
+    );
+  }
+
+  void _stopRideSubscription() {
+    if (_rideChannel != null) {
+      SupabaseService.instance.unsubscribe(_rideChannel!);
+      _rideChannel = null;
+      _log.i('Unsubscribed from ride updates');
     }
   }
 
@@ -129,6 +181,7 @@ class RideNotifier extends StateNotifier<RideState> {
           cancelReason: reason,
         ),
       );
+      _stopRideSubscription();
     } catch (e) {
       state = state.copyWith(error: e.toString());
     }
@@ -170,7 +223,14 @@ class RideNotifier extends StateNotifier<RideState> {
   }
 
   void reset() {
+    _stopRideSubscription();
     state = const RideState();
+  }
+
+  @override
+  void dispose() {
+    _stopRideSubscription();
+    super.dispose();
   }
 }
 

@@ -4,11 +4,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/constants.dart';
 import '../../core/utils/formatters.dart';
+import '../../model/ride_model.dart';
 import '../../widget/widgets.dart';
 import '../../provider/driver_provider.dart';
 
 class RideRequestScreen extends ConsumerStatefulWidget {
-  const RideRequestScreen({super.key});
+  final RideModel ride;
+
+  const RideRequestScreen({super.key, required this.ride});
 
   @override
   ConsumerState<RideRequestScreen> createState() => _RideRequestScreenState();
@@ -35,15 +38,23 @@ class _RideRequestScreenState extends ConsumerState<RideRequestScreen>
       setState(() => _remainingSeconds--);
       if (_remainingSeconds <= 0) {
         timer.cancel();
+        ref.read(driverProvider.notifier).rejectRide();
         Navigator.pop(context);
       }
     });
   }
 
-  void _accept(String rideId) {
+  void _accept() {
     _timer?.cancel();
+    final rideId = widget.ride.id;
     ref.read(driverProvider.notifier).acceptRide(rideId);
     Navigator.pop(context, true);
+  }
+
+  void _reject() {
+    _timer?.cancel();
+    ref.read(driverProvider.notifier).rejectRide();
+    Navigator.pop(context, false);
   }
 
   @override
@@ -55,6 +66,8 @@ class _RideRequestScreenState extends ConsumerState<RideRequestScreen>
 
   @override
   Widget build(BuildContext context) {
+    final ride = widget.ride;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -72,16 +85,25 @@ class _RideRequestScreenState extends ConsumerState<RideRequestScreen>
               InggoCard(
                 child: Column(
                   children: [
-                    _row(Icons.trip_origin, 'Départ', 'Position client'),
+                    _row(Icons.trip_origin, 'Départ', ride.pickupAddress),
                     SizedBox(height: 8.h),
-                    _row(Icons.location_on, 'Arrivée', 'Destination'),
+                    _row(Icons.location_on, 'Arrivée', ride.dropoffAddress),
                     const Divider(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Prix', style: AppTextStyles.bodyMedium),
-                        Text(Formatters.formatPrice(250),
+                        Text(Formatters.formatPrice(ride.price),
                         style: AppTextStyles.priceSmall),
+                      ],
+                    ),
+                    const Divider(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Paiement', style: AppTextStyles.bodyMedium),
+                        Text(_formatPaymentMethod(ride.paymentMethod.name),
+                            style: AppTextStyles.bodyLarge),
                       ],
                     ),
                   ],
@@ -94,14 +116,14 @@ class _RideRequestScreenState extends ConsumerState<RideRequestScreen>
                     child: InggoButton(
                       label: 'Refuser',
                       type: InggoButtonType.outline,
-                      onPressed: () => Navigator.pop(context, false),
+                      onPressed: _reject,
                     ),
                   ),
                   SizedBox(width: 12.w),
                   Expanded(
                     child: InggoButton(
                       label: 'Accepter',
-                      onPressed: () => _accept('ride_id'),
+                      onPressed: _accept,
                     ),
                   ),
                 ],
@@ -118,14 +140,33 @@ class _RideRequestScreenState extends ConsumerState<RideRequestScreen>
       children: [
         Icon(icon, size: 20.w, color: AppColors.primary),
         SizedBox(width: 8.w),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(label, style: AppTextStyles.caption),
-            Text(value, style: AppTextStyles.bodyLarge),
-          ],
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(label, style: AppTextStyles.caption),
+              Text(value, style: AppTextStyles.bodyLarge, overflow: TextOverflow.ellipsis),
+            ],
+          ),
         ),
       ],
     );
+  }
+
+  String _formatPaymentMethod(String method) {
+    switch (method) {
+      case 'waafi':
+        return 'Waafi';
+      case 'dmoney':
+        return 'DMoney';
+      case 'cacpay':
+        return 'CacPay';
+      case 'sabapay':
+        return 'SabaPay';
+      case 'dahabplus':
+        return 'Dahab+';
+      default:
+        return 'Espèces';
+    }
   }
 }

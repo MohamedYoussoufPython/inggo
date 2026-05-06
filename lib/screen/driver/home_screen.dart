@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/constants.dart';
 import '../../core/utils/formatters.dart';
 import '../../widget/widgets.dart';
 import '../../provider/driver_provider.dart';
+import '../../model/ride_model.dart';
 
 class DriverHomeScreen extends ConsumerStatefulWidget {
   const DriverHomeScreen({super.key});
@@ -23,6 +25,14 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
   @override
   Widget build(BuildContext context) {
     final driver = ref.watch(driverProvider);
+
+    // Listen for new ride requests from Realtime
+    ref.listen<DriverState>(driverProvider, (prev, next) {
+      // When a new pendingRide arrives and we didn't have one before, show the request screen
+      if (next.pendingRide != null && prev?.pendingRide == null) {
+        _showRideRequest(next.pendingRide!);
+      }
+    });
 
     return Scaffold(
       body: SafeArea(
@@ -117,5 +127,10 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
       ),
       bottomNavigationBar: InggoBottomNav(currentIndex: 0, isDriver: true),
     );
+  }
+
+  /// Navigate to the ride request screen with the ride data
+  void _showRideRequest(RideModel ride) {
+    context.go('/driver/ride-request', extra: ride);
   }
 }
