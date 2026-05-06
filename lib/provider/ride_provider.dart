@@ -31,6 +31,9 @@ class RideState {
   final double? driverLat;
   final double? driverLng;
 
+  // Calculated price based on distance
+  final double? calculatedPrice;
+
   const RideState({
     this.isLoading = false,
     this.currentRide,
@@ -51,6 +54,7 @@ class RideState {
     this.driverAvatarUrl,
     this.driverLat,
     this.driverLng,
+    this.calculatedPrice,
   });
 
   RideState copyWith({
@@ -73,6 +77,7 @@ class RideState {
     String? driverAvatarUrl,
     double? driverLat,
     double? driverLng,
+    double? calculatedPrice,
     bool clearDriverInfo = false,
   }) {
     return RideState(
@@ -101,6 +106,7 @@ class RideState {
           clearDriverInfo ? null : (driverAvatarUrl ?? this.driverAvatarUrl),
       driverLat: clearDriverInfo ? null : (driverLat ?? this.driverLat),
       driverLng: clearDriverInfo ? null : (driverLng ?? this.driverLng),
+      calculatedPrice: calculatedPrice ?? this.calculatedPrice,
     );
   }
 }
@@ -132,6 +138,10 @@ class RideNotifier extends StateNotifier<RideState> {
     state = state.copyWith(selectedPaymentMethod: method);
   }
 
+  void setCalculatedPrice(double price) {
+    state = state.copyWith(calculatedPrice: price);
+  }
+
   Future<void> createRide() async {
     state = state.copyWith(isLoading: true, error: null);
     try {
@@ -152,8 +162,8 @@ class RideNotifier extends StateNotifier<RideState> {
         'dropoff_address': state.dropoffAddress ?? '',
         'dropoff_lat': state.dropoffLat ?? 0.0,
         'dropoff_lng': state.dropoffLng ?? 0.0,
-        'price': AppConstants.ridePrice,
-        'commission': AppConstants.rideCommission,
+        'price': state.calculatedPrice ?? AppConstants.ridePrice,
+        'commission': (state.calculatedPrice ?? AppConstants.ridePrice) / 2,
         'payment_method': state.selectedPaymentMethod,
         'status': 'searching',
       });

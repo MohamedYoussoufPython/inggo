@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/constants/constants.dart';
 import '../../widget/widgets.dart';
 import '../../provider/auth_provider.dart';
@@ -14,6 +15,29 @@ class SettingsScreen extends ConsumerStatefulWidget {
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool _notificationsEnabled = true;
+  bool _prefsLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPrefs();
+  }
+
+  Future<void> _loadPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (mounted) {
+      setState(() {
+        _notificationsEnabled = prefs.getBool('notifications_enabled') ?? true;
+        _prefsLoaded = true;
+      });
+    }
+  }
+
+  Future<void> _onNotificationChanged(bool val) async {
+    setState(() => _notificationsEnabled = val);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('notifications_enabled', val);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +64,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   style: AppTextStyles.bodySmall),
               value: _notificationsEnabled,
               activeThumbColor: AppColors.primary,
-              onChanged: (val) => setState(() => _notificationsEnabled = val),
+              onChanged: _prefsLoaded ? _onNotificationChanged : null,
             ),
             SizedBox(height: 24.h),
             Text('À propos', style: AppTextStyles.labelLarge),
@@ -61,7 +85,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(label, style: AppTextStyles.bodyMedium),
-          Text(value, style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary)),
+          Text(value,
+              style: AppTextStyles.bodyMedium
+                  .copyWith(color: AppColors.textSecondary)),
         ],
       ),
     );
