@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:logger/logger.dart';
 import '../core/services/supabase_service.dart';
+import '../core/services/notification_service.dart';
 import '../core/services/location_service.dart';
 import '../core/constants/app_constants.dart';
 import '../model/driver_model.dart';
@@ -15,8 +16,8 @@ class DriverState {
   final double totalEarnings;
   final int totalRides;
   final String? error;
-  final RideModel? pendingRide;  // Ride received from Realtime, awaiting driver action
-  final RideModel? currentRide;  // Ride the driver accepted (full data from DB)
+  final RideModel? pendingRide; // Ride received from Realtime, awaiting driver action
+  final RideModel? currentRide; // Ride the driver accepted (full data from DB)
 
   const DriverState({
     this.isLoading = false,
@@ -49,8 +50,10 @@ class DriverState {
       totalEarnings: totalEarnings ?? this.totalEarnings,
       totalRides: totalRides ?? this.totalRides,
       error: clearError ? null : (error ?? this.error),
-      pendingRide: clearPendingRide ? null : (pendingRide ?? this.pendingRide),
-      currentRide: clearCurrentRide ? null : (currentRide ?? this.currentRide),
+      pendingRide:
+          clearPendingRide ? null : (pendingRide ?? this.pendingRide),
+      currentRide:
+          clearCurrentRide ? null : (currentRide ?? this.currentRide),
     );
   }
 }
@@ -154,7 +157,8 @@ class DriverNotifier extends StateNotifier<DriverState> {
 
   // ─── Accept a ride ───
   // Returns true on success, false on failure.
-  // On success, currentRide is populated with full data from DB.
+  // On success, currentRide is populated with full data from DB
+  // and the client receives a push notification.
   Future<bool> acceptRide(String rideId) async {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
@@ -185,6 +189,19 @@ class DriverNotifier extends StateNotifier<DriverState> {
       // 4. Stop listening for new rides while in a ride
       _stopNewRidesSubscription();
 
+      // 5. Notify the client that their ride was accepted
+      try {
+        await NotificationService.instance.sendNotification(
+          userId: acceptedRide.clientId,
+          title: 'Chauffeur trouvé !',
+          body: 'Un chauffeur a accepté votre course. Il arrive...',
+          type: 'ride_accepted',
+          data: {'ride_id': rideId},
+        );
+      } catch (e) {
+        _log.w('Failed to send acceptance notification: $e');
+      }
+
       _log.i('Ride $rideId accepted by driver $userId');
       return true;
     } catch (e) {
@@ -201,6 +218,9 @@ class DriverNotifier extends StateNotifier<DriverState> {
   }
 
   // ─── Complete a ride ───
+  // Does NOT clear currentRide — the EndRideScreen still needs it to display
+  // the real price/commission. Call clearCompletedRide() when the driver
+  // leaves the EndRideScreen.
   Future<bool> completeRide() async {
     final ride = state.currentRide;
     if (ride == null) return false;
@@ -212,12 +232,18 @@ class DriverNotifier extends StateNotifier<DriverState> {
         'completed_at': DateTime.now().toIso8601String(),
       });
 
-      // 2. Update driver stats in DB
+      // 2. Update local ride status (keep data for EndRideScreen)
+      state = state.copyWith(
+        currentRide: ride.copyWith(status: RideStatus.completed),
+      );
+
+      // 3. Update driver stats in DB
       final driver = state.driver;
       if (driver != null) {
         await SupabaseService.instance.update('drivers', driver.id, {
           'total_rides': driver.totalRides + 1,
-          'total_earnings': driver.totalEarnings + AppConstants.driverEarning,
+          'total_earnings':
+              driver.totalEarnings + AppConstants.driverEarning,
         });
         state = state.copyWith(
           totalRides: driver.totalRides + 1,
@@ -225,12 +251,22 @@ class DriverNotifier extends StateNotifier<DriverState> {
         );
       }
 
-      // 3. Clear current ride
-      state = state.copyWith(clearCurrentRide: true);
-
       // 4. Re-subscribe to new rides if still online
       if (state.isOnline) {
         _subscribeToNewRides();
+      }
+
+      // 5. Notify the client that the ride is completed
+      try {
+        await NotificationService.instance.sendNotification(
+          userId: ride.clientId,
+          title: 'Course terminée',
+          body: 'Votre course est terminée. Merci d\'avoir utilisé Inggo !',
+          type: 'ride_completed',
+          data: {'ride_id': ride.id},
+        );
+      } catch (e) {
+        _log.w('Failed to send completion notification: $e');
       }
 
       _log.i('Ride ${ride.id} completed');
@@ -239,6 +275,12 @@ class DriverNotifier extends StateNotifier<DriverState> {
       state = state.copyWith(error: e.toString());
       return false;
     }
+  }
+
+  // ─── Clear the completed ride after the driver leaves EndRideScreen ───
+  void clearCompletedRide() {
+    state = state.copyWith(clearCurrentRide: true);
+    _log.i('Completed ride cleared from state');
   }
 
   @override
