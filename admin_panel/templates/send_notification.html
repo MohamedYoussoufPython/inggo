@@ -1,46 +1,28 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inggo Admin - Notifications</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-    <nav class="sidebar">
-        <div class="sidebar-logo"><span class="logo-icon">🏍️</span><span class="logo-text">INGGO</span></div>
-        <ul class="sidebar-menu">
-            <li><a href="/"><span class="icon">📊</span> Dashboard</a></li>
-            <li><a href="/drivers"><span class="icon">🏍️</span> Chauffeurs</a></li>
-            <li><a href="/rides"><span class="icon">🚗</span> Courses</a></li>
-            <li><a href="/clients"><span class="icon">👥</span> Clients</a></li>
-            <li><a href="/landmarks"><span class="icon">📍</span> Lieux</a></li>
-            <li class="active"><a href="/notifications/send"><span class="icon">🔔</span> Notifications</a></li>
-            <li><a href="/logout"><span class="icon">🚪</span> Déconnexion</a></li>
-        </ul>
-    </nav>
-    <main class="content">
-        <header class="top-bar"><h1>Envoyer une Notification</h1></header>
-        <div class="card">
-            <form method="POST">
-                <div class="form-group">
-                    <label>Destinataire</label>
-                    <select name="target">
-                        <option value="all">Tous les utilisateurs</option>
-                        <option value="drivers">Tous les chauffeurs</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Titre</label>
-                    <input type="text" name="title" placeholder="Titre de la notification" required>
-                </div>
-                <div class="form-group">
-                    <label>Message</label>
-                    <textarea name="body" rows="4" placeholder="Contenu de la notification" required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Envoyer</button>
-            </form>
+{% extends "base.html" %}
+{% set active_page = 'notifications' %}
+
+{% block title %}Inggo Admin - Notifications{% endblock %}
+
+{% block content %}
+<header class="top-bar"><h1>Envoyer une Notification</h1></header>
+<div class="card">
+    <form method="POST">
+        <div class="form-group">
+            <label>Destinataire</label>
+            <select name="target">
+                <option value="all">Tous les utilisateurs</option>
+                <option value="drivers">Tous les chauffeurs</option>
+            </select>
         </div>
-    </main>
-</body>
-</html>
+        <div class="form-group">
+            <label>Titre</label>
+            <input type="text" name="title" placeholder="Titre de la notification" required>
+        </div>
+        <div class="form-group">
+            <label>Message</label>
+            <textarea name="body" rows="4" placeholder="Contenu de la notification" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Envoyer</button>
+    </form>
+</div>
+{% endblock %}

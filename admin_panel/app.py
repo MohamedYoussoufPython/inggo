@@ -16,7 +16,9 @@ supabase: Client = create_client(
     os.getenv('SUPABASE_SERVICE_KEY', ''),
 )
 
-ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD', 'inggo_admin_2024')
+ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD')
+if not ADMIN_PASSWORD:
+    raise RuntimeError('ADMIN_PASSWORD must be set in .env file')
 
 
 # ─── Auth Decorator ───
@@ -81,6 +83,7 @@ def dashboard():
             total_clients=total_clients.count if hasattr(total_clients, 'count') else len(total_clients.data),
             revenue_today=revenue_today,
             recent_rides=recent_rides.data,
+            now=datetime.now(),
         )
     except Exception as e:
         return render_template('dashboard.html',
@@ -140,6 +143,38 @@ def ban_driver(driver_id):
     except Exception as e:
         pass
     return redirect(url_for('drivers'))
+
+
+@app.route('/drivers/<driver_id>/documents')
+@login_required
+def driver_documents(driver_id):
+    try:
+        result = supabase.table('drivers').select(
+            '*, profile:profiles!drivers_id_fkey(full_name, phone)'
+        ).eq('id', driver_id).single().execute()
+        driver = result.data
+        # Get signed URLs for documents if they exist
+        docs = {}
+        for field, path in [
+            ('id_card', driver.get('id_card_url')),
+            ('license', driver.get('license_url')),
+            ('vehicle', driver.get('vehicle_photo_url')),
+        ]:
+            if path:
+                try:
+                    # Extract bucket and file path from the URL
+                    # The URL is typically: https://<project>.supabase.co/storage/v1/object/public/<bucket>/<path>
+                    signed = supabase.storage.from_('driver-documents').create_signed_url(
+                        path.replace('driver-documents/', ''), 3600
+                    )
+                    docs[field] = signed.get('signedURL', path)
+                except:
+                    docs[field] = path
+            else:
+                docs[field] = None
+        return render_template('driver_documents.html', driver=driver, docs=docs)
+    except Exception as e:
+        return render_template('driver_documents.html', driver=None, docs={}, error=str(e))
 
 
 # ─── Rides Management ───
@@ -223,22 +258,12 @@ def send_notification():
 
             if target == 'all':
                 users = supabase.table('profiles').select('id').execute()
-                for user in users.data:
-                    supabase.table('notifications').insert({
-                        'user_id': user['id'],
-                        'title': title,
-                        'body': body,
-                        'type': 'admin',
-                    }).execute()
+                notifications = [{'user_id': user['id'], 'title': title, 'body': body, 'type': 'admin'} for user in users.data]
+                supabase.table('notifications').insert(notifications).execute()
             elif target == 'drivers':
-                drivers = supabase.table('drivers').select('id').execute()
-                for d in drivers.data:
-                    supabase.table('notifications').insert({
-                        'user_id': d['id'],
-                        'title': title,
-                        'body': body,
-                        'type': 'admin',
-                    }).execute()
+                drivers_list = supabase.table('drivers').select('id').execute()
+                notifications = [{'user_id': d['id'], 'title': title, 'body': body, 'type': 'admin'} for d in drivers_list.data]
+                supabase.table('notifications').insert(notifications).execute()
             else:
                 supabase.table('notifications').insert({
                     'user_id': target,

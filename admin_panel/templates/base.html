@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Inggo Admin{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    {% block sidebar %}
+    <nav class="sidebar">
+        <div class="sidebar-logo">
+            <span class="logo-icon">🏍️</span>
+            <span class="logo-text">INGGO</span>
+        </div>
+        <ul class="sidebar-menu">
+            <li{% if active_page == 'dashboard' %} class="active"{% endif %}><a href="/"><span class="icon">📊</span> Dashboard</a></li>
+            <li{% if active_page == 'drivers' %} class="active"{% endif %}><a href="/drivers"><span class="icon">🏍️</span> Chauffeurs</a></li>
+            <li{% if active_page == 'rides' %} class="active"{% endif %}><a href="/rides"><span class="icon">🚗</span> Courses</a></li>
+            <li{% if active_page == 'clients' %} class="active"{% endif %}><a href="/clients"><span class="icon">👥</span> Clients</a></li>
+            <li{% if active_page == 'landmarks' %} class="active"{% endif %}><a href="/landmarks"><span class="icon">📍</span> Lieux</a></li>
+            <li{% if active_page == 'notifications' %} class="active"{% endif %}><a href="/notifications/send"><span class="icon">🔔</span> Notifications</a></li>
+            <li><a href="/logout"><span class="icon">🚪</span> Déconnexion</a></li>
+        </ul>
+    </nav>
+    {% endblock %}
+    <main class="content">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

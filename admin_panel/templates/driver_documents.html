@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% set active_page = 'drivers' %}
+
+{% block title %}Inggo Admin - Documents Chauffeur{% endblock %}
+
+{% block content %}
+<header class="top-bar">
+    <h1>Documents du Chauffeur</h1>
+    <a href="/drivers" class="btn btn-outline">← Retour</a>
+</header>
+
+{% if error %}
+<div class="alert alert-error">Erreur: {{ error }}</div>
+{% endif %}
+
+{% if driver %}
+<div class="card">
+    <h2>{{ driver.profile.full_name if driver.profile else 'Chauffeur inconnu' }}</h2>
+    <p>Téléphone : {{ driver.profile.phone if driver.profile else '-' }}</p>
+    <p>Statut :
+        {% if driver.is_verified %}
+        <span class="badge badge-completed">Vérifié</span>
+        {% else %}
+        <span class="badge badge-pending">En attente</span>
+        {% endif %}
+    </p>
+</div>
+
+<div class="card">
+    <h3>🪪 Carte d'identité (CNI)</h3>
+    {% if docs.id_card %}
+    <div class="doc-preview">
+        <a href="{{ docs.id_card }}" target="_blank" rel="noopener">
+            <img src="{{ docs.id_card }}" alt="Carte d'identité" style="max-width:100%;max-height:400px;border-radius:8px;">
+        </a>
+        <p><a href="{{ docs.id_card }}" target="_blank" rel="noopener">Ouvrir dans un nouvel onglet</a></p>
+    </div>
+    {% else %}
+    <p class="empty">Non fourni</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h3>📄 Permis de conduire</h3>
+    {% if docs.license %}
+    <div class="doc-preview">
+        <a href="{{ docs.license }}" target="_blank" rel="noopener">
+            <img src="{{ docs.license }}" alt="Permis de conduire" style="max-width:100%;max-height:400px;border-radius:8px;">
+        </a>
+        <p><a href="{{ docs.license }}" target="_blank" rel="noopener">Ouvrir dans un nouvel onglet</a></p>
+    </div>
+    {% else %}
+    <p class="empty">Non fourni</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h3>🏍️ Photo du véhicule</h3>
+    {% if docs.vehicle %}
+    <div class="doc-preview">
+        <a href="{{ docs.vehicle }}" target="_blank" rel="noopener">
+            <img src="{{ docs.vehicle }}" alt="Photo du véhicule" style="max-width:100%;max-height:400px;border-radius:8px;">
+        </a>
+        <p><a href="{{ docs.vehicle }}" target="_blank" rel="noopener">Ouvrir dans un nouvel onglet</a></p>
+    </div>
+    {% else %}
+    <p class="empty">Non fourni</p>
+    {% endif %}
+</div>
+
+<div class="card" style="display:flex;gap:12px;">
+    {% if not driver.is_verified %}
+    <form method="POST" action="/drivers/{{ driver.id }}/verify">
+        <button type="submit" class="btn btn-success">✅ Vérifier le chauffeur</button>
+    </form>
+    {% endif %}
+    {% if driver.is_verified %}
+    <form method="POST" action="/drivers/{{ driver.id }}/ban">
+        <button type="submit" class="btn btn-danger" onclick="return confirm('Suspendre ce chauffeur ?')">🚫 Suspendre</button>
+    </form>
+    {% endif %}
+</div>
+{% else %}
+<div class="card">
+    <p class="empty">Chauffeur introuvable</p>
+    <a href="/drivers" class="btn btn-outline">← Retour aux chauffeurs</a>
+</div>
+{% endif %}
+{% endblock %}

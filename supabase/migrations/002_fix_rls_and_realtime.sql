@@ -55,6 +55,7 @@ CREATE POLICY "Driver or client can update ride" ON rides FOR UPDATE USING (
 
 -- The original schema had no INSERT policy for notifications.
 -- Without this, NotificationService.sendNotification() fails silently.
+DROP POLICY IF EXISTS "Users can insert own notifications" ON notifications;
 CREATE POLICY "Users can insert own notifications" ON notifications
     FOR INSERT WITH CHECK (user_id = auth.uid());
 
