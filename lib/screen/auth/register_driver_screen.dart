@@ -46,7 +46,7 @@ class _RegisterDriverScreenState extends ConsumerState<RegisterDriverScreen> {
     try {
       final bytes = await image.readAsBytes();
       final path = 'drivers/${SupabaseService.instance.currentUserId}/$type/${image.name}';
-      final url = await SupabaseService.instance.uploadFile('documents', path, bytes);
+      final url = await SupabaseService.instance.uploadFile('driver-documents', path, bytes);
       setState(() {
         switch (type) {
           case 'id_card':

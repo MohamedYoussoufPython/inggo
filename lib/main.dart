@@ -16,10 +16,20 @@ void main() async {
     // .env file not found — will use empty defaults or fallback values
   }
 
-  // Init Supabase
+  // Init Supabase — fail fast with clear error if config missing
+  final supabaseUrl = dotenv.env['SUPABASE_URL'] ?? '';
+  final supabaseAnonKey = dotenv.env['SUPABASE_ANON_KEY'] ?? '';
+
+  if (supabaseUrl.isEmpty || supabaseAnonKey.isEmpty) {
+    debugPrint('═══════════════════════════════════════════════════');
+    debugPrint('ERREUR: SUPABASE_URL et/ou SUPABASE_ANON_KEY manquants.');
+    debugPrint('Vérifiez que le fichier .env existe à la racine du projet.');
+    debugPrint('═══════════════════════════════════════════════════');
+  }
+
   await Supabase.initialize(
-    url: dotenv.env['SUPABASE_URL'] ?? '',
-    anonKey: dotenv.env['SUPABASE_ANON_KEY'] ?? '',
+    url: supabaseUrl,
+    anonKey: supabaseAnonKey,
   );
 
   // Start connectivity monitoring

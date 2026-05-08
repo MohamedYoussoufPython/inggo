@@ -74,11 +74,11 @@ class _SearchingDriverScreenState extends ConsumerState<SearchingDriverScreen> {
     );
   }
 
-  void _cancelRide() {
+  void _cancelRide() async {
     _timer?.cancel();
-    ref.read(rideProvider.notifier).cancelRide('Client a annulé');
+    await ref.read(rideProvider.notifier).cancelRide('Client a annulé');
     ref.read(rideProvider.notifier).reset();
-    context.go('/client/home');
+    if (mounted) context.go('/client/home');
   }
 
   @override

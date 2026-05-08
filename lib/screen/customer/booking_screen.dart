@@ -1,10 +1,8 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/constants.dart';
-import '../../core/utils/formatters.dart';
 import '../../widget/widgets.dart';
 import '../../provider/ride_provider.dart';
 
@@ -17,55 +15,48 @@ class BookingScreen extends ConsumerStatefulWidget {
 
 class _BookingScreenState extends ConsumerState<BookingScreen> {
   String _selectedPayment = 'cash';
+  bool _isCreating = false;
 
-  /// Calculate distance between two coordinates using Haversine formula (in km)
-  double _calculateDistance(double lat1, double lng1, double lat2, double lng2) {
-    const double earthRadius = 6371; // km
-    final dLat = _toRad(lat2 - lat1);
-    final dLng = _toRad(lng2 - lng1);
-    final a = sin(dLat / 2) * sin(dLat / 2) +
-        cos(_toRad(lat1)) * cos(_toRad(lat2)) * sin(dLng / 2) * sin(dLng / 2);
-    final c = 2 * atan2(sqrt(a), sqrt(1 - a));
-    return earthRadius * c;
+  @override
+  void initState() {
+    super.initState();
+    // Sync local state with the provider on first build
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final ride = ref.read(rideProvider);
+      if (ride.selectedPaymentMethod != _selectedPayment) {
+        setState(() => _selectedPayment = ride.selectedPaymentMethod);
+      }
+    });
   }
 
-  double _toRad(double deg) => deg * pi / 180;
+  Future<void> _confirmBooking() async {
+    if (_isCreating) return;
+    setState(() => _isCreating = true);
 
-  /// Calculate price based on distance.
-  /// Base price: 250 FDJ (covers up to 3 km).
-  /// Each additional km: 50 FDJ.
-  /// Minimum price: 250 FDJ.
-  double _calculatePrice(double distanceKm) {
-    const double basePrice = 250;
-    const double baseDistanceKm = 3.0;
-    const double pricePerKm = 50;
+    // Set payment method and fixed price
+    ref.read(rideProvider.notifier).setPaymentMethod(_selectedPayment);
+    ref.read(rideProvider.notifier).setCalculatedPrice(AppConstants.ridePrice);
 
-    if (distanceKm <= baseDistanceKm) return basePrice;
-    final extraKm = distanceKm - baseDistanceKm;
-    return basePrice + (extraKm * pricePerKm).ceilToDouble();
+    // AWAIT the ride creation — if it fails, user stays on booking screen
+    await ref.read(rideProvider.notifier).createRide();
+
+    if (!mounted) return;
+
+    final ride = ref.read(rideProvider);
+    if (ride.error != null) {
+      // Ride creation failed — show error and stay on booking screen
+      setState(() => _isCreating = false);
+      InggoToast.error(context, 'Erreur: ${ride.error}');
+      return;
+    }
+
+    // Ride created successfully — navigate to searching screen
+    context.go('/client/searching');
   }
 
   @override
   Widget build(BuildContext context) {
     final ride = ref.watch(rideProvider);
-
-    // Calculate distance and dynamic price
-    final double distanceKm;
-    if (ride.pickupLat != null &&
-        ride.pickupLng != null &&
-        ride.dropoffLat != null &&
-        ride.dropoffLng != null) {
-      distanceKm = _calculateDistance(
-        ride.pickupLat!,
-        ride.pickupLng!,
-        ride.dropoffLat!,
-        ride.dropoffLng!,
-      );
-    } else {
-      distanceKm = 0;
-    }
-
-    final price = _calculatePrice(distanceKm);
 
     return Scaffold(
       appBar: InggoAppBar(title: 'Réserver'),
@@ -77,18 +68,9 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
             RideSummaryCard(
               pickupAddress: ride.pickupAddress ?? 'Position actuelle',
               dropoffAddress: ride.dropoffAddress ?? 'Destination',
-              price: price,
+              price: AppConstants.ridePrice, // Fixed price 250 FDJ
               paymentMethod: _selectedPayment,
             ),
-            if (distanceKm > 0)
-              Padding(
-                padding: EdgeInsets.only(top: 8.h),
-                child: Text(
-                  'Distance estimée : ${Formatters.formatDistance(distanceKm * 1000)}',
-                  style: AppTextStyles.bodySmall
-                      .copyWith(color: AppColors.textSecondary),
-                ),
-              ),
             SizedBox(height: 24.h),
             PaymentMethodSelector(
               selectedMethod: _selectedPayment,
@@ -99,13 +81,11 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
             ),
             SizedBox(height: 32.h),
             InggoButton(
-              label: 'Confirmer la réservation — ${price.toInt()} FDJ',
-              onPressed: () {
-                // Update the price in the ride state before creating
-                ref.read(rideProvider.notifier).setCalculatedPrice(price);
-                ref.read(rideProvider.notifier).createRide();
-                context.go('/client/searching');
-              },
+              label: _isCreating
+                  ? 'Création en cours...'
+                  : 'Confirmer la réservation — ${AppConstants.ridePrice.toInt()} FDJ',
+              isLoading: _isCreating,
+              onPressed: _confirmBooking,
             ),
           ],
         ),

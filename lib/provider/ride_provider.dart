@@ -339,6 +339,7 @@ class RideNotifier extends StateNotifier<RideState> {
         query: {'client_id': userId},
         orderBy: 'created_at',
         ascending: false,
+        limit: AppConstants.pageSize, // 20 rides per page
       );
       final rides = data.map((e) => RideModel.fromJson(e)).toList();
       state = state.copyWith(isLoading: false, rideHistory: rides);

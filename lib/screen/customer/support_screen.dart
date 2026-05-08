@@ -49,7 +49,7 @@ class SupportScreen extends StatelessWidget {
             _FaqItem(
               question: 'Combien coûte une course ?',
               answer:
-                  'Chaque course coûte 250 FDJ, quel que soit le trajet dans Djibouti ville.',
+                  'Le prix est fixe : 250 FDJ par course, quel que soit le trajet dans Djibouti ville.',
             ),
             _FaqItem(
               question: 'Comment payer ?',

@@ -167,7 +167,6 @@ class RideModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'client_id': clientId,
       'driver_id': driverId,
       'pickup_address': pickupAddress,
@@ -188,10 +187,18 @@ class RideModel {
       'distance': distance,
       'estimated_duration': estimatedDuration,
       'actual_duration': actualDuration,
-      'created_at': createdAt?.toIso8601String(),
-      'accepted_at': acceptedAt?.toIso8601String(),
-      'completed_at': completedAt?.toIso8601String(),
     };
+  }
+
+  /// Full JSON including read-only fields (id, timestamps).
+  /// Used for updates where all fields are needed.
+  Map<String, dynamic> toJsonFull() {
+    final json = toJson();
+    json['id'] = id;
+    json['created_at'] = createdAt?.toIso8601String();
+    json['accepted_at'] = acceptedAt?.toIso8601String();
+    json['completed_at'] = completedAt?.toIso8601String();
+    return json;
   }
 
   RideModel copyWith({

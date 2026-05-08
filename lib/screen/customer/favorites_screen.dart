@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/constants/constants.dart';
+import '../../core/services/location_service.dart';
 import '../../widget/widgets.dart';
 import '../../provider/favorites_provider.dart';
 import '../../provider/ride_provider.dart';
@@ -151,13 +152,13 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
             onPressed: () {
               if (!formKey.currentState!.validate()) return;
               Navigator.pop(ctx);
-              // Use default Djibouti coordinates as fallback
-              // In a future version, we can add a map picker here
+              // Use current GPS position as coordinates, fallback to default Djibouti
+              final position = LocationService.instance.currentPosition;
               ref.read(favoritesProvider.notifier).addFavorite(
                     label: labelController.text.trim(),
                     address: addressController.text.trim(),
-                    lat: AppConstants.defaultLat,
-                    lng: AppConstants.defaultLng,
+                    lat: position?.latitude ?? AppConstants.defaultLat,
+                    lng: position?.longitude ?? AppConstants.defaultLng,
                   );
             },
             child: const Text('Ajouter'),

@@ -8,7 +8,9 @@ from datetime import datetime, timedelta
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = os.getenv('SECRET_KEY', 'inggo_dev_key')
+app.secret_key = os.getenv('SECRET_KEY')
+if not app.secret_key:
+    raise RuntimeError('SECRET_KEY must be set in .env file')
 
 # Supabase with service_role key (bypasses RLS)
 supabase: Client = create_client(
@@ -125,7 +127,7 @@ def verify_driver(driver_id):
             'type': 'verification',
         }).execute()
     except Exception as e:
-        pass
+        app.logger.error(f'Failed to verify driver {driver_id}: {e}')
     return redirect(url_for('drivers'))
 
 
@@ -141,7 +143,7 @@ def ban_driver(driver_id):
             'type': 'suspension',
         }).execute()
     except Exception as e:
-        pass
+        app.logger.error(f'Failed to ban driver {driver_id}: {e}')
     return redirect(url_for('drivers'))
 
 
@@ -155,21 +157,34 @@ def driver_documents(driver_id):
         driver = result.data
         # Get signed URLs for documents if they exist
         docs = {}
-        for field, path in [
+        for field, url in [
             ('id_card', driver.get('id_card_url')),
             ('license', driver.get('license_url')),
             ('vehicle', driver.get('vehicle_photo_url')),
         ]:
-            if path:
+            if url:
                 try:
-                    # Extract bucket and file path from the URL
-                    # The URL is typically: https://<project>.supabase.co/storage/v1/object/public/<bucket>/<path>
-                    signed = supabase.storage.from_('driver-documents').create_signed_url(
-                        path.replace('driver-documents/', ''), 3600
-                    )
-                    docs[field] = signed.get('signedURL', path)
-                except:
-                    docs[field] = path
+                    # Extract the storage path from the public URL
+                    # URL format: https://<project>.supabase.co/storage/v1/object/public/driver-documents/<path>
+                    # We need just the <path> part after the bucket name
+                    if '/driver-documents/' in url:
+                        path = url.split('/driver-documents/', 1)[1]
+                        # Remove any query parameters
+                        if '?' in path:
+                            path = path.split('?', 1)[0]
+                    elif '/documents/' in url:
+                        # Legacy: old bucket name
+                        path = url.split('/documents/', 1)[1]
+                        if '?' in path:
+                            path = path.split('?', 1)[0]
+                    else:
+                        # Assume it's already a relative path
+                        path = url
+
+                    signed = supabase.storage.from_('driver-documents').create_signed_url(path, 3600)
+                    docs[field] = signed.get('signedURL', url)
+                except Exception:
+                    docs[field] = url
             else:
                 docs[field] = None
         return render_template('driver_documents.html', driver=driver, docs=docs)
@@ -232,7 +247,7 @@ def add_landmark():
         }
         supabase.table('landmarks').insert(data).execute()
     except Exception as e:
-        pass
+        app.logger.error(f'Failed to add landmark: {e}')
     return redirect(url_for('landmarks'))
 
 
@@ -242,7 +257,7 @@ def delete_landmark(landmark_id):
     try:
         supabase.table('landmarks').delete().eq('id', landmark_id).execute()
     except Exception as e:
-        pass
+        app.logger.error(f'Failed to delete landmark {landmark_id}: {e}')
     return redirect(url_for('landmarks'))
 
 
@@ -272,10 +287,10 @@ def send_notification():
                     'type': 'admin',
                 }).execute()
         except Exception as e:
-            pass
+            app.logger.error(f'Failed to send notification: {e}')
         return redirect(url_for('send_notification'))
     return render_template('send_notification.html')
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=False, host='0.0.0.0', port=int(os.getenv('PORT', 5000)))

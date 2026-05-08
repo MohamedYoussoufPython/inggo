@@ -63,10 +63,10 @@ class _CustomerHomeScreenState extends ConsumerState<CustomerHomeScreen> {
                           radius: 20.r,
                           backgroundColor: AppColors.primary,
                           child: Text(
-                            auth.user?.fullName
-                                    .substring(0, 1)
-                                    .toUpperCase() ??
-                                'U',
+                            (auth.user?.fullName.isNotEmpty == true
+                                    ? auth.user!.fullName.substring(0, 1)
+                                    : 'U')
+                                .toUpperCase(),
                             style: AppTextStyles.headline4
                                 .copyWith(color: AppColors.secondary),
                           ),

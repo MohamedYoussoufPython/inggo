@@ -105,6 +105,10 @@ class AppRouter {
         path: '/about',
         builder: (context, state) => const AboutScreen(),
       ),
+      GoRoute(
+        path: '/support',
+        builder: (context, state) => const SupportScreen(),
+      ),
 
       // ─── Client Routes ───
       GoRoute(

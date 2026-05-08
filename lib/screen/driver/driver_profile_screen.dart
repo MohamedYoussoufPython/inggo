@@ -49,7 +49,7 @@ class DriverProfileScreen extends ConsumerWidget {
             _MenuTile(Icons.language, 'Langue',
                 () => context.push('/driver/settings')),
             _MenuTile(Icons.help_outline, 'Support',
-                () => context.push('/client/support')),
+                () => context.push('/support')),
             _MenuTile(Icons.info_outline, 'À propos',
                 () => context.push('/about')),
             SizedBox(height: 16.h),
@@ -57,8 +57,28 @@ class DriverProfileScreen extends ConsumerWidget {
               label: 'Déconnexion',
               type: InggoButtonType.danger,
               onPressed: () {
-                ref.read(authProvider.notifier).signOut();
-                context.go('/welcome');
+                showDialog(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    title: const Text('Déconnexion'),
+                    content: const Text('Voulez-vous vraiment vous déconnecter ?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(ctx),
+                        child: const Text('Annuler'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(ctx);
+                          ref.read(authProvider.notifier).signOut();
+                          context.go('/welcome');
+                        },
+                        child: const Text('Déconnexion',
+                            style: TextStyle(color: AppColors.error)),
+                      ),
+                    ],
+                  ),
+                );
               },
             ),
           ],

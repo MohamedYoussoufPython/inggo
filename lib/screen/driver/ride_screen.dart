@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/constants.dart';
+import '../../core/services/supabase_service.dart';
 import '../../core/utils/formatters.dart';
 import '../../widget/widgets.dart';
 import '../../provider/driver_provider.dart';
@@ -112,7 +113,26 @@ class _DriverRideScreenState extends ConsumerState<DriverRideScreen> {
                     InggoButton(
                       label: 'Arrivé au départ',
                       icon: Icons.check_circle,
-                      onPressed: () => setState(() => _pickedUp = true),
+                      onPressed: () async {
+                        // Update ride status to in_progress in DB
+                        try {
+                          await SupabaseService.instance.update('rides', ride.id, {
+                            'status': 'in_progress',
+                          });
+                          if (mounted) {
+                            setState(() => _pickedUp = true);
+                          }
+                        } catch (e) {
+                          if (mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Erreur: $e'),
+                                backgroundColor: AppColors.error,
+                              ),
+                            );
+                          }
+                        }
+                      },
                     ),
                   ] else ...[
                     Row(

@@ -93,20 +93,19 @@ class DriverNotifier extends StateNotifier<DriverState> {
       final userId = SupabaseService.instance.currentUserId;
       if (userId == null) return;
 
-      await SupabaseService.instance.update('drivers', userId, {
-        'is_online': newOnline,
-      });
-
       if (newOnline) {
-        // Update current position
+        // Get current position first, then send a single update with all fields
         final position = await LocationService.instance.getCurrentPosition();
+        final updateData = <String, dynamic>{
+          'is_online': true,
+          'last_location_update': DateTime.now().toIso8601String(),
+        };
         if (position != null) {
-          await SupabaseService.instance.update('drivers', userId, {
-            'current_lat': position.latitude,
-            'current_lng': position.longitude,
-            'last_location_update': DateTime.now().toIso8601String(),
-          });
+          updateData['current_lat'] = position.latitude;
+          updateData['current_lng'] = position.longitude;
         }
+        await SupabaseService.instance.update('drivers', userId, updateData);
+
         // Start tracking location
         LocationService.instance.startTracking(onPositionUpdate: (pos) {
           SupabaseService.instance.update('drivers', userId, {
@@ -118,6 +117,9 @@ class DriverNotifier extends StateNotifier<DriverState> {
         // Start listening for new ride requests
         _subscribeToNewRides();
       } else {
+        await SupabaseService.instance.update('drivers', userId, {
+          'is_online': false,
+        });
         LocationService.instance.stopTracking();
         _stopNewRidesSubscription();
       }
@@ -237,18 +239,19 @@ class DriverNotifier extends StateNotifier<DriverState> {
         currentRide: ride.copyWith(status: RideStatus.completed),
       );
 
-      // 3. Update driver stats in DB
-      final driver = state.driver;
-      if (driver != null) {
-        await SupabaseService.instance.update('drivers', driver.id, {
-          'total_rides': driver.totalRides + 1,
-          'total_earnings':
-              driver.totalEarnings + AppConstants.driverEarning,
-        });
+      // 3. Driver stats are updated by the SQL trigger (update_driver_stats)
+      // No need to update total_rides/total_earnings here — avoids double counting.
+      // Just refresh the driver data from DB to get the new stats.
+      try {
+        final driverData = await SupabaseService.instance.getById('drivers', ride.driverId!);
+        final updatedDriver = DriverModel.fromJson(driverData);
         state = state.copyWith(
-          totalRides: driver.totalRides + 1,
-          totalEarnings: driver.totalEarnings + AppConstants.driverEarning,
+          driver: updatedDriver,
+          totalRides: updatedDriver.totalRides,
+          totalEarnings: updatedDriver.totalEarnings,
         );
+      } catch (e) {
+        _log.w('Failed to refresh driver stats: $e');
       }
 
       // 4. Re-subscribe to new rides if still online

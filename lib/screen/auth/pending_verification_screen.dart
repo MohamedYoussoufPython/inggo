@@ -83,7 +83,7 @@ class _PendingVerificationScreenState extends State<PendingVerificationScreen> {
               SizedBox(height: 32.h),
               InggoButton(
                 label: 'Compris',
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () => context.go('/login'),
               ),
             ],
           ),
