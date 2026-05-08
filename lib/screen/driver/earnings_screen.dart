@@ -159,7 +159,7 @@ class _EarningsScreenState extends ConsumerState<EarningsScreen> {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         RideStatusBadge(
-                                            status: ride.status.name),
+                                            status: ride.status),
                                         Text(
                                             Formatters.formatPrice(ride.price),
                                             style: AppTextStyles.priceSmall),

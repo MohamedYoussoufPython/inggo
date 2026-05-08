@@ -4,7 +4,17 @@ enum RideStatus {
   accepted,
   inProgress,
   completed,
-  cancelled,
+  cancelled;
+
+  /// Convert to Supabase snake_case string
+  String toSupabase() {
+    switch (this) {
+      case RideStatus.inProgress:
+        return 'in_progress';
+      default:
+        return name;
+    }
+  }
 }
 
 enum PaymentMethod {
@@ -171,7 +181,7 @@ class RideModel {
       'tip_amount': tipAmount,
       'payment_method': paymentMethod.name,
       'payment_status': paymentStatus.name,
-      'status': status.name,
+      'status': status.toSupabase(),
       'cancel_reason': cancelReason,
       'rating': rating,
       'review': review,

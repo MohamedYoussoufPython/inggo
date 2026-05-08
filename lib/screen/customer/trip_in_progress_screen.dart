@@ -7,6 +7,7 @@ import '../../core/constants/constants.dart';
 import '../../core/utils/formatters.dart';
 import '../../widget/widgets.dart';
 import '../../provider/ride_provider.dart';
+import '../../model/ride_model.dart';
 
 class TripInProgressScreen extends ConsumerWidget {
   const TripInProgressScreen({super.key});
@@ -16,10 +17,10 @@ class TripInProgressScreen extends ConsumerWidget {
     final ride = ref.watch(rideProvider);
 
     ref.listen<RideState>(rideProvider, (prev, next) {
-      if (next.currentRide?.status.name == 'completed') {
+      if (next.currentRide?.status == RideStatus.completed) {
         context.go('/client/end-trip');
       }
-      if (next.currentRide?.status.name == 'cancelled') {
+      if (next.currentRide?.status == RideStatus.cancelled) {
         context.go('/client/home');
       }
     });

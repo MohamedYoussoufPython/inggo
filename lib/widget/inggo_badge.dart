@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../core/constants/constants.dart';
+import '../model/ride_model.dart';
 
 class InggoBadge extends StatelessWidget {
   final String label;
@@ -33,7 +34,7 @@ class InggoBadge extends StatelessWidget {
 }
 
 class RideStatusBadge extends StatelessWidget {
-  final String status;
+  final RideStatus status;
   const RideStatusBadge({super.key, required this.status});
 
   @override
@@ -44,20 +45,18 @@ class RideStatusBadge extends StatelessWidget {
 
   Map<String, dynamic> _config() {
     switch (status) {
-      case 'pending':
+      case RideStatus.pending:
         return {'label': 'En attente', 'color': AppColors.pending};
-      case 'searching':
+      case RideStatus.searching:
         return {'label': 'Recherche...', 'color': AppColors.searching};
-      case 'accepted':
+      case RideStatus.accepted:
         return {'label': 'Acceptée', 'color': AppColors.accepted};
-      case 'in_progress':
+      case RideStatus.inProgress:
         return {'label': 'En cours', 'color': AppColors.inProgress};
-      case 'completed':
+      case RideStatus.completed:
         return {'label': 'Terminée', 'color': AppColors.completed};
-      case 'cancelled':
+      case RideStatus.cancelled:
         return {'label': 'Annulée', 'color': AppColors.cancelled};
-      default:
-        return {'label': status, 'color': AppColors.textSecondary};
     }
   }
 }

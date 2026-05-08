@@ -54,7 +54,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                RideStatusBadge(status: r.status.name),
+                                RideStatusBadge(status: r.status),
                                 Text(Formatters.formatPrice(r.price),
                                     style: AppTextStyles.priceSmall),
                               ],
