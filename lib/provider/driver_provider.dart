@@ -5,7 +5,6 @@ import 'package:logger/logger.dart';
 import '../core/services/supabase_service.dart';
 import '../core/services/notification_service.dart';
 import '../core/services/location_service.dart';
-import '../core/constants/app_constants.dart';
 import '../model/driver_model.dart';
 import '../model/ride_model.dart';
 

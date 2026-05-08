@@ -1,7 +1,7 @@
 # Environment
-.env
-admin_panel/.env
-*.env.local
+# .env
+# admin_panel/.env
+# *.env.local
 
 # Dart / Flutter
 .dart_tool/
