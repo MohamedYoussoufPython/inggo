@@ -1,9 +1,3 @@
-class VehicleType { // ignore: unused_element
-  final String value;
-  const VehicleType._(this.value);
-  static const moto = VehicleType._('moto');
-}
-
 class DriverModel {
   final String id;
   final String vehicleType;

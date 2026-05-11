@@ -60,6 +60,32 @@ class SupabaseService {
     return List<Map<String, dynamic>>.from(await filter);
   }
 
+  /// Paginated query using Supabase range (offset-based pagination).
+  /// Returns records starting at [offset] with up to [limit] results.
+  Future<List<Map<String, dynamic>>> getAllPaginated(
+    String table, {
+    Map<String, dynamic>? query,
+    String? orderBy,
+    bool ascending = true,
+    int limit = 20,
+    int offset = 0,
+  }) async {
+    var filter = client.from(table).select();
+    if (query != null) {
+      query.forEach((key, value) {
+        filter = filter.eq(key, value);
+      });
+    }
+    if (orderBy != null) {
+      filter = filter.order(orderBy, ascending: ascending);
+    }
+    // Supabase range is inclusive on both ends, so end = offset + limit - 1
+    final end = offset + limit - 1;
+    return List<Map<String, dynamic>>.from(
+      await filter.range(offset, end),
+    );
+  }
+
   Future<Map<String, dynamic>> getById(String table, String id) async {
     return await client.from(table).select().eq('id', id).single();
   }

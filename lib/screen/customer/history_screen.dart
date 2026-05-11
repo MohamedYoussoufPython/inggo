@@ -34,11 +34,16 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
   }
 
   Future<void> _loadMore() async {
+    final ride = ref.read(rideProvider);
+    if (!ride.hasMoreHistory || _isLoadingMore) return;
+
     setState(() => _isLoadingMore = true);
-    // Currently the provider doesn't support offset pagination
-    // but we refresh the list which fetches the latest 20
-    await ref.read(rideProvider.notifier).loadHistory();
+    await ref.read(rideProvider.notifier).loadMoreHistory();
     if (mounted) setState(() => _isLoadingMore = false);
+  }
+
+  Future<void> _refresh() async {
+    await ref.read(rideProvider.notifier).loadHistory();
   }
 
   @override
@@ -53,7 +58,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
 
     return Scaffold(
       appBar: const InggoAppBar(title: 'Historique'),
-      body: ride.isLoading
+      body: ride.isLoading && ride.rideHistory.isEmpty
           ? const InggoLoading()
           : ride.rideHistory.isEmpty
               ? Center(
@@ -67,17 +72,18 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                   ),
                 )
               : RefreshIndicator(
-                  onRefresh: () => ref.read(rideProvider.notifier).loadHistory(),
+                  onRefresh: _refresh,
                   child: ListView.builder(
                     controller: _scrollController,
                     physics: const AlwaysScrollableScrollPhysics(),
                     padding: EdgeInsets.all(AppSpacing.screenPadding),
-                    itemCount: ride.rideHistory.length + (_isLoadingMore ? 1 : 0),
+                    itemCount: ride.rideHistory.length + (_isLoadingMore || ride.hasMoreHistory ? 1 : 0),
                     itemBuilder: (context, index) {
+                      // Loading indicator at the bottom
                       if (index == ride.rideHistory.length) {
                         return Padding(
                           padding: EdgeInsets.symmetric(vertical: 16.h),
-                          child: const Center(
+                          child: Center(
                             child: SizedBox(
                               width: 24,
                               height: 24,

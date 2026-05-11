@@ -4,9 +4,14 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/constants.dart';
 import '../../widget/widgets.dart';
 
-class SupportScreen extends StatelessWidget {
+class SupportScreen extends StatefulWidget {
   const SupportScreen({super.key});
 
+  @override
+  State<SupportScreen> createState() => _SupportScreenState();
+}
+
+class _SupportScreenState extends State<SupportScreen> {
   // Support phone number for Inggo VTC Djibouti
   static const String _supportPhone = '+25377000000';
   static const String _supportWhatsapp = '25377000000';
@@ -16,8 +21,7 @@ class SupportScreen extends StatelessWidget {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     } else {
-      // If phone call fails, show a SnackBar
-      if (context.mounted) {
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Impossible de lancer l\'appel téléphonique.'),
@@ -39,7 +43,7 @@ class SupportScreen extends StatelessWidget {
     } else if (await canLaunchUrl(smsUri)) {
       await launchUrl(smsUri);
     } else {
-      if (context.mounted) {
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Aucune application de messagerie disponible.'),

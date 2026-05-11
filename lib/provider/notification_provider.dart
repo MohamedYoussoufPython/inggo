@@ -77,6 +77,14 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
     }
   }
 
+  /// Add an incoming notification received via Realtime.
+  /// Prepends it to the list and increments unread count.
+  void addIncomingNotification(NotificationModel notif) {
+    final updated = [notif, ...state.notifications];
+    final unread = updated.where((n) => !n.isRead).length;
+    state = state.copyWith(notifications: updated, unreadCount: unread);
+  }
+
   Future<void> markAllAsRead() async {
     try {
       final userId = SupabaseService.instance.currentUserId;

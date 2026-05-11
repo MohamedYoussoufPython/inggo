@@ -62,8 +62,10 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
                     SizedBox(height: 16.h),
                     // Online/Offline toggle
                     GestureDetector(
-                      onTap: () =>
-                          ref.read(driverProvider.notifier).toggleOnline(),
+                      onTap: driver.isLoading
+                          ? null
+                          : () =>
+                              ref.read(driverProvider.notifier).toggleOnline(),
                       child: Container(
                         padding: EdgeInsets.all(20.w),
                         decoration: BoxDecoration(
@@ -82,13 +84,25 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(
-                              driver.isOnline ? Icons.wifi : Icons.wifi_off,
-                              color: driver.isOnline
-                                  ? AppColors.success
-                                  : AppColors.error,
-                              size: 32.w,
-                            ),
+                            if (driver.isLoading)
+                              SizedBox(
+                                width: 24.w,
+                                height: 24.w,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: driver.isOnline
+                                      ? AppColors.success
+                                      : AppColors.error,
+                                ),
+                              )
+                            else
+                              Icon(
+                                driver.isOnline ? Icons.wifi : Icons.wifi_off,
+                                color: driver.isOnline
+                                    ? AppColors.success
+                                    : AppColors.error,
+                                size: 32.w,
+                              ),
                             SizedBox(width: 16.w),
                             Text(
                               driver.isOnline ? 'En ligne' : 'Hors ligne',

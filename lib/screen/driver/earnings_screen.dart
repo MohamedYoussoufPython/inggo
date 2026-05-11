@@ -115,9 +115,9 @@ class _EarningsScreenState extends ConsumerState<EarningsScreen> {
               InggoCard(
                 child: Column(
                   children: [
-                    _row('Prix par course', Formatters.formatPrice(250)),
-                    _row('Votre gain/course', Formatters.formatPrice(125)),
-                    _row('Commission (50%)', Formatters.formatPrice(125)),
+                    _row('Prix par course', Formatters.formatPrice(AppConstants.ridePrice)),
+                    _row('Votre gain/course', Formatters.formatPrice(AppConstants.driverEarning)),
+                    _row('Commission (50%)', Formatters.formatPrice(AppConstants.rideCommission)),
                   ],
                 ),
               ),

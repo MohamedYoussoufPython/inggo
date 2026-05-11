@@ -53,7 +53,17 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         _landmarks = data;
         _filtered = data.where((l) => l['is_popular'] == true).toList();
       });
-    } catch (_) {}
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Impossible de charger les lieux. Tirez vers le bas pour réessayer.'),
+            backgroundColor: AppColors.error,
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
+    }
   }
 
   void _onSearch(String query) {

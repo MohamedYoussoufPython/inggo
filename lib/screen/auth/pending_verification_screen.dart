@@ -84,8 +84,10 @@ class _PendingVerificationScreenState extends State<PendingVerificationScreen> {
               InggoButton(
                 label: 'Compris',
                 onPressed: () {
-                  // Stay on this screen — Realtime subscription will
-                  // auto-navigate to /driver/home when is_verified = true
+                  // Navigate to login screen while the Realtime subscription
+                  // stays active. If the driver is verified while on the login
+                  // screen, they can simply log back in and be redirected.
+                  context.go('/login');
                 },
               ),
             ],

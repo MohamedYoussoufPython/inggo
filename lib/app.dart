@@ -69,6 +69,9 @@ class _InggoAppState extends ConsumerState<InggoApp> with WidgetsBindingObserver
   }
 
   void _maybeStartNotifications() {
+    // Inject the Riverpod container so NotificationService can update providers
+    NotificationService.instance.setContainer(ref.container);
+
     final authState = ref.read(authProvider);
     final userId = authState.user?.id;
     if (userId != null && authState.isAuthenticated) {

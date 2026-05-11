@@ -1,12 +1,7 @@
 import 'dart:math' as math;
-import 'package:uuid/uuid.dart';
 
 class Helpers {
   Helpers._();
-
-  static const _uuid = Uuid();
-
-  static String generateId() => _uuid.v4();
 
   static String getFullPhone(String localPhone) {
     final cleaned = localPhone.replaceAll(RegExp(r'[^\d]'), '');

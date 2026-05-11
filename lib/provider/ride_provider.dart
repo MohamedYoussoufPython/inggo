@@ -34,6 +34,10 @@ class RideState {
   // Calculated price based on distance
   final double? calculatedPrice;
 
+  // Pagination — track how many pages have been loaded
+  final int historyPage;
+  final bool hasMoreHistory;
+
   const RideState({
     this.isLoading = false,
     this.currentRide,
@@ -55,6 +59,8 @@ class RideState {
     this.driverLat,
     this.driverLng,
     this.calculatedPrice,
+    this.historyPage = 0,
+    this.hasMoreHistory = true,
   });
 
   RideState copyWith({
@@ -78,6 +84,8 @@ class RideState {
     double? driverLat,
     double? driverLng,
     double? calculatedPrice,
+    int? historyPage,
+    bool? hasMoreHistory,
     bool clearDriverInfo = false,
   }) {
     return RideState(
@@ -107,6 +115,8 @@ class RideState {
       driverLat: clearDriverInfo ? null : (driverLat ?? this.driverLat),
       driverLng: clearDriverInfo ? null : (driverLng ?? this.driverLng),
       calculatedPrice: calculatedPrice ?? this.calculatedPrice,
+      historyPage: historyPage ?? this.historyPage,
+      hasMoreHistory: hasMoreHistory ?? this.hasMoreHistory,
     );
   }
 }
@@ -328,8 +338,9 @@ class RideNotifier extends StateNotifier<RideState> {
     }
   }
 
+  /// Load the first page of ride history (resets pagination)
   Future<void> loadHistory() async {
-    state = state.copyWith(isLoading: true);
+    state = state.copyWith(isLoading: true, historyPage: 0, hasMoreHistory: true);
     try {
       final userId = SupabaseService.instance.currentUserId;
       if (userId == null) return;
@@ -339,10 +350,45 @@ class RideNotifier extends StateNotifier<RideState> {
         query: {'client_id': userId},
         orderBy: 'created_at',
         ascending: false,
-        limit: AppConstants.pageSize, // 20 rides per page
+        limit: AppConstants.pageSize,
       );
       final rides = data.map((e) => RideModel.fromJson(e)).toList();
-      state = state.copyWith(isLoading: false, rideHistory: rides);
+      state = state.copyWith(
+        isLoading: false,
+        rideHistory: rides,
+        historyPage: 1,
+        hasMoreHistory: rides.length >= AppConstants.pageSize,
+      );
+    } catch (e) {
+      state = state.copyWith(isLoading: false, error: e.toString());
+    }
+  }
+
+  /// Load the next page of ride history and append to existing list
+  Future<void> loadMoreHistory() async {
+    if (!state.hasMoreHistory || state.isLoading) return;
+
+    state = state.copyWith(isLoading: true);
+    try {
+      final userId = SupabaseService.instance.currentUserId;
+      if (userId == null) return;
+
+      final offset = state.historyPage * AppConstants.pageSize;
+      final data = await SupabaseService.instance.getAllPaginated(
+        'rides',
+        query: {'client_id': userId},
+        orderBy: 'created_at',
+        ascending: false,
+        limit: AppConstants.pageSize,
+        offset: offset,
+      );
+      final newRides = data.map((e) => RideModel.fromJson(e)).toList();
+      state = state.copyWith(
+        isLoading: false,
+        rideHistory: [...state.rideHistory, ...newRides],
+        historyPage: state.historyPage + 1,
+        hasMoreHistory: newRides.length >= AppConstants.pageSize,
+      );
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
     }

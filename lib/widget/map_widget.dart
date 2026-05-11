@@ -35,9 +35,9 @@ class MapWidget extends StatefulWidget {
 }
 
 class _MapWidgetState extends State<MapWidget> {
-  // ignore: unused_field — reserved for camera animations
   GoogleMapController? _mapController;
   Set<Marker> _markers = {};
+  Set<Polyline> _polylines = {};
 
   @override
   void initState() {
@@ -48,7 +48,7 @@ class _MapWidgetState extends State<MapWidget> {
   @override
   void didUpdateWidget(covariant MapWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // Only rebuild markers if location data actually changed
+    // Rebuild markers and polyline if location data changed
     if (oldWidget.pickupLat != widget.pickupLat ||
         oldWidget.pickupLng != widget.pickupLng ||
         oldWidget.dropoffLat != widget.dropoffLat ||
@@ -57,10 +57,19 @@ class _MapWidgetState extends State<MapWidget> {
         oldWidget.driverLng != widget.driverLng) {
       _updateMarkers();
     }
+
+    // Animate camera to follow driver when their position updates
+    if (widget.driverLat != null &&
+        widget.driverLng != null &&
+        (oldWidget.driverLat != widget.driverLat ||
+            oldWidget.driverLng != widget.driverLng)) {
+      _animateToDriver();
+    }
   }
 
   void _updateMarkers() {
     final markers = <Marker>{};
+
     if (widget.pickupLat != null && widget.pickupLng != null) {
       markers.add(Marker(
         markerId: const MarkerId('pickup'),
@@ -86,7 +95,73 @@ class _MapWidgetState extends State<MapWidget> {
         infoWindow: const InfoWindow(title: 'Votre chauffeur'),
       ));
     }
-    setState(() => _markers = markers);
+
+    // Draw polyline between pickup and dropoff if both are available
+    final polylines = <Polyline>{};
+    if (widget.pickupLat != null &&
+        widget.pickupLng != null &&
+        widget.dropoffLat != null &&
+        widget.dropoffLng != null) {
+      polylines.add(Polyline(
+        polylineId: const PolylineId('route'),
+        points: [
+          LatLng(widget.pickupLat!, widget.pickupLng!),
+          LatLng(widget.dropoffLat!, widget.dropoffLng!),
+        ],
+        color: AppColors.primary,
+        width: 4,
+        patterns: [PatternItem.dash(20), PatternItem.gap(10)],
+      ));
+    }
+
+    setState(() {
+      _markers = markers;
+      _polylines = polylines;
+    });
+  }
+
+  /// Animate the camera to follow the driver marker
+  void _animateToDriver() {
+    if (_mapController == null || widget.driverLat == null || widget.driverLng == null) {
+      return;
+    }
+    _mapController!.animateCamera(
+      CameraUpdate.newLatLng(
+        LatLng(widget.driverLat!, widget.driverLng!),
+      ),
+    );
+  }
+
+  /// Fit all markers in view with padding
+  void _fitAllMarkers() {
+    if (_mapController == null) return;
+
+    final points = <LatLng>[];
+    if (widget.pickupLat != null && widget.pickupLng != null) {
+      points.add(LatLng(widget.pickupLat!, widget.pickupLng!));
+    }
+    if (widget.dropoffLat != null && widget.dropoffLng != null) {
+      points.add(LatLng(widget.dropoffLat!, widget.dropoffLng!));
+    }
+    if (widget.driverLat != null && widget.driverLng != null) {
+      points.add(LatLng(widget.driverLat!, widget.driverLng!));
+    }
+
+    if (points.length >= 2) {
+      final bounds = LatLngBounds(
+        southwest: LatLng(
+          points.map((p) => p.latitude).reduce((a, b) => a < b ? a : b),
+          points.map((p) => p.longitude).reduce((a, b) => a < b ? a : b),
+        ),
+        northeast: LatLng(
+          points.map((p) => p.latitude).reduce((a, b) => a > b ? a : b),
+          points.map((p) => p.longitude).reduce((a, b) => a > b ? a : b),
+        ),
+      );
+      _mapController!.animateCamera(
+        CameraUpdate.newLatLngBounds(bounds, 80),
+      );
+    }
   }
 
   @override
@@ -99,7 +174,14 @@ class _MapWidgetState extends State<MapWidget> {
           zoom: widget.zoom,
         ),
         markers: _markers,
-        onMapCreated: (controller) => _mapController = controller,
+        polylines: _polylines,
+        onMapCreated: (controller) {
+          _mapController = controller;
+          // Fit all markers once the map is ready
+          if (_markers.length >= 2) {
+            Future.delayed(const Duration(milliseconds: 300), _fitAllMarkers);
+          }
+        },
         onTap: widget.enableTap
             ? (latLng) {
                 widget.onTapPosition?.call(latLng);
