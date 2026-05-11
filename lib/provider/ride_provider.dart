@@ -87,12 +87,13 @@ class RideState {
     int? historyPage,
     bool? hasMoreHistory,
     bool clearDriverInfo = false,
+    bool clearError = false,
   }) {
     return RideState(
       isLoading: isLoading ?? this.isLoading,
       currentRide: currentRide ?? this.currentRide,
       rideHistory: rideHistory ?? this.rideHistory,
-      error: error,
+      error: clearError ? null : (error ?? this.error),
       selectedPaymentMethod:
           selectedPaymentMethod ?? this.selectedPaymentMethod,
       pickupAddress: pickupAddress ?? this.pickupAddress,
@@ -173,7 +174,7 @@ class RideNotifier extends StateNotifier<RideState> {
         'dropoff_lat': state.dropoffLat ?? 0.0,
         'dropoff_lng': state.dropoffLng ?? 0.0,
         'price': state.calculatedPrice ?? AppConstants.ridePrice,
-        'commission': (state.calculatedPrice ?? AppConstants.ridePrice) / 2,
+        'commission': AppConstants.rideCommission,
         'payment_method': state.selectedPaymentMethod,
         'status': 'searching',
       });

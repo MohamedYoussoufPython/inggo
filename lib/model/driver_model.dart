@@ -10,6 +10,7 @@ class DriverModel {
   final double rating;
   final String? idCardUrl;
   final String? licenseUrl;
+  final String? insuranceUrl;
   final String? vehiclePhotoUrl;
   final double? currentLat;
   final double? currentLng;
@@ -28,6 +29,7 @@ class DriverModel {
     this.rating = 5.0,
     this.idCardUrl,
     this.licenseUrl,
+    this.insuranceUrl,
     this.vehiclePhotoUrl,
     this.currentLat,
     this.currentLng,
@@ -43,11 +45,12 @@ class DriverModel {
       vehicleColor: json['vehicle_color'] as String?,
       isVerified: json['is_verified'] as bool? ?? false,
       isOnline: json['is_online'] as bool? ?? false,
-      totalRides: json['total_rides'] as int? ?? 0,
+      totalRides: (json['total_rides'] as num?)?.toInt() ?? 0,
       totalEarnings: (json['total_earnings'] as num?)?.toDouble() ?? 0.0,
       rating: (json['rating'] as num?)?.toDouble() ?? 5.0,
       idCardUrl: json['id_card_url'] as String?,
       licenseUrl: json['license_url'] as String?,
+      insuranceUrl: json['insurance_url'] as String?,
       vehiclePhotoUrl: json['vehicle_photo_url'] as String?,
       currentLat: (json['current_lat'] as num?)?.toDouble(),
       currentLng: (json['current_lng'] as num?)?.toDouble(),
@@ -73,6 +76,7 @@ class DriverModel {
       'rating': rating,
       'id_card_url': idCardUrl,
       'license_url': licenseUrl,
+      'insurance_url': insuranceUrl,
       'vehicle_photo_url': vehiclePhotoUrl,
       'current_lat': currentLat,
       'current_lng': currentLng,
@@ -93,6 +97,7 @@ class DriverModel {
     double? rating,
     String? idCardUrl,
     String? licenseUrl,
+    String? insuranceUrl,
     String? vehiclePhotoUrl,
     double? currentLat,
     double? currentLng,
@@ -111,6 +116,7 @@ class DriverModel {
       rating: rating ?? this.rating,
       idCardUrl: idCardUrl ?? this.idCardUrl,
       licenseUrl: licenseUrl ?? this.licenseUrl,
+      insuranceUrl: insuranceUrl ?? this.insuranceUrl,
       vehiclePhotoUrl: vehiclePhotoUrl ?? this.vehiclePhotoUrl,
       currentLat: currentLat ?? this.currentLat,
       currentLng: currentLng ?? this.currentLng,

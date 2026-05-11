@@ -106,8 +106,8 @@ class RideModel {
       rating: (json['rating'] as num?)?.toDouble(),
       review: json['review'] as String?,
       distance: (json['distance'] as num?)?.toDouble(),
-      estimatedDuration: json['estimated_duration'] as int?,
-      actualDuration: json['actual_duration'] as int?,
+      estimatedDuration: (json['estimated_duration'] as num?)?.toInt(),
+      actualDuration: (json['actual_duration'] as num?)?.toInt(),
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'] as String)
           : null,

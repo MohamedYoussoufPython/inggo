@@ -37,6 +37,13 @@ class AppRouter {
 
   static GoRouter get router => _router;
 
+  /// Cache the user's role to avoid repeated Supabase queries during redirects.
+  /// Updated on login / cleared on logout.
+  static String? _cachedRole;
+
+  static void setCachedRole(String? role) => _cachedRole = role;
+  static void clearCachedRole() => _cachedRole = null;
+
   static final _router = GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: '/splash',
@@ -53,17 +60,36 @@ class AppRouter {
       // (OTP verification creates a temporary session during signup)
       final registrationRoutes = ['/register-client', '/register-driver'];
 
-      // Authenticated user on login/register → redirect to home
-      // But allow staying on registration pages during OTP verification
-      if (session != null && !registrationRoutes.contains(currentPath) && currentPath != '/splash' && currentPath != '/pending-verification') {
-        if (publicRoutes.contains(currentPath)) {
-          return '/client/home';
-        }
-      }
+      // Common routes accessible by both roles
+      final commonRoutes = ['/about', '/support'];
 
       // Not logged in → login
       if (session == null && !publicRoutes.contains(currentPath)) {
         return '/login';
+      }
+
+      // Authenticated user on login/register → redirect based on role
+      if (session != null && !registrationRoutes.contains(currentPath) && currentPath != '/splash' && currentPath != '/pending-verification') {
+        if (publicRoutes.contains(currentPath)) {
+          // Redirect to the correct home based on role
+          final role = _cachedRole ?? 'client';
+          return role == 'driver' ? '/driver/home' : '/client/home';
+        }
+      }
+
+      // Role-based access control
+      if (session != null && !publicRoutes.contains(currentPath) && !commonRoutes.contains(currentPath)) {
+        final role = _cachedRole ?? 'client';
+
+        // Client trying to access driver routes
+        if (currentPath.startsWith('/driver') && role != 'driver') {
+          return '/client/home';
+        }
+
+        // Driver trying to access client routes
+        if (currentPath.startsWith('/client') && role != 'client') {
+          return '/driver/home';
+        }
       }
 
       return null;

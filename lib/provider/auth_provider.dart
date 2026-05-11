@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../core/services/supabase_service.dart';
+import '../core/router/app_router.dart';
 import '../model/user_model.dart';
 
 class AuthState {
@@ -59,6 +60,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
           session.user.id,
         );
         final user = UserModel.fromJson(userData);
+        // Cache the role for the router's role-based access control
+        AppRouter.setCachedRole(user.role);
         state = state.copyWith(
           isLoading: false,
           isAuthenticated: true,
@@ -200,8 +203,37 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = state.copyWith(user: user);
   }
 
+  /// Refresh auth state after a successful login.
+  /// Called from LoginScreen to sync AuthProvider with the new session.
+  Future<void> refreshAfterLogin() async {
+    try {
+      final session = SupabaseService.instance.currentSession;
+      if (session == null) return;
+
+      final userData = await SupabaseService.instance.getById(
+        'profiles',
+        session.user.id,
+      );
+      final user = UserModel.fromJson(userData);
+
+      final prefs = await SharedPreferences.getInstance();
+      final langCode = prefs.getString('language') ?? 'fr';
+
+      state = state.copyWith(
+        isAuthenticated: true,
+        user: user,
+        locale: Locale(langCode),
+      );
+    } catch (e) {
+      // Even if profile fetch fails, still mark as authenticated
+      // so the app can function. The profile will be loaded later.
+      state = state.copyWith(isAuthenticated: true);
+    }
+  }
+
   Future<void> signOut() async {
     await SupabaseService.instance.signOut();
+    AppRouter.clearCachedRole();
     state = const AuthState();
   }
 }

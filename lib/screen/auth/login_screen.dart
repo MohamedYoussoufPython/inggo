@@ -2,17 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/constants.dart';
+import '../../core/router/app_router.dart';
 import '../../widget/widgets.dart';
+import '../../provider/auth_provider.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -161,6 +164,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
       final user = response.user;
 
+      // Refresh AuthProvider so the whole app knows about the logged-in user
+      await ref.read(authProvider.notifier).refreshAfterLogin();
+
+      if (!mounted) return;
+
       // Get profile for role
       final profileData = await Supabase.instance.client
           .from('profiles')
@@ -171,6 +179,9 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted) return;
 
       final role = profileData?['role'] ?? 'client';
+
+      // Cache the role for the router's redirect logic
+      AppRouter.setCachedRole(role);
 
       _showSnackBar('Connexion réussie !', AppColors.success);
       await Future.delayed(const Duration(milliseconds: 400));

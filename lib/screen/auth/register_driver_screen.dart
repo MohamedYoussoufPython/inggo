@@ -482,6 +482,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
         'is_verified': false,
         'id_card_url': docUrls['cni'],
         'license_url': docUrls['permis'],
+        'insurance_url': docUrls['assurance'],
         'vehicle_photo_url': docUrls['moto'],
       });
 

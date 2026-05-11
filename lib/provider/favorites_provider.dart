@@ -17,11 +17,12 @@ class FavoritesState {
     bool? isLoading,
     List<FavoriteModel>? favorites,
     String? error,
+    bool clearError = false,
   }) {
     return FavoritesState(
       isLoading: isLoading ?? this.isLoading,
       favorites: favorites ?? this.favorites,
-      error: error,
+      error: clearError ? null : (error ?? this.error),
     );
   }
 }

@@ -20,12 +20,13 @@ class NotificationState {
     List<NotificationModel>? notifications,
     int? unreadCount,
     String? error,
+    bool clearError = false,
   }) {
     return NotificationState(
       isLoading: isLoading ?? this.isLoading,
       notifications: notifications ?? this.notifications,
       unreadCount: unreadCount ?? this.unreadCount,
-      error: error,
+      error: clearError ? null : (error ?? this.error),
     );
   }
 }
