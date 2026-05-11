@@ -1,219 +1,1105 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../core/constants/constants.dart';
-import '../../core/utils/validators.dart';
-import '../../core/services/supabase_service.dart';
 import '../../widget/widgets.dart';
-import '../../provider/auth_provider.dart';
+import '../../widget/inggo_stepper.dart';
 
-class RegisterDriverScreen extends ConsumerStatefulWidget {
+class RegisterDriverScreen extends StatefulWidget {
   const RegisterDriverScreen({super.key});
 
   @override
-  ConsumerState<RegisterDriverScreen> createState() =>
-      _RegisterDriverScreenState();
+  State<RegisterDriverScreen> createState() => _RegisterDriverScreenState();
 }
 
-class _RegisterDriverScreenState extends ConsumerState<RegisterDriverScreen> {
-  final _nameController = TextEditingController();
-  final _plateController = TextEditingController();
-  final _colorController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
-  String? _idCardUrl;
-  String? _licenseUrl;
-  String? _vehiclePhotoUrl;
+class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
+  final _pageController = PageController();
+  int _currentStep = 1;
+  final int _totalSteps = 4;
+  bool _isSubmitting = false;
+  bool _showSuccess = false;
+  bool _isPhoneVerified = false;
+
+  // Step 1 — Identité
+  final _nomCtrl = TextEditingController();
+  final _pereCtrl = TextEditingController();
+  final _grandpereCtrl = TextEditingController();
+  String _sexe = '';
+  String _pays = 'Djibouti';
+
+  // Step 2 — Coordonnées + Sécurité
+  final _emailCtrl = TextEditingController();
+  final _phoneCtrl = TextEditingController();
+  final _passwordCtrl = TextEditingController();
+  final _confirmPasswordCtrl = TextEditingController();
+
+  // Step 3 — Documents
+  final Map<String, File?> _documentFiles = {
+    'cni': null,
+    'permis': null,
+    'assurance': null,
+    'moto': null,
+  };
+
+  // Step 4 — Conditions
+  bool _cguChecked = false;
+  bool _privacyChecked = false;
+
+  // SMS verification
+  final _smsCodeCtrl = TextEditingController();
+
+  // Errors
+  final Map<String, String> _errors = {};
+  final _picker = ImagePicker();
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _plateController.dispose();
-    _colorController.dispose();
+    _pageController.dispose();
+    _nomCtrl.dispose();
+    _pereCtrl.dispose();
+    _grandpereCtrl.dispose();
+    _emailCtrl.dispose();
+    _phoneCtrl.dispose();
+    _passwordCtrl.dispose();
+    _confirmPasswordCtrl.dispose();
+    _smsCodeCtrl.dispose();
     super.dispose();
   }
 
-  Future<void> _pickImage(String type) async {
-    final picker = ImagePicker();
-    final image = await picker.pickImage(
-      source: ImageSource.camera,
-      maxWidth: 1024,
-      imageQuality: 80,
-    );
-    if (image == null) return;
+  void _clearErrors() => setState(() => _errors.clear());
 
-    try {
-      final bytes = await image.readAsBytes();
-      final path = 'drivers/${SupabaseService.instance.currentUserId}/$type/${image.name}';
-      final url = await SupabaseService.instance.uploadFile('driver-documents', path, bytes);
-      setState(() {
-        switch (type) {
-          case 'id_card':
-            _idCardUrl = url;
-            break;
-          case 'license':
-            _licenseUrl = url;
-            break;
-          case 'vehicle':
-            _vehiclePhotoUrl = url;
-            break;
-        }
-      });
-    } catch (e) {
-      if (mounted) InggoToast.error(context, 'Erreur d\'upload: $e');
+  void _setError(String field, String msg) =>
+      setState(() => _errors[field] = msg);
+
+  bool _validateStep() {
+    _clearErrors();
+    bool valid = true;
+    final nameRegex = RegExp(r"^[a-zA-ZÀ-ÿ\s'-]+$");
+    final emailRegex = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    );
+
+    if (_currentStep == 1) {
+      if (_nomCtrl.text.trim().isEmpty) {
+        _setError('nom', 'Requis');
+        valid = false;
+      } else if (!nameRegex.hasMatch(_nomCtrl.text.trim())) {
+        _setError('nom', 'Format invalide');
+        valid = false;
+      }
+      if (_pereCtrl.text.trim().isEmpty) {
+        _setError('pere', 'Requis');
+        valid = false;
+      }
+      if (_grandpereCtrl.text.trim().isEmpty) {
+        _setError('grandpere', 'Requis');
+        valid = false;
+      }
+      if (_sexe.isEmpty) {
+        _setError('sexe', 'Sélectionnez un genre');
+        valid = false;
+      }
+    } else if (_currentStep == 2) {
+      if (_emailCtrl.text.trim().isEmpty) {
+        _setError('email', 'Email requis');
+        valid = false;
+      } else if (!emailRegex.hasMatch(_emailCtrl.text.trim())) {
+        _setError('email', 'Email invalide');
+        valid = false;
+      }
+      if (_phoneCtrl.text.trim().isEmpty || _phoneCtrl.text.trim().length < 6) {
+        _setError('phone', 'Numéro invalide');
+        valid = false;
+      }
+      if (_passwordCtrl.text.length < 6) {
+        _setError('password', 'Min 6 caractères');
+        valid = false;
+      }
+      if (_passwordCtrl.text != _confirmPasswordCtrl.text) {
+        _setError('confirm', 'Mots de passe différents');
+        valid = false;
+      }
+    } else if (_currentStep == 3) {
+      final allFilled = _documentFiles.values.every((f) => f != null);
+      if (!allFilled) {
+        _setError('docs', 'Tous les documents sont requis');
+        valid = false;
+      }
+    } else if (_currentStep == 4) {
+      if (!_cguChecked || !_privacyChecked) {
+        _setError('legal', 'Acceptez toutes les conditions');
+        valid = false;
+      }
+    }
+
+    if (!valid) {
+      HapticFeedback.mediumImpact();
+      _showToast('Veuillez corriger les erreurs.');
+    }
+    return valid;
+  }
+
+  void _nextStep() {
+    if (!_validateStep()) return;
+
+    if (_currentStep == 2 && !_isPhoneVerified) {
+      _showSmsVerificationDialog();
+      return;
+    }
+
+    if (_currentStep < _totalSteps) {
+      setState(() => _currentStep++);
+      _pageController.animateToPage(
+        _currentStep - 1,
+        duration: const Duration(milliseconds: 350),
+        curve: Curves.easeInOutCubic,
+      );
+    } else {
+      _submitForm();
     }
   }
 
-  void _register() {
-    if (!_formKey.currentState!.validate()) return;
-    ref.read(authProvider.notifier).registerDriver(
-          fullName: _nameController.text.trim(),
-          plateNumber: _plateController.text.trim(),
-          vehicleColor: _colorController.text.trim().isEmpty
-              ? null
-              : _colorController.text.trim(),
-          idCardUrl: _idCardUrl,
-          licenseUrl: _licenseUrl,
-          vehiclePhotoUrl: _vehiclePhotoUrl,
-        );
+  void _prevStep() {
+    if (_currentStep > 1) {
+      setState(() => _currentStep--);
+      _pageController.animateToPage(
+        _currentStep - 1,
+        duration: const Duration(milliseconds: 350),
+        curve: Curves.easeInOutCubic,
+      );
+    }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final auth = ref.watch(authProvider);
+  // ─── Document Picker ───
 
-    ref.listen<AuthState>(authProvider, (prev, next) {
-      if (next.user != null && next.user!.role.name == 'driver') {
-        context.go('/pending-verification');
-      }
-      if (next.error != null && prev?.error != next.error) {
-        InggoToast.error(context, next.error!);
-      }
-    });
+  Future<void> _pickDocument(String docKey) async {
+    HapticFeedback.selectionClick();
 
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: AppSpacing.screenPadding),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 40.h),
-                Text('Inscription chauffeur',
-                    style: AppTextStyles.headline2),
-                SizedBox(height: 8.h),
-                Text(
-                  'Remplissez vos informations pour commencer.',
-                  style: AppTextStyles.bodyLarge
-                      .copyWith(color: AppColors.textSecondary),
+    if (_documentFiles[docKey] != null) {
+      _showRemoveDialog(docKey);
+      return;
+    }
+
+    await _showSourceChooser(docKey);
+  }
+
+  Future<void> _showSourceChooser(String docKey) async {
+    await showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 20, 24, 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 36,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: AppColors.border,
+                  borderRadius: BorderRadius.circular(2),
                 ),
-                SizedBox(height: 24.h),
-                InggoInput(
-                  label: 'Nom complet',
-                  hint: 'Ahmed Mohamed',
-                  controller: _nameController,
-                  validator: Validators.validateName,
-                  prefixIcon: Icons.person_outline,
-                ),
-                SizedBox(height: 16.h),
-                InggoInput(
-                  label: 'Numéro de plaque',
-                  hint: 'DJ 1234 A',
-                  controller: _plateController,
-                  validator: Validators.validatePlateNumber,
-                  prefixIcon: Icons.directions_car,
-                ),
-                SizedBox(height: 16.h),
-                InggoInput(
-                  label: 'Couleur du véhicule',
-                  hint: 'Noir, Blanc, Rouge...',
-                  controller: _colorController,
-                  prefixIcon: Icons.color_lens,
-                ),
-                SizedBox(height: 24.h),
-                Text('Documents', style: AppTextStyles.labelLarge),
-                SizedBox(height: 12.h),
-                _DocUploadTile(
-                  label: 'Carte d\'identité',
-                  icon: Icons.badge,
-                  isUploaded: _idCardUrl != null,
-                  onTap: () => _pickImage('id_card'),
-                ),
-                _DocUploadTile(
-                  label: 'Permis de conduire',
-                  icon: Icons.card_membership,
-                  isUploaded: _licenseUrl != null,
-                  onTap: () => _pickImage('license'),
-                ),
-                _DocUploadTile(
-                  label: 'Photo du véhicule',
-                  icon: Icons.motorcycle,
-                  isUploaded: _vehiclePhotoUrl != null,
-                  onTap: () => _pickImage('vehicle'),
-                ),
-                SizedBox(height: 24.h),
-                InggoButton(
-                  label: 'Soumettre l\'inscription',
-                  isLoading: auth.isLoading,
-                  onPressed: _register,
-                ),
-                SizedBox(height: 32.h),
-              ],
-            ),
+              ),
+              const SizedBox(height: 20),
+              const Text('Ajouter un document',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+              const SizedBox(height: 20),
+              ListTile(
+                leading: const Icon(Icons.camera_alt, color: AppColors.primary),
+                title: const Text('Prendre une photo'),
+                onTap: () async {
+                  Navigator.pop(ctx);
+                  final image = await _picker.pickImage(source: ImageSource.camera, imageQuality: 80);
+                  if (image != null) {
+                    setState(() => _documentFiles[docKey] = File(image.path));
+                  }
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_library, color: AppColors.primary),
+                title: const Text('Choisir depuis la galerie'),
+                onTap: () async {
+                  Navigator.pop(ctx);
+                  final image = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
+                  if (image != null) {
+                    setState(() => _documentFiles[docKey] = File(image.path));
+                  }
+                },
+              ),
+            ],
           ),
         ),
       ),
     );
   }
-}
 
-class _DocUploadTile extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final bool isUploaded;
-  final VoidCallback onTap;
-
-  const _DocUploadTile({
-    required this.label,
-    required this.icon,
-    required this.isUploaded,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: EdgeInsets.only(bottom: 8.h),
-        padding: EdgeInsets.all(12.w),
-        decoration: BoxDecoration(
-          color: isUploaded
-              ? AppColors.success.withValues(alpha: 0.1)
-              : AppColors.background,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          border: Border.all(
-            color: isUploaded ? AppColors.success : AppColors.border,
+  Future<void> _showRemoveDialog(String docKey) async {
+    await showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 20, 24, 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Document déjà ajouté',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+              const SizedBox(height: 16),
+              InggoButton(
+                label: 'Supprimer et reprendre',
+                type: InggoButtonType.danger,
+                onPressed: () {
+                  Navigator.pop(ctx);
+                  setState(() => _documentFiles[docKey] = null);
+                },
+              ),
+              const SizedBox(height: 8),
+              InggoButton(
+                label: 'Conserver',
+                type: InggoButtonType.text,
+                onPressed: () => Navigator.pop(ctx),
+              ),
+            ],
           ),
         ),
-        child: Row(
+      ),
+    );
+  }
+
+  // ─── Submit ───
+
+  Future<void> _submitForm() async {
+    setState(() => _isSubmitting = true);
+
+    try {
+      final fullName =
+          '${_nomCtrl.text.trim()} ${_pereCtrl.text.trim()} ${_grandpereCtrl.text.trim()}';
+      final phone = '+253 ${_phoneCtrl.text.trim()}';
+
+      // 1. Sign up with Supabase Auth
+      final response = await Supabase.instance.client.auth.signUp(
+        email: _emailCtrl.text.trim(),
+        password: _passwordCtrl.text,
+        data: {
+          'full_name': fullName,
+          'phone': phone,
+          'role': 'driver',
+          'sexe': _sexe,
+          'pays': _pays,
+        },
+      );
+
+      if (!mounted) return;
+      final userId = response.user?.id;
+      if (userId == null) throw Exception('Erreur création compte');
+
+      // 2. Insert profile
+      await Supabase.instance.client.from('profiles').insert({
+        'id': userId,
+        'full_name': fullName,
+        'phone': phone,
+        'email': _emailCtrl.text.trim(),
+        'role': 'driver',
+        'sexe': _sexe,
+        'pays': _pays,
+      });
+
+      // 3. Upload documents to Supabase Storage
+      final docUrls = <String, String?>{};
+      for (final entry in _documentFiles.entries) {
+        if (entry.value != null) {
+          final filePath = 'drivers/$userId/${entry.key}_${DateTime.now().millisecondsSinceEpoch}.jpg';
+          await Supabase.instance.client.storage.from('documents').upload(filePath, entry.value!);
+          docUrls[entry.key] = Supabase.instance.client.storage.from('documents').getPublicUrl(filePath);
+        }
+      }
+
+      // 4. Insert driver
+      await Supabase.instance.client.from('drivers').insert({
+        'id': userId,
+        'vehicle_type': 'moto',
+        'is_verified': false,
+        'id_card_url': docUrls['cni'],
+        'license_url': docUrls['permis'],
+        'vehicle_photo_url': docUrls['moto'],
+      });
+
+      setState(() {
+        _isSubmitting = false;
+        _showSuccess = true;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _isSubmitting = false);
+      _showToast('Erreur: ${e.toString()}');
+    }
+  }
+
+  // ─── SMS Verification ───
+
+  void _showSmsVerificationDialog() {
+    _smsCodeCtrl.clear();
+    _showToast('Code SMS envoyé !');
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.black54,
+      builder: (ctx) => _SmsVerificationDialog(
+        phone: '+253 ${_phoneCtrl.text}',
+        controller: _smsCodeCtrl,
+        onVerify: () async {
+          if (_smsCodeCtrl.text.trim().length == 6) {
+            try {
+              await Supabase.instance.client.auth.verifyOtp(
+                phone: '+253${_phoneCtrl.text.trim()}',
+                token: _smsCodeCtrl.text.trim(),
+                type: OtpType.sms,
+              );
+              if (!mounted) return;
+              Navigator.pop(ctx);
+              setState(() => _isPhoneVerified = true);
+              _showToast('Numéro vérifié ✓');
+              setState(() => _currentStep++);
+              _pageController.animateToPage(
+                _currentStep - 1,
+                duration: const Duration(milliseconds: 350),
+                curve: Curves.easeInOutCubic,
+              );
+            } catch (e) {
+              _showToast('Code invalide. Réessayez.');
+            }
+          } else {
+            HapticFeedback.heavyImpact();
+          }
+        },
+        onResend: () async {
+          try {
+            final fullPhone = '+253${_phoneCtrl.text.trim()}';
+            await Supabase.instance.client.auth.signInWithOtp(phone: fullPhone);
+            _showToast('Code renvoyé !');
+          } catch (e) {
+            _showToast('Erreur envoi SMS');
+          }
+        },
+        onCancel: () => Navigator.pop(ctx),
+      ),
+    );
+  }
+
+  void _showToast(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(msg, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        backgroundColor: AppColors.secondary,
+        duration: const Duration(seconds: 2),
+        margin: const EdgeInsets.only(bottom: 20, left: 40, right: 40),
+      ),
+    );
+  }
+
+  void _showLegalModal(String title, String content) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => DraggableScrollableSheet(
+        initialChildSize: 0.85,
+        maxChildSize: 0.95,
+        minChildSize: 0.5,
+        expand: false,
+        builder: (ctx, scrollCtrl) => Column(
           children: [
-            Icon(icon,
-                color: isUploaded ? AppColors.success : AppColors.textSecondary,
-                size: 24.w),
-            SizedBox(width: 12.w),
-            Expanded(child: Text(label, style: AppTextStyles.bodyLarge)),
-            Icon(
-              isUploaded ? Icons.check_circle : Icons.camera_alt,
-              color: isUploaded ? AppColors.success : AppColors.primary,
-              size: 24.w,
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800)),
+                  GestureDetector(
+                    onTap: () => Navigator.pop(ctx),
+                    child: Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF0F0F0),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Icon(Icons.close, size: 20),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 1),
+            Expanded(
+              child: SingleChildScrollView(
+                controller: scrollCtrl,
+                padding: const EdgeInsets.all(20),
+                child: Text(content, style: const TextStyle(fontSize: 14, color: Color(0xFF444444), height: 1.6)),
+              ),
             ),
           ],
         ),
       ),
     );
   }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_showSuccess) return _buildSuccessScreen();
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Column(
+          children: [
+            _buildHeader(),
+            InggoStepper(currentStep: _currentStep, totalSteps: _totalSteps),
+            Expanded(
+              child: PageView(
+                controller: _pageController,
+                physics: const NeverScrollableScrollPhysics(),
+                children: [_buildStep1(), _buildStep2(), _buildStep3(), _buildStep4()],
+              ),
+            ),
+            _buildFooter(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  if (_currentStep > 1) {
+                    _prevStep();
+                  } else {
+                    context.go('/login');
+                  }
+                },
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF0F0F0),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(Icons.arrow_back, size: 20, color: Color(0xFF121212)),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          const Text('Devenir Conducteur', style: TextStyle(fontSize: 26, fontWeight: FontWeight.w900, color: Color(0xFF121212))),
+          const SizedBox(height: 4),
+          const Text('Rejoignez la flotte Inggo en 4 étapes.', style: TextStyle(fontSize: 14, color: Color(0xFF757575))),
+        ],
+      ),
+    );
+  }
+
+  // ─── STEP 1: Identité ───
+  Widget _buildStep1() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _sectionTitle(Icons.person, 'Qui êtes-vous ?'),
+          const SizedBox(height: 24),
+          InggoInput(label: 'Votre Nom', hint: 'Votre nom', controller: _nomCtrl, prefixIcon: Icons.person_outline, onChanged: (_) => _clearErrors()),
+          if (_errors.containsKey('nom')) _errorText(_errors['nom']!),
+          const SizedBox(height: 16),
+          InggoInput(label: 'Nom du père', hint: 'Nom du père', controller: _pereCtrl, onChanged: (_) => _clearErrors()),
+          if (_errors.containsKey('pere')) _errorText(_errors['pere']!),
+          const SizedBox(height: 16),
+          InggoInput(label: 'Nom du grand-père', hint: 'Nom du grand-père', controller: _grandpereCtrl, onChanged: (_) => _clearErrors()),
+          if (_errors.containsKey('grandpere')) _errorText(_errors['grandpere']!),
+          const SizedBox(height: 20),
+          // Gender
+          const Padding(padding: EdgeInsets.only(left: 4, bottom: 8), child: Text('Sexe', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 0.5))),
+          Row(
+            children: [
+              Expanded(child: _GenderCard(label: 'Homme', icon: Icons.male, isSelected: _sexe == 'H', onTap: () => setState(() { _sexe = 'H'; _clearErrors(); }))),
+              const SizedBox(width: 10),
+              Expanded(child: _GenderCard(label: 'Femme', icon: Icons.female, isSelected: _sexe == 'F', onTap: () => setState(() { _sexe = 'F'; _clearErrors(); }))),
+            ],
+          ),
+          if (_errors.containsKey('sexe')) _errorText(_errors['sexe']!),
+          const SizedBox(height: 20),
+          // Pays
+          const Padding(padding: EdgeInsets.only(left: 4, bottom: 8), child: Text('Pays', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 0.5))),
+          Container(
+            height: 56,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            decoration: BoxDecoration(color: const Color(0xFFF0F0F0), borderRadius: BorderRadius.circular(16)),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value: _pays,
+                isExpanded: true,
+                icon: const Icon(Icons.keyboard_arrow_down),
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Color(0xFF121212)),
+                items: ['Djibouti', 'Autre'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+                onChanged: (v) => setState(() => _pays = v ?? 'Djibouti'),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ─── STEP 2: Coordonnées + Sécurité ───
+  Widget _buildStep2() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _sectionTitle(Icons.contact_mail, 'Coordonnées & Sécurité'),
+          const SizedBox(height: 24),
+          // Email
+          InggoInput(label: 'Email', hint: 'votre-nom@gmail.com', controller: _emailCtrl, keyboardType: TextInputType.emailAddress, prefixIcon: Icons.email_outlined, onChanged: (_) => _clearErrors()),
+          if (_errors.containsKey('email')) _errorText(_errors['email']!),
+          const SizedBox(height: 20),
+          // Phone
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(padding: EdgeInsets.only(left: 4, bottom: 8), child: Text('Numéro de téléphone', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 0.5))),
+              Row(
+                children: [
+                  Container(
+                    height: 56,
+                    padding: const EdgeInsets.symmetric(horizontal: 14),
+                    decoration: BoxDecoration(color: const Color(0xFFF0F0F0), borderRadius: BorderRadius.circular(16)),
+                    child: const Center(child: Text('🇩🇯 +253', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700))),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(child: InggoInput(hint: '77 XX XX XX', controller: _phoneCtrl, keyboardType: TextInputType.phone, onChanged: (_) => _clearErrors())),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 4, top: 8),
+                child: Row(
+                  children: [
+                    const Icon(Icons.sms, size: 14, color: AppColors.primary),
+                    const SizedBox(width: 6),
+                    Text(
+                      _isPhoneVerified ? 'Numéro vérifié ✓' : 'Un code sera envoyé pour vérification.',
+                      style: TextStyle(fontSize: 12, color: _isPhoneVerified ? AppColors.success : Colors.grey.shade600),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          if (_errors.containsKey('phone')) _errorText(_errors['phone']!),
+          const SizedBox(height: 20),
+          InggoInput(label: 'Mot de passe', hint: 'Au moins 6 caractères', controller: _passwordCtrl, obscureText: true, prefixIcon: Icons.lock_outline, onChanged: (_) => _clearErrors()),
+          if (_errors.containsKey('password')) _errorText(_errors['password']!),
+          const SizedBox(height: 16),
+          InggoInput(label: 'Confirmer le mot de passe', hint: 'Répétez le mot de passe', controller: _confirmPasswordCtrl, obscureText: true, prefixIcon: Icons.lock_outline, onChanged: (_) => _clearErrors()),
+          if (_errors.containsKey('confirm')) _errorText(_errors['confirm']!),
+        ],
+      ),
+    );
+  }
+
+  // ─── STEP 3: Documents ───
+  Widget _buildStep3() {
+    final docLabels = {
+      'cni': {'label': 'Carte d\'identité', 'icon': Icons.badge},
+      'permis': {'label': 'Permis de conduire', 'icon': Icons.drive_eta},
+      'assurance': {'label': 'Assurance', 'icon': Icons.security},
+      'moto': {'label': 'Photo de la moto', 'icon': Icons.two_wheeler},
+    };
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _sectionTitle(Icons.folder, 'Vos Documents'),
+          const SizedBox(height: 8),
+          Text('Tous les documents sont requis pour vérifier votre dossier.', style: TextStyle(fontSize: 13, color: Colors.grey.shade600)),
+          const SizedBox(height: 20),
+          ...docLabels.entries.map((entry) {
+            final key = entry.key;
+            final info = entry.value;
+            final file = _documentFiles[key];
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: GestureDetector(
+                onTap: () => _pickDocument(key),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: file != null ? AppColors.success.withValues(alpha: 0.05) : const Color(0xFFF0F0F0),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: file != null ? AppColors.success : AppColors.border,
+                      width: file != null ? 2 : 1,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 46,
+                        height: 46,
+                        decoration: BoxDecoration(
+                          color: file != null ? AppColors.success.withValues(alpha: 0.1) : Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: file != null
+                            ? const Icon(Icons.check_circle, color: AppColors.success, size: 24)
+                            : Icon(info['icon'] as IconData, color: AppColors.textSecondary, size: 24),
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              info['label'] as String,
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w700,
+                                color: file != null ? AppColors.success : AppColors.textPrimary,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              file != null ? 'Document ajouté ✓' : 'Appuyez pour ajouter',
+                              style: TextStyle(fontSize: 12, color: file != null ? AppColors.success : Colors.grey.shade500),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Icon(
+                        file != null ? Icons.edit : Icons.add_circle_outline,
+                        color: file != null ? AppColors.success : AppColors.textHint,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }),
+          if (_errors.containsKey('docs')) _errorText(_errors['docs']!),
+        ],
+      ),
+    );
+  }
+
+  // ─── STEP 4: Conditions ───
+  Widget _buildStep4() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _sectionTitle(Icons.gavel, 'Conditions'),
+          const SizedBox(height: 24),
+          // CGU
+          GestureDetector(
+            onTap: () => setState(() { _cguChecked = !_cguChecked; _clearErrors(); }),
+            child: _LegalCheckbox(
+              checked: _cguChecked,
+              label: 'J\'accepte les ',
+              linkLabel: 'Conditions Générales d\'Utilisation',
+              onLinkTap: () => _showLegalModal('CGU', _cguText),
+            ),
+          ),
+          const SizedBox(height: 16),
+          // Privacy
+          GestureDetector(
+            onTap: () => setState(() { _privacyChecked = !_privacyChecked; _clearErrors(); }),
+            child: _LegalCheckbox(
+              checked: _privacyChecked,
+              label: 'J\'accepte la ',
+              linkLabel: 'Politique de Confidentialité',
+              onLinkTap: () => _showLegalModal('Confidentialité', _privacyText),
+            ),
+          ),
+          if (_errors.containsKey('legal')) _errorText(_errors['legal']!),
+          const SizedBox(height: 24),
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppColors.primaryLight.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.info_outline, color: AppColors.primaryDark, size: 24),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Votre dossier sera examiné par notre équipe. Vous serez notifié dès que votre compte sera activé.',
+                    style: TextStyle(fontSize: 13, color: Colors.grey.shade700, height: 1.5),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFooter() {
+    return Container(
+      padding: EdgeInsets.fromLTRB(24, 16, 24, MediaQuery.of(context).padding.bottom + 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 20, offset: const Offset(0, -4)),
+        ],
+      ),
+      child: Row(
+        children: [
+          if (_currentStep > 1) ...[
+            GestureDetector(
+              onTap: _prevStep,
+              child: Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(color: const Color(0xFFF0F0F0), borderRadius: BorderRadius.circular(14)),
+                child: const Icon(Icons.arrow_back, color: Color(0xFF121212)),
+              ),
+            ),
+            const SizedBox(width: 12),
+          ],
+          Expanded(
+            child: InggoButton(
+              label: _currentStep == _totalSteps ? 'Soumettre mon dossier' : 'Suivant',
+              icon: _currentStep == _totalSteps ? Icons.send : Icons.arrow_forward,
+              isLoading: _isSubmitting,
+              onPressed: _isSubmitting ? null : _nextStep,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSuccessScreen() {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TweenAnimationBuilder<double>(
+                tween: Tween(begin: 0.0, end: 1.0),
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.elasticOut,
+                builder: (_, value, child) => Transform.scale(scale: value, child: child),
+                child: Container(
+                  width: 100,
+                  height: 100,
+                  decoration: const BoxDecoration(color: AppColors.primaryLight, shape: BoxShape.circle),
+                  child: const Icon(Icons.check, size: 48, color: AppColors.secondary),
+                ),
+              ),
+              const SizedBox(height: 24),
+              const Text('Dossier soumis !', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900, color: Color(0xFF121212))),
+              const SizedBox(height: 10),
+              Text('Votre dossier est en cours de vérification.\nVous serez notifié dès validation.',
+                  textAlign: TextAlign.center, style: TextStyle(fontSize: 15, color: Colors.grey.shade600)),
+              const SizedBox(height: 60),
+              GestureDetector(
+                onTap: () {
+                  HapticFeedback.mediumImpact();
+                  context.go('/pending-verification');
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 16),
+                  decoration: BoxDecoration(color: AppColors.secondary, borderRadius: BorderRadius.circular(50)),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text('Compris', style: TextStyle(color: AppColors.primary, fontSize: 18, fontWeight: FontWeight.w900)),
+                      const SizedBox(width: 12),
+                      Container(
+                        width: 40,
+                        height: 40,
+                        decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
+                        child: const Icon(Icons.arrow_forward, color: AppColors.secondary, size: 24),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _sectionTitle(IconData icon, String text) {
+    return Row(
+      children: [
+        Icon(icon, color: AppColors.primary, size: 28),
+        const SizedBox(width: 10),
+        Text(text, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: Color(0xFF121212))),
+      ],
+    );
+  }
+
+  Widget _errorText(String msg) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 10, top: 6),
+      child: Text(msg, style: const TextStyle(color: AppColors.error, fontSize: 12, fontWeight: FontWeight.w700)),
+    );
+  }
 }
+
+// ─── Gender Card ───
+
+class _GenderCard extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _GenderCard({required this.label, required this.icon, required this.isSelected, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.primaryLight.withValues(alpha: 0.3) : const Color(0xFFF0F0F0),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: isSelected ? AppColors.primary : Colors.transparent, width: 2),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 20, color: isSelected ? AppColors.secondary : const Color(0xFF757575)),
+            const SizedBox(width: 8),
+            Text(label, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: isSelected ? AppColors.secondary : const Color(0xFF757575))),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Legal Checkbox ───
+
+class _LegalCheckbox extends StatelessWidget {
+  final bool checked;
+  final String label;
+  final String linkLabel;
+  final VoidCallback onLinkTap;
+
+  const _LegalCheckbox({required this.checked, required this.label, required this.linkLabel, required this.onLinkTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: checked ? AppColors.primaryLight.withValues(alpha: 0.3) : const Color(0xFFFAFAFA),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: checked ? AppColors.secondary : Colors.transparent),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            width: 24,
+            height: 24,
+            decoration: BoxDecoration(
+              color: checked ? AppColors.secondary : Colors.white,
+              shape: BoxShape.circle,
+              border: Border.all(color: checked ? AppColors.secondary : const Color(0xFFCCCCCC), width: 2),
+            ),
+            child: checked ? const Icon(Icons.check, size: 14, color: AppColors.primary) : null,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text.rich(
+              TextSpan(
+                text: label,
+                style: const TextStyle(fontSize: 13, color: Color(0xFF121212), height: 1.5),
+                children: [
+                  WidgetSpan(
+                    child: GestureDetector(
+                      onTap: onLinkTap,
+                      child: Text(
+                        linkLabel,
+                        style: const TextStyle(fontSize: 13, color: Color(0xFF336D91), fontWeight: FontWeight.w700, decoration: TextDecoration.underline),
+                      ),
+                    ),
+                  ),
+                  const TextSpan(text: ' d\'Inggo.'),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── SMS Verification Dialog ───
+
+class _SmsVerificationDialog extends StatelessWidget {
+  final String phone;
+  final TextEditingController controller;
+  final VoidCallback onVerify;
+  final VoidCallback onResend;
+  final VoidCallback onCancel;
+
+  const _SmsVerificationDialog({
+    required this.phone,
+    required this.controller,
+    required this.onVerify,
+    required this.onResend,
+    required this.onCancel,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 60, height: 60,
+              decoration: const BoxDecoration(color: AppColors.primaryLight, shape: BoxShape.circle),
+              child: const Icon(Icons.sms, color: AppColors.primaryDark, size: 28),
+            ),
+            const SizedBox(height: 16),
+            const Text('Vérification Mobile', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+            const SizedBox(height: 8),
+            Text.rich(
+              TextSpan(
+                text: 'Un code à 6 chiffres a été envoyé au\n',
+                style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                children: [TextSpan(text: phone, style: const TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF121212)))],
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
+            TextField(
+              controller: controller,
+              keyboardType: TextInputType.number,
+              maxLength: 6,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 24, letterSpacing: 8, fontWeight: FontWeight.w700),
+              decoration: InputDecoration(
+                counterText: '',
+                hintText: '0 0 0 0 0 0',
+                hintStyle: TextStyle(color: Colors.grey.shade300),
+                filled: true,
+                fillColor: Colors.white,
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: const BorderSide(color: Color(0xFFCCCCCC))),
+                focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: const BorderSide(color: AppColors.primary, width: 2)),
+              ),
+            ),
+            const SizedBox(height: 16),
+            InggoButton(label: 'Valider', onPressed: onVerify),
+            const SizedBox(height: 8),
+            TextButton(onPressed: onResend, child: const Text('Renvoyer le code')),
+            const SizedBox(height: 4),
+            TextButton(onPressed: onCancel, child: Text('Annuler', style: TextStyle(color: Colors.grey.shade500))),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Legal Texts ───
+
+const String _cguText = '''
+Conditions Générales d'Utilisation (CGU) – Inggo Conducteur
+Dernière mise à jour : Mercredi 7 janvier
+
+Les présentes CGU régissent l'accès et l'utilisation de l'application Inggo en tant que Conducteur Partenaire.
+
+Article 1 – Statut
+Le Conducteur Partenaire exerce en toute indépendance. Il n'est ni salarié, ni agent de InnGroup SARL.
+
+Article 2 – Inscription
+L'inscription nécessite la fourniture de documents (CNI, permis, assurance, photo véhicule). Le compte sera activé après vérification par l'équipe Inggo.
+
+Article 3 – Commission
+Inggo prélève une commission de 50% sur chaque course. Le conducteur perçoit 125 FDJ par course (prix fixe 250 FDJ).
+
+Article 4 – Responsabilité
+Le Conducteur est seul responsable de la conduite, du respect du code de la route et de l'état de son véhicule.
+
+Article 5 – Résiliation
+InnGroup SARL se réserve le droit de suspendre ou résilier l'accès en cas de non-respect des CGU.
+
+Article 6 – Droit applicable
+Les présentes CGU sont régies par le droit en vigueur en République de Djibouti.
+''';
+
+const String _privacyText = '''
+Inggo Conducteur – Politique de Confidentialité
+Propriétaire : InnGroup SARL
+Dernière mise à jour : Mercredi 7 janvier
+
+1. Données collectées
+• Nom complet, numéro de téléphone, adresse email
+• Photos de documents (CNI, permis, assurance, véhicule)
+• Données de géolocalisation GPS (en service)
+• Données de trajet et revenus
+
+2. Finalité
+• Vérification d'identité et activation du compte
+• Mise en relation avec les passagers
+• Calcul des revenus et commissions
+• Suivi des courses en temps réel
+
+3. Stockage
+Les documents sont stockés de manière sécurisée sur les serveurs Supabase avec chiffrement.
+
+4. Droits
+Accès, correction, suppression de vos données sur demande.
+
+Contact : admin@inngroupsarl.com
+''';

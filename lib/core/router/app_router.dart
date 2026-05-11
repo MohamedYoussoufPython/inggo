@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../screen/splash/splash_screen.dart';
-import '../../screen/auth/welcome_screen.dart';
 import '../../screen/auth/login_screen.dart';
-import '../../screen/auth/otp_screen.dart';
-import '../../screen/auth/role_selection_screen.dart';
 import '../../screen/auth/register_client_screen.dart';
 import '../../screen/auth/register_driver_screen.dart';
 import '../../screen/auth/pending_verification_screen.dart';
@@ -50,11 +47,11 @@ class AppRouter {
       final currentPath = state.matchedLocation;
 
       // Public routes - no auth needed
-      final publicRoutes = ['/splash', '/welcome', '/login', '/otp', '/role-selection'];
+      final publicRoutes = ['/splash', '/login', '/register-client', '/register-driver', '/pending-verification'];
       if (publicRoutes.contains(currentPath)) return null;
 
-      // Not logged in → welcome
-      if (session == null) return '/welcome';
+      // Not logged in → login
+      if (session == null) return '/login';
 
       return null;
     },
@@ -65,27 +62,10 @@ class AppRouter {
         builder: (context, state) => const SplashScreen(),
       ),
 
-      // ─── Welcome ───
-      GoRoute(
-        path: '/welcome',
-        builder: (context, state) => const WelcomeScreen(),
-      ),
-
       // ─── Auth ───
       GoRoute(
         path: '/login',
         builder: (context, state) => const LoginScreen(),
-      ),
-      GoRoute(
-        path: '/otp',
-        builder: (context, state) {
-          final phone = state.uri.queryParameters['phone'] ?? '';
-          return OtpScreen(phone: phone);
-        },
-      ),
-      GoRoute(
-        path: '/role-selection',
-        builder: (context, state) => const RoleSelectionScreen(),
       ),
       GoRoute(
         path: '/register-client',
@@ -172,12 +152,8 @@ class AppRouter {
       GoRoute(
         path: '/driver/ride-request',
         builder: (context, state) {
-          // Receive the RideModel from navigation extra
           final ride = state.extra as RideModel?;
-          if (ride == null) {
-            // Fallback: should never happen if navigation is correct
-            return const DriverHomeScreen();
-          }
+          if (ride == null) return const DriverHomeScreen();
           return RideRequestScreen(ride: ride);
         },
       ),

@@ -67,7 +67,7 @@ class ProfileScreen extends ConsumerWidget {
                         onPressed: () {
                           Navigator.pop(ctx);
                           ref.read(authProvider.notifier).signOut();
-                          context.go('/welcome');
+                          context.go('/login');
                         },
                         child: const Text('Oui'),
                       ),

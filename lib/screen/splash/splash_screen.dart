@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/constants/constants.dart';
-import '../../provider/auth_provider.dart';
 
-class SplashScreen extends ConsumerStatefulWidget {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  ConsumerState<SplashScreen> createState() => _SplashScreenState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends ConsumerState<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
@@ -20,27 +18,52 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   Future<void> _navigate() async {
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 3));
     if (!mounted) return;
 
-    final auth = ref.read(authProvider);
-    if (auth.isAuthenticated && auth.user != null) {
-      if (auth.user!.role.name == 'driver') {
-        context.go('/driver/home');
-      } else {
-        context.go('/client/home');
+    final session = Supabase.instance.client.auth.currentSession;
+    if (session != null) {
+      // User is logged in — check role and redirect
+      try {
+        final profileData = await Supabase.instance.client
+            .from('profiles')
+            .select('role')
+            .eq('id', session.user.id)
+            .maybeSingle();
+
+        if (!mounted) return;
+        final role = profileData?['role'] ?? 'client';
+
+        if (role == 'driver') {
+          // Check if verified
+          final driverData = await Supabase.instance.client
+              .from('drivers')
+              .select('is_verified')
+              .eq('id', session.user.id)
+              .maybeSingle();
+
+          if (!mounted) return;
+          if (driverData?['is_verified'] == true) {
+            context.go('/driver/home');
+          } else {
+            context.go('/pending-verification');
+          }
+        } else {
+          context.go('/client/home');
+        }
+      } catch (e) {
+        if (!mounted) return;
+        context.go('/login');
       }
-    } else if (auth.isOnboarded) {
-      context.go('/login');
     } else {
-      context.go('/welcome');
+      context.go('/login');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primary,
+      backgroundColor: AppColors.secondary,
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -48,19 +71,23 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
             // App logo
             Image.asset(
               'assets/images/logo.png',
-              width: 120.w,
-              height: 120.w,
-              errorBuilder: (context, error, stackTrace) =>
-                  Icon(Icons.motorcycle, size: 80.w, color: AppColors.secondary),
+              width: 140,
+              height: 140,
+              errorBuilder: (context, error, stackTrace) => Icon(
+                Icons.motorcycle,
+                size: 80,
+                color: AppColors.primary,
+              ),
             ),
-            SizedBox(height: 16.h),
-            Text('INGGO',
-                style: AppTextStyles.headline1
-                    .copyWith(color: AppColors.secondary)),
-            SizedBox(height: 8.h),
-            Text('Votre moto-taxi à Djibouti',
-                style: AppTextStyles.bodyLarge
-                    .copyWith(color: AppColors.secondary)),
+            const SizedBox(height: 16),
+            Text(
+              'Inggo',
+              style: AppTextStyles.headline1.copyWith(
+                color: AppColors.primary,
+                fontSize: 42,
+                letterSpacing: 2,
+              ),
+            ),
           ],
         ),
       ),
