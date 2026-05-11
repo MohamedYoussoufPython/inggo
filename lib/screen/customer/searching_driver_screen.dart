@@ -19,6 +19,7 @@ class SearchingDriverScreen extends ConsumerStatefulWidget {
 class _SearchingDriverScreenState extends ConsumerState<SearchingDriverScreen> {
   int _elapsed = 0;
   Timer? _timer;
+  bool _navigated = false;
 
   @override
   void initState() {
@@ -39,14 +40,17 @@ class _SearchingDriverScreenState extends ConsumerState<SearchingDriverScreen> {
     // The RideNotifier subscribes to Realtime when createRide() is called,
     // so when the driver accepts, the state is updated automatically.
     ref.listenManual(rideProvider, (prev, next) {
+      if (_navigated) return; // Already navigated, ignore further updates
+
       final status = next.currentRide?.status;
 
       if (status == RideStatus.accepted) {
         // Driver accepted the ride → navigate to trip in progress
+        _navigated = true;
         _timer?.cancel();
         context.go('/client/trip');
       } else if (status == RideStatus.cancelled) {
-        // Ride was cancelled
+        _navigated = true;
         _timer?.cancel();
         context.go('/client/home');
       }
@@ -54,8 +58,11 @@ class _SearchingDriverScreenState extends ConsumerState<SearchingDriverScreen> {
   }
 
   void _showNoDriverDialog() {
+    if (_navigated) return; // Driver already accepted, don't show dialog
+    _navigated = true;
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (ctx) => AlertDialog(
         title: const Text('Aucun chauffeur trouvé'),
         content: const Text(

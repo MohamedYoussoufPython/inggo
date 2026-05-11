@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/constants/constants.dart';
 import '../../core/services/supabase_service.dart';
+import '../../core/router/app_router.dart';
 import '../../widget/widgets.dart';
 import '../../widget/inggo_stepper.dart';
 
@@ -176,12 +177,16 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
     });
 
     try {
+      // Flag OTP verification to prevent GoRouter redirect
+      // from the temporary session created by verifyOtp()
+      AppRouter.setOtpVerifying(true);
       await SupabaseService.instance.verifyOtp(_fullPhone, code);
 
       if (!mounted) return;
 
       // Sign out the temporary session created by OTP verification
       await Supabase.instance.client.auth.signOut();
+      AppRouter.setOtpVerifying(false);
 
       if (!mounted) return;
       setState(() {
@@ -192,6 +197,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
       _showToast('Numéro vérifié !');
     } catch (e) {
       if (!mounted) return;
+      AppRouter.setOtpVerifying(false);
       setState(() => _otpVerifying = false);
       _setError('otp', 'Code invalide');
       _showToast('Code incorrect. Réessayez.');
@@ -319,7 +325,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
       final userId = response.user?.id;
       if (userId != null) {
         try {
-          await Supabase.instance.client.from('profiles').insert({
+          await SupabaseService.instance.upsert('profiles', {
             'id': userId,
             'full_name': fullName,
             'phone': phone,
@@ -330,7 +336,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
             'phone_verified': true,
           });
         } catch (_) {
-          // Profile may already exist via DB trigger
+          // Profile may already exist via DB trigger — safe to ignore
         }
       }
 

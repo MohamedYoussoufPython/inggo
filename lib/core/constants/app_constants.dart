@@ -22,7 +22,7 @@ class AppConstants {
 
   // Ride
   static const int searchDriverTimeoutSeconds = 180;
-  static const int rideRequestTimeoutSeconds = 10;
+  static const int rideRequestTimeoutSeconds = 30;
   static const int freeCancellationSeconds = 120;
   static const int maxCancellationsPerHour = 3;
   static const double defaultLat = 11.5880;

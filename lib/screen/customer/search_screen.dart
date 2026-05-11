@@ -21,7 +21,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   List<Map<String, dynamic>> _landmarks = [];
   List<Map<String, dynamic>> _filtered = [];
   bool _isSearching = false;
-  LatLng? _selectedPosition;
 
   @override
   void initState() {
@@ -93,7 +92,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   void _selectOnMap(LatLng pos) {
-    setState(() => _selectedPosition = pos);
     ref.read(rideProvider.notifier).setDropoff(
           'Position sélectionnée',
           pos.latitude,

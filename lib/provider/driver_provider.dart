@@ -242,13 +242,28 @@ class DriverNotifier extends StateNotifier<DriverState> {
       // No need to update total_rides/total_earnings here — avoids double counting.
       // Just refresh the driver data from DB to get the new stats.
       try {
-        final driverData = await SupabaseService.instance.getById('drivers', ride.driverId!);
-        final updatedDriver = DriverModel.fromJson(driverData);
-        state = state.copyWith(
-          driver: updatedDriver,
-          totalRides: updatedDriver.totalRides,
-          totalEarnings: updatedDriver.totalEarnings,
-        );
+        final driverId = ride.driverId;
+        if (driverId != null) {
+          final driverData = await SupabaseService.instance.getById('drivers', driverId);
+          final updatedDriver = DriverModel.fromJson(driverData);
+          state = state.copyWith(
+            driver: updatedDriver,
+            totalRides: updatedDriver.totalRides,
+            totalEarnings: updatedDriver.totalEarnings,
+          );
+        } else {
+          // Fallback: refresh from current user ID
+          final userId = SupabaseService.instance.currentUserId;
+          if (userId != null) {
+            final driverData = await SupabaseService.instance.getById('drivers', userId);
+            final updatedDriver = DriverModel.fromJson(driverData);
+            state = state.copyWith(
+              driver: updatedDriver,
+              totalRides: updatedDriver.totalRides,
+              totalEarnings: updatedDriver.totalEarnings,
+            );
+          }
+        }
       } catch (e) {
         _log.w('Failed to refresh driver stats: $e');
       }

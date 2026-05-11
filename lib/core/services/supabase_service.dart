@@ -98,6 +98,19 @@ class SupabaseService {
     return await client.from(table).insert(data).select().single();
   }
 
+  Future<Map<String, dynamic>> upsert(
+    String table,
+    Map<String, dynamic> data, {
+    String onConflict = 'id',
+  }) async {
+    _log.i('Upserting into $table (onConflict: $onConflict)');
+    return await client
+        .from(table)
+        .upsert(data, onConflict: onConflict)
+        .select()
+        .single();
+  }
+
   Future<Map<String, dynamic>> update(
     String table,
     String id,

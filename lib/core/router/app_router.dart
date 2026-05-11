@@ -41,17 +41,27 @@ class AppRouter {
   /// Updated on login / cleared on logout.
   static String? _cachedRole;
 
+  /// Flag to prevent redirect during OTP verification in registration.
+  /// When OTP is being verified, signInWithOtp() creates a temporary session
+  /// that could trigger a premature redirect to /client/home.
+  static bool _isOtpVerifying = false;
+
   static void setCachedRole(String? role) => _cachedRole = role;
   static void clearCachedRole() => _cachedRole = null;
+  static void setOtpVerifying(bool value) => _isOtpVerifying = value;
 
   static final _router = GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: '/splash',
-    debugLogDiagnostics: true,
+    debugLogDiagnostics: false,
     redirect: (context, state) {
       final supabase = Supabase.instance.client;
       final session = supabase.auth.currentSession;
       final currentPath = state.matchedLocation;
+
+      // Skip redirect logic during OTP verification to prevent
+      // premature navigation to /client/home from the temporary session.
+      if (_isOtpVerifying) return null;
 
       // Public routes - no auth needed
       final publicRoutes = ['/splash', '/login', '/register-client', '/register-driver', '/pending-verification'];

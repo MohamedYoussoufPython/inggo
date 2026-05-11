@@ -7,6 +7,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../core/constants/constants.dart';
 import '../../core/services/supabase_service.dart';
+import '../../core/router/app_router.dart';
 import '../../widget/widgets.dart';
 import '../../widget/inggo_stepper.dart';
 
@@ -190,12 +191,16 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
     });
 
     try {
+      // Flag OTP verification to prevent GoRouter redirect
+      // from the temporary session created by verifyOtp()
+      AppRouter.setOtpVerifying(true);
       await SupabaseService.instance.verifyOtp(_fullPhone, code);
 
       if (!mounted) return;
 
       // Sign out the temporary session created by OTP verification
       await Supabase.instance.client.auth.signOut();
+      AppRouter.setOtpVerifying(false);
 
       if (!mounted) return;
       setState(() {
@@ -206,6 +211,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
       _showToast('Numéro vérifié !');
     } catch (e) {
       if (!mounted) return;
+      AppRouter.setOtpVerifying(false);
       setState(() => _otpVerifying = false);
       _setError('otp', 'Code invalide');
       _showToast('Code incorrect. Réessayez.');
@@ -449,7 +455,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
 
       // 2. Insert profile (trigger fallback)
       try {
-        await Supabase.instance.client.from('profiles').insert({
+        await SupabaseService.instance.upsert('profiles', {
           'id': userId,
           'full_name': fullName,
           'phone': phone,
@@ -460,7 +466,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
           'phone_verified': true,
         });
       } catch (_) {
-        // Profile may already exist via DB trigger
+        // Profile may already exist via DB trigger — safe to ignore
       }
 
       // 3. Upload documents to Supabase Storage
@@ -473,8 +479,8 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
         }
       }
 
-      // 4. Insert driver
-      await Supabase.instance.client.from('drivers').insert({
+      // 4. Insert driver (upsert in case of re-registration)
+      await SupabaseService.instance.upsert('drivers', {
         'id': userId,
         'vehicle_type': 'moto',
         'plate_number': _plateCtrl.text.trim(),

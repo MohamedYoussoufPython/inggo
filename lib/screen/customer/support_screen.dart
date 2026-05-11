@@ -13,8 +13,8 @@ class SupportScreen extends StatefulWidget {
 
 class _SupportScreenState extends State<SupportScreen> {
   // Support phone number for Inggo VTC Djibouti
-  static const String _supportPhone = '+25377000000';
-  static const String _supportWhatsapp = '25377000000';
+  static const String _supportPhone = '+2537780606';
+  static const String _supportWhatsapp = '2537780606';
 
   Future<void> _makePhoneCall() async {
     final uri = Uri.parse('tel:$_supportPhone');

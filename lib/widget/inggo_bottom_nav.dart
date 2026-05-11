@@ -36,7 +36,17 @@ class InggoBottomNav extends StatelessWidget {
                 icon: item['icon'] as IconData,
                 label: item['label'] as String,
                 isSelected: selected,
-                onTap: () => context.go(item['route'] as String),
+                onTap: () {
+                  // Home tab uses go() to reset stack; other tabs use push()
+                  // to preserve navigation state when switching back.
+                  if (item['route'] as String == (isDriver ? '/driver/home' : '/client/home')) {
+                    context.go(item['route'] as String);
+                  } else {
+                    if (!selected) {
+                      context.push(item['route'] as String);
+                    }
+                  }
+                },
               );
             }).toList(),
           ),

@@ -22,11 +22,28 @@ android {
         }
     }
 
+    // ─── Signing configs ───
+    // For Play Store release, create a keystore:
+    //   keytool -genkey -v -keystore upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
+    // Then set env vars (or uncomment and fill the block below):
+    //   SIGNING_STORE_FILE=upload-keystore.jks
+    //   SIGNING_STORE_PASSWORD=...
+    //   SIGNING_KEY_ALIAS=upload
+    //   SIGNING_KEY_PASSWORD=...
+    signingConfigs {
+        create("release") {
+            val storeFile = System.getenv("SIGNING_STORE_FILE")
+            if (storeFile != null) {
+                this.storeFile = file(storeFile)
+                this.storePassword = System.getenv("SIGNING_STORE_PASSWORD")
+                this.keyAlias = System.getenv("SIGNING_KEY_ALIAS")
+                this.keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
+            }
+        }
+    }
+
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId = "com.inggo.vtc"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
@@ -34,13 +51,26 @@ android {
     }
 
     buildTypes {
-        release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+        debug {
             signingConfig = signingConfigs.getByName("debug")
         }
+        release {
+            // Use release signing when keystore env vars are set,
+            // otherwise fall back to debug signing for `flutter run --release`
+            val hasReleaseSigning = System.getenv("SIGNING_STORE_FILE") != null
+            signingConfig = if (hasReleaseSigning) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
     }
-}
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
