@@ -43,8 +43,6 @@ dependencies:
   # Storage & Security
   flutter_secure_storage: ^9.2.2
   shared_preferences: ^2.2.2
-  hive: ^2.2.3
-  hive_flutter: ^1.1.0
 
   # Media
   image_picker: ^1.0.7
@@ -58,7 +56,6 @@ dependencies:
   uuid: ^4.3.3
   intl: ^0.20.2
   url_launcher: ^6.2.4
-  json_annotation: ^4.9.0
 
 dev_dependencies:
   flutter_test:

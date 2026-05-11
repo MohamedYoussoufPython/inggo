@@ -47,7 +47,9 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
   Timer? _debounceTimer;
   String _lastSentPhone = '';
 
-  // Step 3 — Documents
+  // Step 3 — Véhicule + Documents
+  final _plateCtrl = TextEditingController();
+  final _vehicleColorCtrl = TextEditingController();
   final Map<String, File?> _documentFiles = {
     'cni': null,
     'permis': null,
@@ -73,6 +75,8 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
     _phoneCtrl.dispose();
     _passwordCtrl.dispose();
     _confirmPasswordCtrl.dispose();
+    _plateCtrl.dispose();
+    _vehicleColorCtrl.dispose();
     _timer?.cancel();
     _debounceTimer?.cancel();
     super.dispose();
@@ -263,6 +267,10 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
         valid = false;
       }
     } else if (_currentStep == 3) {
+      if (_plateCtrl.text.trim().isEmpty) {
+        _setError('plate', 'Numéro de plaque requis');
+        valid = false;
+      }
       final allFilled = _documentFiles.values.every((f) => f != null);
       if (!allFilled) {
         _setError('docs', 'Tous les documents sont requis');
@@ -469,6 +477,8 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
       await Supabase.instance.client.from('drivers').insert({
         'id': userId,
         'vehicle_type': 'moto',
+        'plate_number': _plateCtrl.text.trim(),
+        'vehicle_color': _vehicleColorCtrl.text.trim().isEmpty ? null : _vehicleColorCtrl.text.trim(),
         'is_verified': false,
         'id_card_url': docUrls['cni'],
         'license_url': docUrls['permis'],
@@ -825,7 +835,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
     );
   }
 
-  // ─── STEP 3: Documents ───
+  // ─── STEP 3: Véhicule + Documents ───
   Widget _buildStep3() {
     final docLabels = {
       'cni': {'label': 'Carte d\'identité', 'icon': Icons.badge},
@@ -839,6 +849,30 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          _sectionTitle(Icons.two_wheeler, 'Votre Moto'),
+          const SizedBox(height: 8),
+          Text('Renseignez les informations de votre véhicule et téléchargez vos documents.', style: TextStyle(fontSize: 13, color: Colors.grey.shade600)),
+          const SizedBox(height: 20),
+          // Plaque
+          InggoInput(
+            label: 'Numéro de plaque',
+            hint: 'Ex: DJ 1234 A',
+            controller: _plateCtrl,
+            prefixIcon: Icons.pin,
+            onChanged: (_) => _clearErrors(),
+          ),
+          if (_errors.containsKey('plate')) _errorText(_errors['plate']!),
+          const SizedBox(height: 16),
+          // Couleur
+          InggoInput(
+            label: 'Couleur du véhicule',
+            hint: 'Ex: Noir, Rouge...',
+            controller: _vehicleColorCtrl,
+            prefixIcon: Icons.palette,
+            onChanged: (_) => _clearErrors(),
+          ),
+          const SizedBox(height: 24),
+          // Documents section
           _sectionTitle(Icons.folder, 'Vos Documents'),
           const SizedBox(height: 8),
           Text('Tous les documents sont requis pour vérifier votre dossier.', style: TextStyle(fontSize: 13, color: Colors.grey.shade600)),

@@ -36,6 +36,8 @@ class ProfileScreen extends ConsumerWidget {
                 style: AppTextStyles.headline3),
             SizedBox(height: 4.h),
             Text(user?.phone ?? '', style: AppTextStyles.bodyMedium),
+            SizedBox(height: 4.h),
+            Text(user?.email ?? '', style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary)),
             SizedBox(height: 32.h),
             _MenuTile(Icons.person_outline, 'Modifier le profil',
                 () => context.push('/client/edit-profile')),

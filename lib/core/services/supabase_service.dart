@@ -102,8 +102,14 @@ class SupabaseService {
     String? filterValue,
     required void Function(PostgresChangePayload) onChange,
   }) {
-    _log.i('Subscribing to $table');
-    final channel = client.channel('public:$table');
+    // Generate a unique channel name to avoid collisions when multiple
+    // subscriptions to the same table exist (e.g., rides + rides for driver)
+    final suffix = filterColumn != null && filterValue != null
+        ? '_${filterColumn}_$filterValue'
+        : '';
+    final channelName = 'public:${table}${suffix}_${DateTime.now().millisecondsSinceEpoch}';
+    _log.i('Subscribing to $table via channel $channelName');
+    final channel = client.channel(channelName);
     channel.onPostgresChanges(
       event: PostgresChangeEvent.all,
       schema: 'public',

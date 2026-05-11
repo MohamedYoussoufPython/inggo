@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 import '../../core/constants/constants.dart';
 import '../../core/services/supabase_service.dart';
 import '../../model/user_model.dart';
@@ -19,19 +21,38 @@ class EditProfileScreen extends ConsumerStatefulWidget {
 class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
+  late TextEditingController _phoneController;
   bool _isLoading = false;
+  File? _selectedImage;
+  String? _currentAvatarUrl;
+  final _picker = ImagePicker();
 
   @override
   void initState() {
     super.initState();
     final user = ref.read(authProvider).user;
     _nameController = TextEditingController(text: user?.fullName ?? '');
+    _phoneController = TextEditingController(text: user?.phone ?? '');
+    _currentAvatarUrl = user?.avatarUrl;
   }
 
   @override
   void dispose() {
     _nameController.dispose();
+    _phoneController.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickImage() async {
+    final image = await _picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 70,
+      maxWidth: 512,
+      maxHeight: 512,
+    );
+    if (image != null) {
+      setState(() => _selectedImage = File(image.path));
+    }
   }
 
   Future<void> _saveProfile() async {
@@ -43,9 +64,20 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       if (userId == null) throw Exception('Non authentifié');
 
       final newName = _nameController.text.trim();
+      final newPhone = _phoneController.text.trim();
+
+      // Upload avatar if changed
+      String? avatarUrl = _currentAvatarUrl;
+      if (_selectedImage != null) {
+        final bytes = await _selectedImage!.readAsBytes();
+        final path = 'avatars/$userId/${DateTime.now().millisecondsSinceEpoch}.jpg';
+        avatarUrl = await SupabaseService.instance.uploadFile('avatars', path, bytes);
+      }
 
       await SupabaseService.instance.update('profiles', userId, {
         'full_name': newName,
+        'phone': newPhone,
+        if (avatarUrl != null) 'avatar_url': avatarUrl,
       });
 
       // Refresh the auth state by re-fetching the profile
@@ -71,6 +103,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final user = ref.watch(authProvider).user;
+
     return Scaffold(
       appBar: const InggoAppBar(title: 'Modifier le profil', showBack: true),
       body: SingleChildScrollView(
@@ -81,22 +115,67 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 20.h),
+              // Avatar with edit
               Center(
-                child: CircleAvatar(
-                  radius: 50.r,
-                  backgroundColor: AppColors.primary.withValues(alpha: 0.2),
-                  child:
-                      Icon(Icons.person, size: 40.w, color: AppColors.primary),
+                child: GestureDetector(
+                  onTap: _pickImage,
+                  child: Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 50.r,
+                        backgroundColor: AppColors.primary.withValues(alpha: 0.2),
+                        backgroundImage: _selectedImage != null
+                            ? FileImage(_selectedImage!)
+                            : (_currentAvatarUrl != null
+                                ? NetworkImage(_currentAvatarUrl!) as ImageProvider
+                                : null),
+                        child: _selectedImage == null && _currentAvatarUrl == null
+                            ? Icon(Icons.person, size: 40.w, color: AppColors.primary)
+                            : null,
+                      ),
+                      Positioned(
+                        right: 0,
+                        bottom: 0,
+                        child: Container(
+                          width: 32.w,
+                          height: 32.w,
+                          decoration: BoxDecoration(
+                            color: AppColors.primary,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: AppColors.surface, width: 2),
+                          ),
+                          child: Icon(Icons.camera_alt, size: 16.w, color: AppColors.secondary),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
+              ),
+              SizedBox(height: 8.h),
+              Center(
+                child: Text('Changer la photo',
+                    style: AppTextStyles.bodySmall.copyWith(
+                        color: AppColors.primary)),
               ),
               SizedBox(height: 32.h),
               Text('Informations personnelles',
                   style: AppTextStyles.labelLarge),
               SizedBox(height: 16.h),
               InggoInput(
-                hint: 'Nom complet',
+                label: 'Nom complet',
+                hint: 'Votre nom complet',
                 controller: _nameController,
                 prefixIcon: Icons.person_outline,
+                validator: (v) =>
+                    v == null || v.trim().isEmpty ? 'Champ requis' : null,
+              ),
+              SizedBox(height: 16.h),
+              InggoInput(
+                label: 'Téléphone',
+                hint: '+253 77 XX XX XX',
+                controller: _phoneController,
+                keyboardType: TextInputType.phone,
+                prefixIcon: Icons.phone_android,
                 validator: (v) =>
                     v == null || v.trim().isEmpty ? 'Champ requis' : null,
               ),
@@ -104,6 +183,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               InggoButton(
                 label: 'Enregistrer',
                 onPressed: _isLoading ? null : _saveProfile,
+                isLoading: _isLoading,
               ),
             ],
           ),

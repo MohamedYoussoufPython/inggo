@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../core/constants/constants.dart';
 import '../../core/services/location_service.dart';
 import '../../widget/widgets.dart';
@@ -58,12 +59,8 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
                       child: InggoCard(
                         onTap: () {
                           // Set the dropoff point from the favorite and navigate to booking
-                          ref.read(rideProvider.notifier).setDropoff(
-                                fav.address,
-                                fav.lat,
-                                fav.lng,
-                              );
-                          context.push('/client/booking');
+                          // Also set pickup from current GPS
+                          _navigateToBooking(fav.address, fav.lat, fav.lng);
                         },
                         child: Row(
                           children: [
@@ -84,9 +81,14 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
                             IconButton(
                               icon: Icon(Icons.delete_outline,
                                   color: AppColors.error, size: 20.w),
-                              onPressed: () => ref
-                                  .read(favoritesProvider.notifier)
-                                  .deleteFavorite(fav.id),
+                              onPressed: () async {
+                                await ref
+                                    .read(favoritesProvider.notifier)
+                                    .deleteFavorite(fav.id);
+                                if (mounted) {
+                                  InggoToast.success(context, 'Favori supprimé');
+                                }
+                              },
                             ),
                           ],
                         ),
@@ -104,10 +106,127 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
     );
   }
 
+  /// Set pickup from GPS, then set dropoff from favorite, then navigate to booking
+  Future<void> _navigateToBooking(String address, double lat, double lng) async {
+    // Set pickup from current GPS position
+    final position = await LocationService.instance.getCurrentPosition();
+    if (position != null) {
+      ref.read(rideProvider.notifier).setPickup(
+            'Position actuelle',
+            position.latitude,
+            position.longitude,
+          );
+    }
+    // Set dropoff
+    ref.read(rideProvider.notifier).setDropoff(address, lat, lng);
+    context.push('/client/booking');
+  }
+
   /// Show a dialog to add a new favorite destination
   void _showAddFavoriteDialog(BuildContext context) {
     final labelController = TextEditingController();
     final addressController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+    double? selectedLat;
+    double? selectedLng;
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Ajouter un favori'),
+        content: Form(
+          key: formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: labelController,
+                decoration: const InputDecoration(
+                  labelText: 'Nom du lieu',
+                  hintText: 'Ex: Maison, Travail...',
+                  prefixIcon: Icon(Icons.label),
+                ),
+                validator: (v) =>
+                    v == null || v.trim().isEmpty ? 'Champ requis' : null,
+              ),
+              SizedBox(height: 12.h),
+              TextFormField(
+                controller: addressController,
+                decoration: const InputDecoration(
+                  labelText: 'Adresse',
+                  hintText: 'Ex: Quartier Haramous...',
+                  prefixIcon: Icon(Icons.location_on),
+                ),
+                validator: (v) =>
+                    v == null || v.trim().isEmpty ? 'Champ requis' : null,
+              ),
+              SizedBox(height: 12.h),
+              OutlinedButton.icon(
+                icon: const Icon(Icons.map),
+                label: const Text('Choisir sur la carte'),
+                onPressed: () async {
+                  // Close dialog temporarily and show map picker
+                  Navigator.pop(ctx);
+                  final result = await _showMapPicker();
+                  if (result != null) {
+                    selectedLat = result.latitude;
+                    selectedLng = result.longitude;
+                    if (addressController.text.trim().isEmpty) {
+                      addressController.text = 'Position sélectionnée';
+                    }
+                    // Re-show dialog with updated state
+                    if (mounted) _showAddFavoriteDialogWithValues(
+                      context,
+                      labelController.text,
+                      addressController.text,
+                      selectedLat,
+                      selectedLng,
+                    );
+                  }
+                },
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Annuler'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (!formKey.currentState!.validate()) return;
+
+              // Use selected map position, or current GPS, or default Djibouti
+              final position = LocationService.instance.currentPosition;
+              final lat = selectedLat ?? position?.latitude ?? AppConstants.defaultLat;
+              final lng = selectedLng ?? position?.longitude ?? AppConstants.defaultLng;
+
+              ref.read(favoritesProvider.notifier).addFavorite(
+                    label: labelController.text.trim(),
+                    address: addressController.text.trim(),
+                    lat: lat,
+                    lng: lng,
+                  );
+              Navigator.pop(ctx);
+              InggoToast.success(context, 'Favori ajouté');
+            },
+            child: const Text('Ajouter'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showAddFavoriteDialogWithValues(
+    BuildContext context,
+    String label,
+    String address,
+    double? lat,
+    double? lng,
+  ) {
+    final labelController = TextEditingController(text: label);
+    final addressController = TextEditingController(text: address);
     final formKey = GlobalKey<FormState>();
 
     showDialog(
@@ -140,6 +259,17 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
                 validator: (v) =>
                     v == null || v.trim().isEmpty ? 'Champ requis' : null,
               ),
+              if (lat != null && lng != null) ...[
+                SizedBox(height: 8.h),
+                Row(
+                  children: [
+                    Icon(Icons.check_circle, size: 16.w, color: AppColors.success),
+                    SizedBox(width: 6.w),
+                    Text('Position sélectionnée sur la carte',
+                        style: AppTextStyles.bodySmall.copyWith(color: AppColors.success)),
+                  ],
+                ),
+              ],
             ],
           ),
         ),
@@ -151,20 +281,43 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
           ElevatedButton(
             onPressed: () {
               if (!formKey.currentState!.validate()) return;
-              Navigator.pop(ctx);
-              // Use current GPS position as coordinates, fallback to default Djibouti
+
               final position = LocationService.instance.currentPosition;
+              final favLat = lat ?? position?.latitude ?? AppConstants.defaultLat;
+              final favLng = lng ?? position?.longitude ?? AppConstants.defaultLng;
+
               ref.read(favoritesProvider.notifier).addFavorite(
                     label: labelController.text.trim(),
                     address: addressController.text.trim(),
-                    lat: position?.latitude ?? AppConstants.defaultLat,
-                    lng: position?.longitude ?? AppConstants.defaultLng,
+                    lat: favLat,
+                    lng: favLng,
                   );
+              Navigator.pop(ctx);
+              InggoToast.success(context, 'Favori ajouté');
             },
             child: const Text('Ajouter'),
           ),
         ],
       ),
     );
+  }
+
+  Future<LatLng?> _showMapPicker() async {
+    LatLng? selectedPos;
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (ctx) => SizedBox(
+        height: MediaQuery.of(ctx).size.height * 0.8,
+        child: MapWidget(
+          enableTap: true,
+          onTapPosition: (pos) {
+            selectedPos = pos;
+            Navigator.pop(ctx);
+          },
+        ),
+      ),
+    );
+    return selectedPos;
   }
 }

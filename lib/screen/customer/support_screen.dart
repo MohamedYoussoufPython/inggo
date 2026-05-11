@@ -16,8 +16,16 @@ class SupportScreen extends StatelessWidget {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     } else {
-      // If phone call fails, show a SnackBar or fallback
-      debugPrint('Could not launch phone call');
+      // If phone call fails, show a SnackBar
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Impossible de lancer l\'appel téléphonique.'),
+            backgroundColor: AppColors.error,
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
     }
   }
 
@@ -31,7 +39,15 @@ class SupportScreen extends StatelessWidget {
     } else if (await canLaunchUrl(smsUri)) {
       await launchUrl(smsUri);
     } else {
-      debugPrint('Could not launch messaging app');
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Aucune application de messagerie disponible.'),
+            backgroundColor: AppColors.error,
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
     }
   }
 

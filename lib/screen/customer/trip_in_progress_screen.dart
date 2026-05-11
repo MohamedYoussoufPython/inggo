@@ -26,6 +26,9 @@ class TripInProgressScreen extends ConsumerWidget {
     });
 
     final currentRide = ride.currentRide;
+    final isInProgress = currentRide?.status == RideStatus.inProgress;
+    final statusLabel = isInProgress ? 'Course en cours' : 'Votre chauffeur arrive';
+    final topLabel = isInProgress ? 'Course en cours' : 'Chauffeur en route';
 
     return Scaffold(
       body: Stack(
@@ -50,15 +53,19 @@ class TripInProgressScreen extends ConsumerWidget {
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.motorcycle,
-                        color: AppColors.secondary, size: 24.w),
+                    Icon(
+                        isInProgress
+                            ? Icons.motorcycle
+                            : Icons.access_time,
+                        color: AppColors.secondary,
+                        size: 24.w),
                     SizedBox(width: 12.w),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text('Course en cours',
+                          Text(topLabel,
                               style: AppTextStyles.labelMedium.copyWith(
                                   color: AppColors.secondary)),
                           Text(
@@ -91,8 +98,7 @@ class TripInProgressScreen extends ConsumerWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('Votre chauffeur arrive',
-                      style: AppTextStyles.labelLarge),
+                  Text(statusLabel, style: AppTextStyles.labelLarge),
                   SizedBox(height: 12.h),
                   DriverCard(
                     name: ride.driverName ?? 'Chauffeur',

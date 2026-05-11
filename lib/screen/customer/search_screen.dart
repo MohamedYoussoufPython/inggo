@@ -21,7 +21,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   List<Map<String, dynamic>> _landmarks = [];
   List<Map<String, dynamic>> _filtered = [];
   bool _isSearching = false;
-  // ignore: unused_field
   LatLng? _selectedPosition;
 
   @override

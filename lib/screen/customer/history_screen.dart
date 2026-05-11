@@ -14,11 +14,37 @@ class HistoryScreen extends ConsumerStatefulWidget {
 }
 
 class _HistoryScreenState extends ConsumerState<HistoryScreen> {
+  final _scrollController = ScrollController();
+  bool _isLoadingMore = false;
+
   @override
   void initState() {
     super.initState();
     Future.microtask(
         () => ref.read(rideProvider.notifier).loadHistory());
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent - 200 &&
+        !_isLoadingMore) {
+      _loadMore();
+    }
+  }
+
+  Future<void> _loadMore() async {
+    setState(() => _isLoadingMore = true);
+    // Currently the provider doesn't support offset pagination
+    // but we refresh the list which fetches the latest 20
+    await ref.read(rideProvider.notifier).loadHistory();
+    if (mounted) setState(() => _isLoadingMore = false);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -40,39 +66,57 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                     ],
                   ),
                 )
-              : ListView.builder(
-                  padding: EdgeInsets.all(AppSpacing.screenPadding),
-                  itemCount: ride.rideHistory.length,
-                  itemBuilder: (context, index) {
-                    final r = ride.rideHistory[index];
-                    return Padding(
-                      padding: EdgeInsets.only(bottom: 12.h),
-                      child: InggoCard(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                RideStatusBadge(status: r.status),
-                                Text(Formatters.formatPrice(r.price),
-                                    style: AppTextStyles.priceSmall),
-                              ],
+              : RefreshIndicator(
+                  onRefresh: () => ref.read(rideProvider.notifier).loadHistory(),
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: EdgeInsets.all(AppSpacing.screenPadding),
+                    itemCount: ride.rideHistory.length + (_isLoadingMore ? 1 : 0),
+                    itemBuilder: (context, index) {
+                      if (index == ride.rideHistory.length) {
+                        return Padding(
+                          padding: EdgeInsets.symmetric(vertical: 16.h),
+                          child: const Center(
+                            child: SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(strokeWidth: 2),
                             ),
-                            SizedBox(height: 8.h),
-                            _row(Icons.trip_origin, r.pickupAddress),
-                            SizedBox(height: 4.h),
-                            _row(Icons.location_on, r.dropoffAddress),
-                            if (r.createdAt != null) ...[
+                          ),
+                        );
+                      }
+
+                      final r = ride.rideHistory[index];
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: 12.h),
+                        child: InggoCard(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  RideStatusBadge(status: r.status),
+                                  Text(Formatters.formatPrice(r.price),
+                                      style: AppTextStyles.priceSmall),
+                                ],
+                              ),
                               SizedBox(height: 8.h),
-                              Text(Formatters.formatDateTime(r.createdAt!),
-                                  style: AppTextStyles.caption),
+                              _row(Icons.trip_origin, r.pickupAddress),
+                              SizedBox(height: 4.h),
+                              _row(Icons.location_on, r.dropoffAddress),
+                              if (r.createdAt != null) ...[
+                                SizedBox(height: 8.h),
+                                Text(Formatters.formatDateTime(r.createdAt!),
+                                    style: AppTextStyles.caption),
+                              ],
                             ],
-                          ],
+                          ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
       bottomNavigationBar: const InggoBottomNav(currentIndex: 1),
     );

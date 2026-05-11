@@ -20,7 +20,14 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() => ref.read(driverProvider.notifier).loadDriver());
+    Future.microtask(() {
+      ref.read(driverProvider.notifier).loadDriver();
+      // If there's already a pending ride when the screen loads, show it
+      final driver = ref.read(driverProvider);
+      if (driver.pendingRide != null) {
+        _showRideRequest(driver.pendingRide!);
+      }
+    });
   }
 
   @override

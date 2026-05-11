@@ -487,11 +487,89 @@ class _LoginScreenState extends State<LoginScreen> {
     return Center(
       child: TextButton(
         onPressed: () {
-          // TODO: Forgot password flow
+          _showForgotPasswordDialog();
         },
         child: Text(
           'Mot de passe oublié ?',
           style: AppTextStyles.button.copyWith(color: AppColors.textPrimary),
+        ),
+      ),
+    );
+  }
+
+  void _showForgotPasswordDialog() {
+    final emailController = TextEditingController();
+    bool isSending = false;
+
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDialogState) => AlertDialog(
+          title: const Text('Mot de passe oublié'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Entrez votre adresse email. Un lien de réinitialisation vous sera envoyé.',
+                style: TextStyle(fontSize: 14, color: Color(0xFF757575)),
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: emailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  hintText: 'votre.email@exemple.com',
+                  prefixIcon: const Icon(Icons.email_outlined),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Annuler'),
+            ),
+            ElevatedButton(
+              onPressed: isSending
+                  ? null
+                  : () async {
+                      final email = emailController.text.trim();
+                      if (email.isEmpty || !_isValidEmail(email)) {
+                        return;
+                      }
+                      setDialogState(() => isSending = true);
+                      try {
+                        await Supabase.instance.client.auth.resetPasswordForEmail(email);
+                        if (ctx.mounted) {
+                          Navigator.pop(ctx);
+                          _showSnackBar(
+                            'Email de réinitialisation envoyé !',
+                            AppColors.success,
+                          );
+                        }
+                      } catch (e) {
+                        if (ctx.mounted) {
+                          setDialogState(() => isSending = false);
+                          Navigator.pop(ctx);
+                          _showSnackBar(
+                            'Erreur: ${e.toString()}',
+                            AppColors.error,
+                          );
+                        }
+                      }
+                    },
+              child: isSending
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text('Envoyer'),
+            ),
+          ],
         ),
       ),
     );
