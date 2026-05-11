@@ -10,7 +10,13 @@ ALTER TABLE profiles ADD COLUMN IF NOT EXISTS phone_verified BOOLEAN NOT NULL DE
 
 -- Add profiles INSERT policy for new user registration
 -- (The signUp flow inserts into profiles from the client side)
-CREATE POLICY "Users can insert own profile" ON profiles FOR INSERT WITH CHECK (id = auth.uid());
+-- Use DO block to avoid error if policy already exists from migration 005
+DO $$
+BEGIN
+    CREATE POLICY "Users can insert own profile" ON profiles FOR INSERT WITH CHECK (id = auth.uid());
+EXCEPTION WHEN duplicate_object THEN
+    RAISE NOTICE 'Policy "Users can insert own profile" already exists, skipping.';
+END $$;
 
 -- Add reviews table for driver ratings
 CREATE TABLE IF NOT EXISTS reviews (
@@ -81,4 +87,10 @@ CREATE INDEX IF NOT EXISTS idx_password_resets_user_id ON password_resets(user_i
 ALTER TABLE password_resets ENABLE ROW LEVEL SECURITY;
 
 -- Add Realtime for drivers table (for driver location tracking)
-ALTER PUBLICATION supabase_realtime ADD TABLE drivers;
+-- Use DO block to avoid error if already added by migration 005
+DO $$
+BEGIN
+    ALTER PUBLICATION supabase_realtime ADD TABLE drivers;
+EXCEPTION WHEN duplicate_object THEN
+    RAISE NOTICE 'Table "drivers" already in supabase_realtime publication, skipping.';
+END $$;
