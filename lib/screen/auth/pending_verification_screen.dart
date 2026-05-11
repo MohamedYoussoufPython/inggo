@@ -83,7 +83,10 @@ class _PendingVerificationScreenState extends State<PendingVerificationScreen> {
               SizedBox(height: 32.h),
               InggoButton(
                 label: 'Compris',
-                onPressed: () => context.go('/login'),
+                onPressed: () {
+                  // Stay on this screen — Realtime subscription will
+                  // auto-navigate to /driver/home when is_verified = true
+                },
               ),
             ],
           ),

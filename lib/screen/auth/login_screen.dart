@@ -22,7 +22,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _obscurePassword = true;
   bool _loading = false;
-  bool _rememberMe = false;
 
   String? _emailError;
   String? _passwordError;
@@ -264,8 +263,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 _buildEmailField(),
                 const SizedBox(height: 16),
                 _buildPasswordField(),
-                const SizedBox(height: 12),
-                _buildRememberMe(),
                 const SizedBox(height: 20),
                 _buildLoginButton(),
                 const SizedBox(height: 12),
@@ -473,28 +470,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
         ],
-      ],
-    );
-  }
-
-  Widget _buildRememberMe() {
-    return Row(
-      children: [
-        SizedBox(
-          width: 24,
-          height: 24,
-          child: Checkbox(
-            value: _rememberMe,
-            onChanged: (value) => setState(() => _rememberMe = value ?? false),
-            activeColor: AppColors.primary,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-          ),
-        ),
-        const SizedBox(width: 8),
-        Text(
-          'Se souvenir de moi',
-          style: AppTextStyles.bodyLarge.copyWith(color: AppColors.textPrimary),
-        ),
       ],
     );
   }

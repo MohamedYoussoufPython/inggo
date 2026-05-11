@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -5,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../core/constants/constants.dart';
+import '../../core/services/supabase_service.dart';
 import '../../widget/widgets.dart';
 import '../../widget/inggo_stepper.dart';
 
@@ -21,8 +23,6 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
   final int _totalSteps = 4;
   bool _isSubmitting = false;
   bool _showSuccess = false;
-  bool _isPhoneVerified = false;
-
   // Step 1 — Identité
   final _nomCtrl = TextEditingController();
   final _pereCtrl = TextEditingController();
@@ -36,6 +36,15 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
   final _passwordCtrl = TextEditingController();
   final _confirmPasswordCtrl = TextEditingController();
 
+  // OTP state
+  bool _otpSent = false;
+  bool _otpSending = false;
+  bool _phoneVerified = false;
+  bool _otpVerifying = false;
+  String _otpCode = '';
+  int _resendTimer = 0;
+  Timer? _timer;
+
   // Step 3 — Documents
   final Map<String, File?> _documentFiles = {
     'cni': null,
@@ -47,9 +56,6 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
   // Step 4 — Conditions
   bool _cguChecked = false;
   bool _privacyChecked = false;
-
-  // SMS verification
-  final _smsCodeCtrl = TextEditingController();
 
   // Errors
   final Map<String, String> _errors = {};
@@ -65,7 +71,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
     _phoneCtrl.dispose();
     _passwordCtrl.dispose();
     _confirmPasswordCtrl.dispose();
-    _smsCodeCtrl.dispose();
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -73,6 +79,93 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
 
   void _setError(String field, String msg) =>
       setState(() => _errors[field] = msg);
+
+  String get _fullPhone => '+253${_phoneCtrl.text.trim().replaceAll(' ', '')}';
+
+  // ─── OTP Logic ───
+
+  Future<void> _sendOtp() async {
+    final phone = _phoneCtrl.text.trim().replaceAll(' ', '');
+    if (phone.isEmpty || phone.length < 6) {
+      _setError('phone', 'Numéro invalide');
+      return;
+    }
+
+    setState(() {
+      _otpSending = true;
+      _errors.remove('otp');
+    });
+
+    try {
+      await SupabaseService.instance.signInWithOtp(_fullPhone);
+
+      if (!mounted) return;
+      setState(() {
+        _otpSent = true;
+        _otpSending = false;
+        _phoneVerified = false;
+        _otpCode = '';
+        _resendTimer = 60;
+      });
+      _startTimer();
+      HapticFeedback.mediumImpact();
+      _showToast('Code envoyé au $_fullPhone');
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _otpSending = false);
+      _setError('otp', 'Erreur d\'envoi. Réessayez.');
+      _showToast('Erreur: ${e.toString()}');
+    }
+  }
+
+  void _startTimer() {
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+      setState(() {
+        _resendTimer--;
+        if (_resendTimer <= 0) {
+          timer.cancel();
+        }
+      });
+    });
+  }
+
+  Future<void> _verifyOtp(String code) async {
+    if (code.length < 6) return;
+
+    setState(() {
+      _otpVerifying = true;
+      _errors.remove('otp');
+    });
+
+    try {
+      await SupabaseService.instance.verifyOtp(_fullPhone, code);
+
+      if (!mounted) return;
+
+      // Sign out the temporary session created by OTP verification
+      await Supabase.instance.client.auth.signOut();
+
+      if (!mounted) return;
+      setState(() {
+        _phoneVerified = true;
+        _otpVerifying = false;
+      });
+      HapticFeedback.heavyImpact();
+      _showToast('Numéro vérifié !');
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _otpVerifying = false);
+      _setError('otp', 'Code invalide');
+      _showToast('Code incorrect. Réessayez.');
+    }
+  }
+
+  // ─── Validation ───
 
   bool _validateStep() {
     _clearErrors();
@@ -110,8 +203,12 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
         _setError('email', 'Email invalide');
         valid = false;
       }
-      if (_phoneCtrl.text.trim().isEmpty || _phoneCtrl.text.trim().length < 6) {
+      if (_phoneCtrl.text.trim().isEmpty || _phoneCtrl.text.trim().replaceAll(' ', '').length < 6) {
         _setError('phone', 'Numéro invalide');
+        valid = false;
+      }
+      if (!_phoneVerified) {
+        _setError('phone_verify', 'Vérifiez votre numéro');
         valid = false;
       }
       if (_passwordCtrl.text.length < 6) {
@@ -144,11 +241,6 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
 
   void _nextStep() {
     if (!_validateStep()) return;
-
-    if (_currentStep == 2 && !_isPhoneVerified) {
-      _showSmsVerificationDialog();
-      return;
-    }
 
     if (_currentStep < _totalSteps) {
       setState(() => _currentStep++);
@@ -285,7 +377,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
     try {
       final fullName =
           '${_nomCtrl.text.trim()} ${_pereCtrl.text.trim()} ${_grandpereCtrl.text.trim()}';
-      final phone = '+253 ${_phoneCtrl.text.trim()}';
+      final phone = _fullPhone;
 
       // 1. Sign up with Supabase Auth
       final response = await Supabase.instance.client.auth.signUp(
@@ -304,16 +396,21 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
       final userId = response.user?.id;
       if (userId == null) throw Exception('Erreur création compte');
 
-      // 2. Insert profile
-      await Supabase.instance.client.from('profiles').insert({
-        'id': userId,
-        'full_name': fullName,
-        'phone': phone,
-        'email': _emailCtrl.text.trim(),
-        'role': 'driver',
-        'sexe': _sexe,
-        'pays': _pays,
-      });
+      // 2. Insert profile (trigger fallback)
+      try {
+        await Supabase.instance.client.from('profiles').insert({
+          'id': userId,
+          'full_name': fullName,
+          'phone': phone,
+          'email': _emailCtrl.text.trim(),
+          'role': 'driver',
+          'sexe': _sexe,
+          'pays': _pays,
+          'phone_verified': true,
+        });
+      } catch (_) {
+        // Profile may already exist via DB trigger
+      }
 
       // 3. Upload documents to Supabase Storage
       final docUrls = <String, String?>{};
@@ -346,56 +443,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
     }
   }
 
-  // ─── SMS Verification ───
-
-  void _showSmsVerificationDialog() {
-    _smsCodeCtrl.clear();
-    _showToast('Code SMS envoyé !');
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      barrierColor: Colors.black54,
-      builder: (ctx) => _SmsVerificationDialog(
-        phone: '+253 ${_phoneCtrl.text}',
-        controller: _smsCodeCtrl,
-        onVerify: () async {
-          if (_smsCodeCtrl.text.trim().length == 6) {
-            try {
-              await Supabase.instance.client.auth.verifyOtp(
-                phone: '+253${_phoneCtrl.text.trim()}',
-                token: _smsCodeCtrl.text.trim(),
-                type: OtpType.sms,
-              );
-              if (!mounted) return;
-              Navigator.pop(ctx);
-              setState(() => _isPhoneVerified = true);
-              _showToast('Numéro vérifié ✓');
-              setState(() => _currentStep++);
-              _pageController.animateToPage(
-                _currentStep - 1,
-                duration: const Duration(milliseconds: 350),
-                curve: Curves.easeInOutCubic,
-              );
-            } catch (e) {
-              _showToast('Code invalide. Réessayez.');
-            }
-          } else {
-            HapticFeedback.heavyImpact();
-          }
-        },
-        onResend: () async {
-          try {
-            final fullPhone = '+253${_phoneCtrl.text.trim()}';
-            await Supabase.instance.client.auth.signInWithOtp(phone: fullPhone);
-            _showToast('Code renvoyé !');
-          } catch (e) {
-            _showToast('Erreur envoi SMS');
-          }
-        },
-        onCancel: () => Navigator.pop(ctx),
-      ),
-    );
-  }
+  // ─── Toast ───
 
   void _showToast(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -573,7 +621,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
     );
   }
 
-  // ─── STEP 2: Coordonnées + Sécurité ───
+  // ─── STEP 2: Coordonnées + Sécurité + OTP ───
   Widget _buildStep2() {
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
@@ -600,26 +648,121 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
                     child: const Center(child: Text('🇩🇯 +253', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700))),
                   ),
                   const SizedBox(width: 10),
-                  Expanded(child: InggoInput(hint: '77 XX XX XX', controller: _phoneCtrl, keyboardType: TextInputType.phone, onChanged: (_) => _clearErrors())),
+                  Expanded(child: InggoInput(
+                    hint: '77 XX XX XX',
+                    controller: _phoneCtrl,
+                    keyboardType: TextInputType.phone,
+                    onChanged: (_) {
+                      _clearErrors();
+                      // Reset OTP state if phone changes
+                      if (_otpSent || _phoneVerified) {
+                        setState(() {
+                          _otpSent = false;
+                          _phoneVerified = false;
+                          _otpCode = '';
+                        });
+                      }
+                    },
+                  )),
                 ],
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 4, top: 8),
-                child: Row(
-                  children: [
-                    const Icon(Icons.sms, size: 14, color: AppColors.primary),
-                    const SizedBox(width: 6),
-                    Text(
-                      _isPhoneVerified ? 'Numéro vérifié ✓' : 'Un code sera envoyé pour vérification.',
-                      style: TextStyle(fontSize: 12, color: _isPhoneVerified ? AppColors.success : Colors.grey.shade600),
-                    ),
-                  ],
-                ),
               ),
             ],
           ),
           if (_errors.containsKey('phone')) _errorText(_errors['phone']!),
+          const SizedBox(height: 16),
+
+          // ─── Send OTP Button ───
+          if (!_phoneVerified) ...[
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: InggoButton(
+                label: _otpSending
+                    ? 'Envoi en cours...'
+                    : _otpSent
+                        ? _resendTimer > 0
+                            ? 'Renvoyer (${_resendTimer}s)'
+                            : 'Renvoyer le code'
+                        : 'Envoyer le code',
+                icon: _phoneVerified ? Icons.check_circle : Icons.sms_outlined,
+                isLoading: _otpSending,
+                onPressed: _otpSending || (_otpSent && _resendTimer > 0)
+                    ? null
+                    : _sendOtp,
+              ),
+            ),
+          ] else ...[
+            // Phone verified badge
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: AppColors.success.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: AppColors.success.withValues(alpha: 0.3)),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.verified, color: AppColors.success, size: 20),
+                  const SizedBox(width: 10),
+                  Text(
+                    'Numéro vérifié : $_fullPhone',
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.success,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+
+          // ─── OTP Input (visible after sending) ───
+          if (_otpSent && !_phoneVerified) ...[
+            const SizedBox(height: 20),
+            const Padding(
+              padding: EdgeInsets.only(left: 4, bottom: 10),
+              child: Text(
+                'Entrez le code de vérification',
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF444444)),
+              ),
+            ),
+            Center(
+              child: InggoOtpInput(
+                onCompleted: (code) {
+                  _otpCode = code;
+                  _verifyOtp(code);
+                },
+                onChanged: (code) {
+                  _otpCode = code;
+                  _clearErrors();
+                },
+              ),
+            ),
+            if (_otpVerifying) ...[
+              const SizedBox(height: 12),
+              const Center(child: SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.5,
+                  color: AppColors.primary,
+                ),
+              )),
+            ],
+            if (_errors.containsKey('otp'))
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: _errorText(_errors['otp']!),
+              ),
+          ],
+
+          if (_errors.containsKey('phone_verify'))
+            _errorText(_errors['phone_verify']!),
           const SizedBox(height: 20),
+
+          // Password fields (always visible)
           InggoInput(label: 'Mot de passe', hint: 'Au moins 6 caractères', controller: _passwordCtrl, obscureText: true, prefixIcon: Icons.lock_outline, onChanged: (_) => _clearErrors()),
           if (_errors.containsKey('password')) _errorText(_errors['password']!),
           const SizedBox(height: 16),
@@ -695,7 +838,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              file != null ? 'Document ajouté ✓' : 'Appuyez pour ajouter',
+                              file != null ? 'Document ajouté' : 'Appuyez pour ajouter',
                               style: TextStyle(fontSize: 12, color: file != null ? AppColors.success : Colors.grey.shade500),
                             ),
                           ],
@@ -974,78 +1117,6 @@ class _LegalCheckbox extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-// ─── SMS Verification Dialog ───
-
-class _SmsVerificationDialog extends StatelessWidget {
-  final String phone;
-  final TextEditingController controller;
-  final VoidCallback onVerify;
-  final VoidCallback onResend;
-  final VoidCallback onCancel;
-
-  const _SmsVerificationDialog({
-    required this.phone,
-    required this.controller,
-    required this.onVerify,
-    required this.onResend,
-    required this.onCancel,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 60, height: 60,
-              decoration: const BoxDecoration(color: AppColors.primaryLight, shape: BoxShape.circle),
-              child: const Icon(Icons.sms, color: AppColors.primaryDark, size: 28),
-            ),
-            const SizedBox(height: 16),
-            const Text('Vérification Mobile', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
-            const SizedBox(height: 8),
-            Text.rich(
-              TextSpan(
-                text: 'Un code à 6 chiffres a été envoyé au\n',
-                style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
-                children: [TextSpan(text: phone, style: const TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF121212)))],
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: controller,
-              keyboardType: TextInputType.number,
-              maxLength: 6,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 24, letterSpacing: 8, fontWeight: FontWeight.w700),
-              decoration: InputDecoration(
-                counterText: '',
-                hintText: '0 0 0 0 0 0',
-                hintStyle: TextStyle(color: Colors.grey.shade300),
-                filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: const BorderSide(color: Color(0xFFCCCCCC))),
-                focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: const BorderSide(color: AppColors.primary, width: 2)),
-              ),
-            ),
-            const SizedBox(height: 16),
-            InggoButton(label: 'Valider', onPressed: onVerify),
-            const SizedBox(height: 8),
-            TextButton(onPressed: onResend, child: const Text('Renvoyer le code')),
-            const SizedBox(height: 4),
-            TextButton(onPressed: onCancel, child: Text('Annuler', style: TextStyle(color: Colors.grey.shade500))),
-          ],
-        ),
       ),
     );
   }

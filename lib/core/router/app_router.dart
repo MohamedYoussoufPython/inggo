@@ -48,10 +48,23 @@ class AppRouter {
 
       // Public routes - no auth needed
       final publicRoutes = ['/splash', '/login', '/register-client', '/register-driver', '/pending-verification'];
-      if (publicRoutes.contains(currentPath)) return null;
+
+      // Registration pages are allowed even with a session
+      // (OTP verification creates a temporary session during signup)
+      final registrationRoutes = ['/register-client', '/register-driver'];
+
+      // Authenticated user on login/register → redirect to home
+      // But allow staying on registration pages during OTP verification
+      if (session != null && !registrationRoutes.contains(currentPath) && currentPath != '/splash' && currentPath != '/pending-verification') {
+        if (publicRoutes.contains(currentPath)) {
+          return '/client/home';
+        }
+      }
 
       // Not logged in → login
-      if (session == null) return '/login';
+      if (session == null && !publicRoutes.contains(currentPath)) {
+        return '/login';
+      }
 
       return null;
     },
