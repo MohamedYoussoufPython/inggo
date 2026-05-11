@@ -881,30 +881,57 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
           ),
         ],
       ),
-      child: Row(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          if (_currentStep > 1) ...[
-            GestureDetector(
-              onTap: _prevStep,
-              child: Container(
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF0F0F0),
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: const Icon(Icons.arrow_back, color: Color(0xFF121212)),
+          // Warning if phone not verified on step 2
+          if (_currentStep == 2 && !_phoneVerified) ...[
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Row(
+                children: [
+                  const Icon(Icons.lock_outline, size: 16, color: AppColors.warning),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      _otpSent
+                          ? 'Vérifiez votre numéro pour continuer'
+                          : 'Saisissez et vérifiez votre numéro',
+                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.warning),
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(width: 12),
           ],
-          Expanded(
-            child: InggoButton(
-              label: _currentStep == _totalSteps ? 'Créer mon compte' : 'Suivant',
-              icon: _currentStep == _totalSteps ? Icons.check : Icons.arrow_forward,
-              isLoading: _isSubmitting,
-              onPressed: _isSubmitting ? null : _nextStep,
-            ),
+          Row(
+            children: [
+              if (_currentStep > 1) ...[
+                GestureDetector(
+                  onTap: _prevStep,
+                  child: Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF0F0F0),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: const Icon(Icons.arrow_back, color: Color(0xFF121212)),
+                  ),
+                ),
+                const SizedBox(width: 12),
+              ],
+              Expanded(
+                child: InggoButton(
+                  label: _currentStep == _totalSteps ? 'Créer mon compte' : 'Suivant',
+                  icon: _currentStep == _totalSteps ? Icons.check : Icons.arrow_forward,
+                  isLoading: _isSubmitting,
+                  onPressed: (_isSubmitting || (_currentStep == 2 && !_phoneVerified))
+                      ? null
+                      : _nextStep,
+                ),
+              ),
+            ],
           ),
         ],
       ),
