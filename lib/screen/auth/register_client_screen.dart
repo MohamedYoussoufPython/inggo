@@ -42,6 +42,8 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
   String _otpCode = '';
   int _resendTimer = 0;
   Timer? _timer;
+  Timer? _debounceTimer;
+  String _lastSentPhone = '';
 
   // Step 3 — Sécurité
   final _passwordCtrl = TextEditingController();
@@ -61,6 +63,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
     _passwordCtrl.dispose();
     _confirmPasswordCtrl.dispose();
     _timer?.cancel();
+    _debounceTimer?.cancel();
     super.dispose();
   }
 
@@ -73,6 +76,45 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
   String get _fullPhone => '+253${_phoneCtrl.text.trim().replaceAll(' ', '')}';
 
   // ─── OTP Logic ───
+
+  bool _isPhoneValid() {
+    final phone = _phoneCtrl.text.trim().replaceAll(' ', '');
+    return phone.length >= 6;
+  }
+
+  void _onPhoneChanged(String value) {
+    _clearErrors();
+    // Reset OTP state if phone changes after verification
+    if (_phoneVerified) {
+      setState(() {
+        _phoneVerified = false;
+        _otpSent = false;
+        _otpCode = '';
+        _lastSentPhone = '';
+      });
+      return;
+    }
+    // Reset OTP state if phone changes while OTP was sent
+    if (_otpSent) {
+      final newPhone = _fullPhone;
+      if (newPhone != _lastSentPhone) {
+        setState(() {
+          _otpSent = false;
+          _otpCode = '';
+          _lastSentPhone = '';
+        });
+      }
+    }
+    // Auto-send OTP when phone becomes valid (first time)
+    _debounceTimer?.cancel();
+    if (_isPhoneValid() && !_otpSent && !_otpSending) {
+      _debounceTimer = Timer(const Duration(milliseconds: 800), () {
+        if (mounted && _isPhoneValid() && !_otpSent && !_otpSending) {
+          _sendOtp();
+        }
+      });
+    }
+  }
 
   Future<void> _sendOtp() async {
     final phone = _phoneCtrl.text.trim().replaceAll(' ', '');
@@ -95,6 +137,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
         _otpSending = false;
         _phoneVerified = false;
         _otpCode = '';
+        _lastSentPhone = _fullPhone;
         _resendTimer = 60;
       });
       _startTimer();
@@ -577,17 +620,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
                       hint: '77 XX XX XX',
                       controller: _phoneCtrl,
                       keyboardType: TextInputType.phone,
-                      onChanged: (_) {
-                        _clearErrors();
-                        // Reset OTP state if phone changes
-                        if (_otpSent || _phoneVerified) {
-                          setState(() {
-                            _otpSent = false;
-                            _phoneVerified = false;
-                            _otpCode = '';
-                          });
-                        }
-                      },
+                      onChanged: _onPhoneChanged,
                     ),
                   ),
                 ],
@@ -598,24 +631,43 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
             _errorText(_errors['phone']!),
           const SizedBox(height: 16),
 
-          // ─── Send OTP Button ───
-          if (!_phoneVerified) ...[
+          // ─── Sending indicator / Resend button ───
+          if (_otpSending) ...[
             SizedBox(
               width: double.infinity,
               height: 48,
               child: InggoButton(
-                label: _otpSending
-                    ? 'Envoi en cours...'
-                    : _otpSent
-                        ? _resendTimer > 0
-                            ? 'Renvoyer (${_resendTimer}s)'
-                            : 'Renvoyer le code'
-                        : 'Envoyer le code',
-                icon: _phoneVerified ? Icons.check_circle : Icons.sms_outlined,
-                isLoading: _otpSending,
-                onPressed: _otpSending || (_otpSent && _resendTimer > 0)
-                    ? null
-                    : _sendOtp,
+                label: 'Envoi en cours...',
+                icon: Icons.sms_outlined,
+                isLoading: true,
+                onPressed: null,
+              ),
+            ),
+          ] else if (_otpSent && !_phoneVerified) ...[
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: InggoButton(
+                label: _resendTimer > 0
+                    ? 'Renvoyer le code (${_resendTimer}s)'
+                    : 'Renvoyer le code',
+                icon: Icons.refresh,
+                onPressed: _resendTimer > 0 ? null : _sendOtp,
+              ),
+            ),
+          ] else if (!_phoneVerified && !_otpSent) ...[
+            // Hint while typing
+            Padding(
+              padding: const EdgeInsets.only(left: 4, top: 4),
+              child: Row(
+                children: [
+                  const Icon(Icons.info_outline, size: 14, color: AppColors.primary),
+                  const SizedBox(width: 6),
+                  Text(
+                    'Un code sera envoyé automatiquement.',
+                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                  ),
+                ],
               ),
             ),
           ] else ...[
