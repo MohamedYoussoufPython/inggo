@@ -6,6 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../core/constants/constants.dart';
 import '../../core/services/location_service.dart';
 import '../../core/services/supabase_service.dart';
+import '../../l10n/app_localizations.dart';
 import '../../widget/widgets.dart';
 import '../../provider/ride_provider.dart';
 
@@ -82,8 +83,24 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     });
   }
 
+  /// Get the landmark name in the current locale, with null-safe fallback.
+  /// If the localized name is missing, falls back to the other language,
+  /// then to 'Destination'.
+  String _getLandmarkName(Map<String, dynamic> landmark) {
+    final locale = Localizations.localeOf(context).languageCode;
+    if (locale == 'en') {
+      return (landmark['name_en'] as String?)?.isNotEmpty == true
+          ? landmark['name_en'] as String
+          : (landmark['name_fr'] as String?) ?? 'Destination';
+    } else {
+      return (landmark['name_fr'] as String?)?.isNotEmpty == true
+          ? landmark['name_fr'] as String
+          : (landmark['name_en'] as String?) ?? 'Destination';
+    }
+  }
+
   void _selectLandmark(Map<String, dynamic> landmark) {
-    final name = (landmark['name_fr'] as String? ?? landmark['name_en'] as String? ?? 'Destination');
+    final name = _getLandmarkName(landmark);
     ref.read(rideProvider.notifier).setDropoff(
           name,
           (landmark['lat'] as num?)?.toDouble() ?? AppConstants.defaultLat,
@@ -109,15 +126,16 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     return Scaffold(
-      appBar: InggoAppBar(title: 'Destination', showBack: true),
+      appBar: InggoAppBar(title: loc.searchDestination, showBack: true),
       body: Column(
         children: [
           Padding(
             padding: EdgeInsets.symmetric(
                 horizontal: AppSpacing.screenPadding, vertical: 8.h),
             child: InggoInput(
-              hint: 'Rechercher une destination...',
+              hint: loc.searchDestination,
               controller: _searchController,
               onChanged: _onSearch,
               prefixIcon: Icons.search,
@@ -142,7 +160,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   children: [
                     Icon(Icons.pin_drop, color: AppColors.primary, size: 20.w),
                     SizedBox(width: 8.w),
-                    Text('Sélectionner sur la carte',
+                    Text(loc.selectOnMap,
                         style: AppTextStyles.labelMedium
                             .copyWith(color: AppColors.primary)),
                   ],
@@ -155,7 +173,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             padding: EdgeInsets.symmetric(
                 horizontal: AppSpacing.screenPadding),
             child: Text(
-              _isSearching ? 'Résultats' : 'Lieux populaires',
+              _isSearching ? loc.noResults : loc.popularPlaces,
               style: AppTextStyles.labelLarge,
             ),
           ),
@@ -163,7 +181,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           Expanded(
             child: _filtered.isEmpty
                 ? Center(
-                    child: Text('Aucun résultat',
+                    child: Text(loc.noResults,
                         style: AppTextStyles.bodyMedium
                             .copyWith(color: AppColors.textHint)))
                 : ListView.builder(
@@ -173,7 +191,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     itemBuilder: (context, index) {
                       final lm = _filtered[index];
                       return _LandmarkTile(
-                        name: lm['name_fr'] as String? ?? lm['name_en'] as String? ?? 'Lieu',
+                        name: _getLandmarkName(lm),
                         category: lm['category'] as String? ?? 'autre',
                         onTap: () => _selectLandmark(lm),
                       );

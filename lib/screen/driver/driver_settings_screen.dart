@@ -81,6 +81,7 @@ class _DriverSettingsScreenState extends ConsumerState<DriverSettingsScreen> {
           ],
         ),
       ),
+      bottomNavigationBar: const InggoBottomNav(currentIndex: 2, isDriver: true),
     );
   }
 }

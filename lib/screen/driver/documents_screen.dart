@@ -191,9 +191,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
               isUploaded: idCardUploaded,
               isVerified: isVerified,
               isUploading: _isUploading && _uploadingField == 'id_card_url',
-              onUpload: idCardUploaded
-                  ? null
-                  : () => _showUploadOptions('id_card_url', 'id-card', 'Carte d\'identité'),
+              onUpload: () => _showUploadOptions('id_card_url', 'id-card', 'Carte d\'identité'),
             ),
             _DocTile(
               icon: Icons.card_membership,
@@ -201,9 +199,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
               isUploaded: licenseUploaded,
               isVerified: isVerified,
               isUploading: _isUploading && _uploadingField == 'license_url',
-              onUpload: licenseUploaded
-                  ? null
-                  : () => _showUploadOptions('license_url', 'license', 'Permis de conduire'),
+              onUpload: () => _showUploadOptions('license_url', 'license', 'Permis de conduire'),
             ),
             _DocTile(
               icon: Icons.shield,
@@ -211,9 +207,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
               isUploaded: insuranceUploaded,
               isVerified: isVerified,
               isUploading: _isUploading && _uploadingField == 'insurance_url',
-              onUpload: insuranceUploaded
-                  ? null
-                  : () => _showUploadOptions('insurance_url', 'insurance', 'Assurance'),
+              onUpload: () => _showUploadOptions('insurance_url', 'insurance', 'Assurance'),
             ),
             _DocTile(
               icon: Icons.motorcycle,
@@ -221,9 +215,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
               isUploaded: vehiclePhotoUploaded,
               isVerified: isVerified,
               isUploading: _isUploading && _uploadingField == 'vehicle_photo_url',
-              onUpload: vehiclePhotoUploaded
-                  ? null
-                  : () => _showUploadOptions('vehicle_photo_url', 'vehicle', 'Photo du véhicule'),
+              onUpload: () => _showUploadOptions('vehicle_photo_url', 'vehicle', 'Photo du véhicule'),
             ),
             SizedBox(height: 24.h),
             Text('Statut du compte', style: AppTextStyles.labelLarge),
@@ -353,14 +345,20 @@ class _DocTile extends StatelessWidget {
                       ),
               ],
             ),
-            if (!isUploaded && onUpload != null) ...[
+            if (onUpload != null) ...[
               SizedBox(height: 8.h),
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton.icon(
                   onPressed: isUploading ? null : onUpload,
-                  icon: Icon(Icons.upload_file, size: 16.w),
-                  label: Text('Soumettre', style: AppTextStyles.bodySmall),
+                  icon: Icon(
+                    isUploaded ? Icons.refresh : Icons.upload_file,
+                    size: 16.w,
+                  ),
+                  label: Text(
+                    isUploaded ? 'Remplacer' : 'Soumettre',
+                    style: AppTextStyles.bodySmall,
+                  ),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.primary,
                     side: const BorderSide(color: AppColors.primary),

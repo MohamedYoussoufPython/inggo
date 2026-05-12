@@ -192,7 +192,6 @@ class AppLocalizations {
   String get rideInProgressLabel => _t('Course en cours', 'Ride in progress');
   String get completeRideLabel => _t('Terminer la course', 'Complete ride');
   String get loadRide => _t('Chargement de la course...', 'Loading ride...');
-  String get back => _t('Retour', 'Back');
 
   // ─── Client Trip ───
   String get driverOnTheWayLabel => _t('Votre chauffeur arrive', 'Your driver is on the way');
@@ -253,7 +252,6 @@ class AppLocalizations {
   String get uploadGallery => _t('Choisir de la galerie', 'Choose from gallery');
   String get submitDocument => _t('Soumettre', 'Submit');
   String get notSubmitted => _t('Non soumis', 'Not submitted');
-  String get awaitingVerification => _t('En attente de vérification', 'Awaiting verification');
   String get verified => _t('Vérifié', 'Verified');
   String get accountStatus => _t('Statut du compte', 'Account status');
   String get missingDocuments => _t('Documents manquants', 'Missing documents');
@@ -285,6 +283,62 @@ class AppLocalizations {
   String get payCacPay => _t('Payer avec CAC Pay', 'Pay with CAC Pay');
   String get paySabaPay => _t('Payer avec Saba Pay', 'Pay with Saba Pay');
   String get payDahabplus => _t('Payer avec Dahabplus', 'Pay with Dahabplus');
+
+  // ─── Additional keys for hardcoded French replacement ───
+  String get driver => _t('Chauffeur', 'Driver');
+  String get totalPrice => _t('Prix total', 'Total price');
+  String get yourEarning => _t('Votre gain', 'Your earning');
+  String get commission => _t('Commission', 'Commission');
+  String get backToHome => _t('Retour à l\'accueil', 'Back to home');
+  String get replace => _t('Remplacer', 'Replace');
+  String get application => _t('Application', 'Application');
+  String get appDescription => _t('Moto-taxi à Djibouti', 'Moto-taxi in Djibouti');
+  String get allRightsReserved => _t('Tous droits réservés', 'All rights reserved');
+  String get collectReminder => _t('N\'oubliez pas de collecter les', 'Don\'t forget to collect');
+  String get fromClient => _t('du client.', 'from the client.');
+  String get rideAcceptFailed => _t('Impossible d\'accepter cette course. Elle a peut-être été prise par un autre chauffeur.', 'Could not accept this ride. It may have been taken by another driver.');
+  String get rideUpdateFailed => _t('Erreur lors de la mise à jour du statut.', 'Error updating ride status.');
+  String get rideCompleteFailed => _t('Erreur lors de la finalisation de la course.', 'Error completing the ride.');
+  String get notAuthenticated => _t('Non authentifié', 'Not authenticated');
+  String get rideAlreadyAccepted => _t('Cette course a déjà été acceptée par un autre chauffeur.', 'This ride has already been accepted by another driver.');
+  String get profileUpdated => _t('Profil mis à jour', 'Profile updated');
+  String get ridesCount => _t('courses', 'rides');
+  String get profileUpdateError => _t('Impossible de charger les lieux. Tirez vers le bas pour réessayer.', 'Unable to load places. Pull down to retry.');
+  String get loginTitle => _t('Connexion', 'Login');
+  String get email => _t('Email', 'Email');
+  String get password => _t('Mot de passe', 'Password');
+  String get loginButton => _t('Se connecter', 'Sign in');
+  String get noAccount => _t('Pas de compte ?', 'No account?');
+  String get createAccount => _t('Créer un compte', 'Create account');
+  String get logoutTitle => _t('Déconnexion', 'Logout');
+  String get logoutMessage => _t('Voulez-vous vraiment vous déconnecter ?', 'Do you really want to log out?');
+  String get registerTitle => _t('Inscription', 'Register');
+  String get alreadyHaveAccount => _t('Déjà un compte ?', 'Already have an account?');
+
+  // ─── Ride Status Labels (for RideStatusBadge) ───
+  String get statusPending => _t('En attente', 'Pending');
+  String get statusSearching => _t('Recherche...', 'Searching...');
+  String get statusAccepted => _t('Acceptée', 'Accepted');
+  String get statusInProgress => _t('En cours', 'In progress');
+  String get statusCompleted => _t('Terminée', 'Completed');
+  String get statusCancelled => _t('Annulée', 'Cancelled');
+
+  // ─── Payment Display Names ───
+  String get paymentCash => _t('Espèces', 'Cash');
+  String get paymentWaafi => _t('Waafi', 'Waafi');
+  String get paymentDMoney => _t('DMoney', 'DMoney');
+  String get paymentCacPay => _t('CacPay', 'CacPay');
+  String get paymentSabaPay => _t('SabaPay', 'SabaPay');
+  String get paymentDahabplus => _t('Dahab+', 'Dahab+');
+
+  // ─── Verification status in documents screen ───
+  String get verifiedLabel => _t('Vérifié', 'Verified');
+  String get verificationInProgressLabel => _t('En cours de vérification', 'Verification in progress');
+  String get missingDocumentsLabel => _t('Documents manquants', 'Missing documents');
+
+  // ─── Position selected on map ───
+  String get currentPosition => _t('Position actuelle', 'Current position');
+  String get selectedPosition => _t('Position sélectionnée', 'Selected position');
 
   String _t(String fr, String en) {
     return locale.languageCode == 'fr' ? fr : en;

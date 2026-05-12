@@ -82,10 +82,16 @@ class _PendingVerificationScreenState
                 label: loc.understood,
                 onPressed: () {
                   if (_navigated) return;
-                  // The verification subscription lives in the provider,
-                  // so it survives navigation. If the driver is verified
-                  // while on the login screen, the next login will detect
-                  // the verified status via the splash screen redirect.
+                  // Navigate to login screen. The verification subscription
+                  // lives in the provider (not tied to this screen), so it
+                  // continues listening in the background. When the driver
+                  // logs back in after being verified, the splash screen
+                  // redirect will send them to /driver/home.
+                  //
+                  // IMPORTANT: We do NOT call stopListening() here, so the
+                  // Realtime subscription keeps running. If the driver is
+                  // verified while on the login screen, the provider's state
+                  // will update, and the next auth check will detect it.
                   context.go('/login');
                 },
               ),
