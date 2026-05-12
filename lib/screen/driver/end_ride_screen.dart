@@ -91,7 +91,7 @@ class EndRideScreen extends ConsumerWidget {
       case 'sabapay':
         return loc.paymentSabaPay;
       case 'dahabplus':
-        return loc.paymentDahabPlus;
+        return loc.paymentDahabplus;
       default:
         return loc.paymentCash;
     }

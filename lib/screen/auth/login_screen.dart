@@ -223,7 +223,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       _showSnackBar(errorMessage, AppColors.error);
     } catch (e) {
       if (!mounted) return;
-      _showSnackBar('Erreur: ${e.toString().replaceAll('Exception: ', '')}', AppColors.error);
+      _showSnackBar('${loc.error}: ${e.toString().replaceAll('Exception: ', '')}', AppColors.error);
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -579,7 +579,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             setDialogState(() => isSending = false);
                             Navigator.pop(ctx);
                             _showSnackBar(
-                              'Erreur: ${e.toString()}',
+                            '${loc.error}: ${e.toString()}',
                               AppColors.error,
                             );
                           }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pinput/pinput.dart';
 import '../core/constants/constants.dart';
+import '../l10n/app_localizations.dart';
 
 class InggoInput extends StatelessWidget {
   final String? label;
@@ -94,9 +95,10 @@ class InggoPhoneInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     return InggoInput(
-      label: 'Numéro de téléphone',
-      hint: '77 00 00 00',
+      label: loc.phoneNumber,
+      hint: loc.phoneHint,
       controller: controller,
       validator: validator,
       onChanged: onChanged,

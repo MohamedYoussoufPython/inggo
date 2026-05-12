@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../core/constants/constants.dart';
 import '../core/utils/formatters.dart';
+import '../l10n/app_localizations.dart';
 
 class InggoCard extends StatelessWidget {
   final Widget child;
@@ -58,11 +59,19 @@ class RideSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+    final paymentLabel = paymentMethod == 'cash'
+        ? loc.paymentCash
+        : paymentMethod == 'waafi'
+            ? loc.paymentWaafi
+            : paymentMethod == 'dmoney'
+                ? loc.paymentDMoney
+                : paymentMethod;
     return InggoCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Récapitulatif', style: AppTextStyles.labelLarge),
+          Text(loc.rideSummary, style: AppTextStyles.labelLarge),
           SizedBox(height: 12.h),
           _routeRow(Icons.trip_origin, AppColors.primary, pickupAddress),
           Padding(
@@ -73,14 +82,13 @@ class RideSummaryCard extends StatelessWidget {
           SizedBox(height: 12.h),
           const Divider(),
           SizedBox(height: 8.h),
-          _infoRow('Prix', Formatters.formatPrice(price),
+          _infoRow(loc.price, Formatters.formatPrice(price),
               valueStyle: AppTextStyles.priceSmall),
           if (distance != null)
-            _infoRow('Distance', Formatters.formatDistance(distance!)),
+            _infoRow(loc.distance, Formatters.formatDistance(distance!)),
           if (duration != null)
-            _infoRow('Durée estimée', Formatters.formatDuration(duration!)),
-          _infoRow('Paiement',
-              paymentMethod == 'cash' ? 'Espèces' : paymentMethod),
+            _infoRow(loc.estimatedDuration, Formatters.formatDuration(duration!)),
+          _infoRow(loc.payment, paymentLabel),
         ],
       ),
     );

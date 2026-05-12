@@ -47,7 +47,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
     if (ride.error != null) {
       // Ride creation failed — show error and stay on booking screen
       setState(() => _isCreating = false);
-      InggoToast.error(context, 'Erreur: ${ride.error}');
+      InggoToast.error(context, '${loc.error}: ${ride.error}');
       return;
     }
 

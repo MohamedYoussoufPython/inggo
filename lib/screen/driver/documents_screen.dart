@@ -60,7 +60,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
       }
     } catch (e) {
       if (mounted) {
-        InggoToast.error(context, 'Erreur: $e');
+        InggoToast.error(context, '${loc.error}: $e');
       }
     } finally {
       if (mounted) {
@@ -103,7 +103,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
       }
     } catch (e) {
       if (mounted) {
-        InggoToast.error(context, 'Erreur: $e');
+        InggoToast.error(context, '${AppLocalizations.of(context)!.error}: $e');
       }
     } finally {
       if (mounted) {

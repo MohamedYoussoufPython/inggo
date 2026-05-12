@@ -273,7 +273,6 @@ class AppLocalizations {
   String get errorLocation => _t('Impossible d\'obtenir votre position', 'Unable to get your location');
   String get errorLocationPermission => _t('Autorisation de localisation refusée', 'Location permission denied');
   String get errorPhoneRequired => _t('Numéro de téléphone requis', 'Phone number required');
-  String get errorNameRequired => _t('Nom requis', 'Name required');
   String get errorInvalidPhone => _t('Numéro invalide', 'Invalid phone number');
 
   // ─── Payment Methods ───
@@ -407,7 +406,7 @@ class AppLocalizations {
   String get personalInfo => _t('Informations personnelles', 'Personal information');
   String get fullNameHint => _t('Votre nom complet', 'Your full name');
   String get atLeast6Chars => _t('Au moins 6 caractères', 'At least 6 characters');
-  String selectGender => _t('Sélectionnez un genre', 'Select a gender');
+  String get selectGender => _t('Sélectionnez un genre', 'Select a gender');
   String get passwordsDiffer => _t('Les mots de passe sont différents', 'Passwords do not match');
   String get errorEmailRequired => _t('Email requis', 'Email required');
   String get errorEmailInvalidFormat => _t('Format email invalide', 'Invalid email format');

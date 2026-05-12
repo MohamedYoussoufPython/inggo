@@ -207,7 +207,7 @@ class _RideRequestScreenState extends ConsumerState<RideRequestScreen>
       case 'sabapay':
         return loc.paymentSabaPay;
       case 'dahabplus':
-        return loc.paymentDahabPlus;
+        return loc.paymentDahabplus;
       default:
         return loc.paymentCash;
     }
