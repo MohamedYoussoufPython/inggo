@@ -58,5 +58,6 @@ flutter:
   generate: false
 
   assets:
+    - .env
     - assets/images/
     # - assets/animations/  # Uncomment when adding Lottie/animation files
