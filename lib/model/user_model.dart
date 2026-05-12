@@ -9,6 +9,9 @@ class UserModel {
   final String? avatarUrl;
   final String language;
   final bool isOnline;
+  final String? sexe;
+  final String? pays;
+  final bool phoneVerified;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -21,6 +24,9 @@ class UserModel {
     this.avatarUrl,
     this.language = 'fr',
     this.isOnline = false,
+    this.sexe,
+    this.pays,
+    this.phoneVerified = false,
     this.createdAt,
     this.updatedAt,
   });
@@ -35,6 +41,9 @@ class UserModel {
       avatarUrl: json['avatar_url'] as String?,
       language: json['language'] as String? ?? 'fr',
       isOnline: json['is_online'] as bool? ?? false,
+      sexe: json['sexe'] as String?,
+      pays: json['pays'] as String?,
+      phoneVerified: json['phone_verified'] as bool? ?? false,
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'] as String)
           : null,
@@ -65,6 +74,9 @@ class UserModel {
       'avatar_url': avatarUrl,
       'language': language,
       'is_online': isOnline,
+      'sexe': sexe,
+      'pays': pays,
+      'phone_verified': phoneVerified,
       'created_at': createdAt?.toIso8601String(),
       'updated_at': updatedAt?.toIso8601String(),
     };
@@ -79,6 +91,9 @@ class UserModel {
     String? avatarUrl,
     String? language,
     bool? isOnline,
+    String? sexe,
+    String? pays,
+    bool? phoneVerified,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -91,6 +106,9 @@ class UserModel {
       avatarUrl: avatarUrl ?? this.avatarUrl,
       language: language ?? this.language,
       isOnline: isOnline ?? this.isOnline,
+      sexe: sexe ?? this.sexe,
+      pays: pays ?? this.pays,
+      phoneVerified: phoneVerified ?? this.phoneVerified,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

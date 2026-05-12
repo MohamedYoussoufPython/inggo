@@ -21,6 +21,7 @@ class AppConstants {
 
   // Ride
   static const int searchDriverTimeoutSeconds = 180;
+  static const int rideRequestTimeoutSeconds = 30;
   static const double defaultLat = 11.5880;
   static const double defaultLng = 43.1456;
   static const String defaultCity = 'Djibouti';

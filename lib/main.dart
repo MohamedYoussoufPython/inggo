@@ -22,9 +22,14 @@ void main() async {
 
   if (supabaseUrl.isEmpty || supabaseAnonKey.isEmpty) {
     debugPrint('═══════════════════════════════════════════════════');
-    debugPrint('ERREUR: SUPABASE_URL et/ou SUPABASE_ANON_KEY manquants.');
+    debugPrint('ERREUR FATALE: SUPABASE_URL et/ou SUPABASE_ANON_KEY manquants.');
     debugPrint('Vérifiez que le fichier .env existe à la racine du projet.');
     debugPrint('═══════════════════════════════════════════════════');
+    // Fail fast — don't attempt to initialize Supabase with empty credentials
+    throw StateError(
+      'SUPABASE_URL et SUPABASE_ANON_KEY sont requis dans le fichier .env. '
+      'Copiez .env.example vers .env et remplissez les valeurs.',
+    );
   }
 
   await Supabase.initialize(

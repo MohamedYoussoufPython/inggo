@@ -469,13 +469,13 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
         // Profile may already exist via DB trigger — safe to ignore
       }
 
-      // 3. Upload documents to Supabase Storage
+      // 3. Upload documents to Supabase Storage (private bucket — use signed URLs)
       final docUrls = <String, String?>{};
       for (final entry in _documentFiles.entries) {
         if (entry.value != null) {
-          final filePath = 'drivers/$userId/${entry.key}_${DateTime.now().millisecondsSinceEpoch}.jpg';
-          await Supabase.instance.client.storage.from('documents').upload(filePath, entry.value!);
-          docUrls[entry.key] = Supabase.instance.client.storage.from('documents').getPublicUrl(filePath);
+          final bytes = await entry.value!.readAsBytes();
+          final filePath = '$userId/${entry.key}_${DateTime.now().millisecondsSinceEpoch}.jpg';
+          docUrls[entry.key] = await SupabaseService.instance.uploadFileSigned('driver-documents', filePath, bytes);
         }
       }
 

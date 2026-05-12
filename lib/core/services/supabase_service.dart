@@ -171,6 +171,8 @@ class SupabaseService {
   }
 
   // Storage
+
+  /// Upload a file to a **public** bucket and return the public URL.
   Future<String> uploadFile(
     String bucket,
     String path,
@@ -179,6 +181,28 @@ class SupabaseService {
     final uint8List = Uint8List.fromList(bytes);
     await client.storage.from(bucket).uploadBinary(path, uint8List);
     return client.storage.from(bucket).getPublicUrl(path);
+  }
+
+  /// Upload a file to a **private** bucket and return a signed URL.
+  /// [expiresIn] is the signed URL validity in seconds (default 1 year).
+  Future<String> uploadFileSigned(
+    String bucket,
+    String path,
+    List<int> bytes, {
+    int expiresIn = 31536000, // 1 year
+  }) async {
+    final uint8List = Uint8List.fromList(bytes);
+    await client.storage.from(bucket).uploadBinary(path, uint8List);
+    return client.storage.from(bucket).createSignedUrl(path, expiresIn);
+  }
+
+  /// Get a fresh signed URL for a file in a private bucket.
+  Future<String> getSignedUrl(
+    String bucket,
+    String path, {
+    int expiresIn = 3600, // 1 hour
+  }) async {
+    return client.storage.from(bucket).createSignedUrl(path, expiresIn);
   }
 
   Future<void> deleteFile(String bucket, String path) async {

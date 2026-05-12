@@ -46,7 +46,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
 
       final bytes = await File(image.path).readAsBytes();
       final path = '$userId/$bucketPath/${DateTime.now().millisecondsSinceEpoch}.jpg';
-      final url = await SupabaseService.instance.uploadFile('driver-documents', path, bytes);
+      final url = await SupabaseService.instance.uploadFileSigned('driver-documents', path, bytes);
 
       // Update the driver record with the new document URL
       await SupabaseService.instance.update('drivers', userId, {field: url});
@@ -92,7 +92,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
 
       final bytes = await File(image.path).readAsBytes();
       final path = '$userId/$bucketPath/${DateTime.now().millisecondsSinceEpoch}.jpg';
-      final url = await SupabaseService.instance.uploadFile('driver-documents', path, bytes);
+      final url = await SupabaseService.instance.uploadFileSigned('driver-documents', path, bytes);
 
       await SupabaseService.instance.update('drivers', userId, {field: url});
       await ref.read(driverProvider.notifier).loadDriver();
