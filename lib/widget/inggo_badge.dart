@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../core/constants/constants.dart';
+import '../l10n/app_localizations.dart';
 import '../model/ride_model.dart';
 
 class InggoBadge extends StatelessWidget {
@@ -39,24 +40,25 @@ class RideStatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cfg = _config();
+    final loc = AppLocalizations.of(context);
+    final cfg = _config(loc);
     return InggoBadge(label: cfg['label'], color: cfg['color']);
   }
 
-  Map<String, dynamic> _config() {
+  Map<String, dynamic> _config(AppLocalizations loc) {
     switch (status) {
       case RideStatus.pending:
-        return {'label': 'En attente', 'color': AppColors.pending};
+        return {'label': loc.statusPending, 'color': AppColors.pending};
       case RideStatus.searching:
-        return {'label': 'Recherche...', 'color': AppColors.searching};
+        return {'label': loc.statusSearching, 'color': AppColors.searching};
       case RideStatus.accepted:
-        return {'label': 'Acceptée', 'color': AppColors.accepted};
+        return {'label': loc.statusAccepted, 'color': AppColors.accepted};
       case RideStatus.inProgress:
-        return {'label': 'En cours', 'color': AppColors.inProgress};
+        return {'label': loc.statusInProgress, 'color': AppColors.inProgress};
       case RideStatus.completed:
-        return {'label': 'Terminée', 'color': AppColors.completed};
+        return {'label': loc.statusCompleted, 'color': AppColors.completed};
       case RideStatus.cancelled:
-        return {'label': 'Annulée', 'color': AppColors.cancelled};
+        return {'label': loc.statusCancelled, 'color': AppColors.cancelled};
     }
   }
 }

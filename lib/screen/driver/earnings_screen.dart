@@ -7,6 +7,7 @@ import '../../core/utils/formatters.dart';
 import '../../model/ride_model.dart';
 import '../../widget/widgets.dart';
 import '../../provider/driver_provider.dart';
+import '../../l10n/app_localizations.dart';
 
 class EarningsScreen extends ConsumerStatefulWidget {
   const EarningsScreen({super.key});
@@ -98,9 +99,10 @@ class _EarningsScreenState extends ConsumerState<EarningsScreen> {
   @override
   Widget build(BuildContext context) {
     final driver = ref.watch(driverProvider);
+    final loc = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: const InggoAppBar(title: 'Revenus'),
+      appBar: InggoAppBar(title: loc.earnings),
       body: RefreshIndicator(
         onRefresh: () async {
           await Future.wait([
@@ -129,7 +131,7 @@ class _EarningsScreenState extends ConsumerState<EarningsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Revenus totaux',
+                    Text(loc.totalEarningsLabel,
                         style: AppTextStyles.bodyMedium
                             .copyWith(color: AppColors.secondary)),
                     SizedBox(height: 8.h),
@@ -142,7 +144,7 @@ class _EarningsScreenState extends ConsumerState<EarningsScreen> {
                         Icon(Icons.motorcycle,
                             color: AppColors.secondary, size: 20.w),
                         SizedBox(width: 8.w),
-                        Text('${driver.totalRides} courses',
+                        Text('${driver.totalRides} ${loc.ridesCount}',
                             style: AppTextStyles.bodyMedium
                                 .copyWith(color: AppColors.secondary)),
                       ],
@@ -151,19 +153,19 @@ class _EarningsScreenState extends ConsumerState<EarningsScreen> {
                 ),
               ),
               SizedBox(height: 24.h),
-              Text('Détails', style: AppTextStyles.labelLarge),
+              Text(loc.details, style: AppTextStyles.labelLarge),
               SizedBox(height: 12.h),
               InggoCard(
                 child: Column(
                   children: [
-                    _row('Prix par course', Formatters.formatPrice(AppConstants.ridePrice)),
-                    _row('Votre gain/course', Formatters.formatPrice(AppConstants.driverEarning)),
-                    _row('Commission (50%)', Formatters.formatPrice(AppConstants.rideCommission)),
+                    _row(loc.pricePerRide, Formatters.formatPrice(AppConstants.ridePrice)),
+                    _row(loc.yourEarningPerRide, Formatters.formatPrice(AppConstants.driverEarning)),
+                    _row(loc.commission50, Formatters.formatPrice(AppConstants.rideCommission)),
                   ],
                 ),
               ),
               SizedBox(height: 24.h),
-              Text('Historique des courses', style: AppTextStyles.labelLarge),
+              Text(loc.rideHistory, style: AppTextStyles.labelLarge),
               SizedBox(height: 12.h),
               _rideHistory.isEmpty && _isLoadingHistory
                   ? const InggoLoading()
@@ -176,7 +178,7 @@ class _EarningsScreenState extends ConsumerState<EarningsScreen> {
                                 Icon(Icons.history,
                                     size: 48.w, color: AppColors.textHint),
                                 SizedBox(height: 8.h),
-                                Text('Aucune course terminée',
+                                Text(loc.noCompletedRides,
                                     style: AppTextStyles.bodyMedium.copyWith(
                                         color: AppColors.textSecondary)),
                               ],

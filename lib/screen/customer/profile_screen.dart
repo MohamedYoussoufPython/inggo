@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/constants.dart';
 import '../../widget/widgets.dart';
 import '../../provider/auth_provider.dart';
+import '../../l10n/app_localizations.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -13,9 +14,10 @@ class ProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final auth = ref.watch(authProvider);
     final user = auth.user;
+    final loc = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: const InggoAppBar(title: 'Profil'),
+      appBar: InggoAppBar(title: loc.profile),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(AppSpacing.screenPadding),
         child: Column(
@@ -32,48 +34,48 @@ class ProfileScreen extends ConsumerWidget {
                   : null,
             ),
             SizedBox(height: 16.h),
-            Text(user?.fullName ?? 'Utilisateur',
+            Text(user?.fullName ?? loc.userFallback,
                 style: AppTextStyles.headline3),
             SizedBox(height: 4.h),
             Text(user?.phone ?? '', style: AppTextStyles.bodyMedium),
             SizedBox(height: 4.h),
             Text(user?.email ?? '', style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary)),
             SizedBox(height: 32.h),
-            _MenuTile(Icons.person_outline, 'Modifier le profil',
+            _MenuTile(Icons.person_outline, loc.editProfile,
                 () => context.push('/client/edit-profile')),
-            _MenuTile(Icons.phone_android, 'Changer le téléphone',
+            _MenuTile(Icons.phone_android, loc.changePhone,
                 () => context.push('/client/settings')),
-            _MenuTile(Icons.language, 'Langue',
+            _MenuTile(Icons.language, loc.language,
                 () => context.push('/client/settings')),
-            _MenuTile(Icons.notifications_outlined, 'Notifications',
+            _MenuTile(Icons.notifications_outlined, loc.notifications,
                 () => context.push('/client/notifications')),
-            _MenuTile(Icons.help_outline, 'Support',
+            _MenuTile(Icons.help_outline, loc.support,
                 () => context.push('/client/support')),
-            _MenuTile(Icons.info_outline, 'À propos',
+            _MenuTile(Icons.info_outline, loc.about,
                 () => context.push('/about')),
-            _MenuTile(Icons.privacy_tip_outlined, 'Politique de confidentialité',
+            _MenuTile(Icons.privacy_tip_outlined, loc.privacyPolicy,
                 () => context.push('/privacy-policy')),
             SizedBox(height: 16.h),
             InggoButton(
-              label: 'Déconnexion',
+              label: loc.logout,
               type: InggoButtonType.danger,
               onPressed: () {
                 showDialog(
                   context: context,
                   builder: (ctx) => AlertDialog(
-                    title: const Text('Déconnexion'),
-                    content: const Text('Voulez-vous vous déconnecter ?'),
+                    title: Text(loc.logout),
+                    content: Text(loc.logoutConfirm),
                     actions: [
                       TextButton(
                           onPressed: () => Navigator.pop(ctx),
-                          child: const Text('Non')),
+                          child: Text(loc.no)),
                       TextButton(
                         onPressed: () {
                           Navigator.pop(ctx);
                           ref.read(authProvider.notifier).signOut();
                           context.go('/login');
                         },
-                        child: const Text('Oui'),
+                        child: Text(loc.yes),
                       ),
                     ],
                   ),

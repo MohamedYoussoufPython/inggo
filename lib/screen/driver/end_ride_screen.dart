@@ -6,6 +6,7 @@ import '../../core/constants/constants.dart';
 import '../../core/utils/formatters.dart';
 import '../../widget/widgets.dart';
 import '../../provider/driver_provider.dart';
+import '../../l10n/app_localizations.dart';
 
 class EndRideScreen extends ConsumerWidget {
   const EndRideScreen({super.key});
@@ -14,6 +15,7 @@ class EndRideScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final driverState = ref.watch(driverProvider);
     final ride = driverState.currentRide;
+    final loc = AppLocalizations.of(context);
 
     // Real values from the completed ride, with safe fallbacks
     final price = ride?.price ?? AppConstants.ridePrice;
@@ -30,28 +32,28 @@ class EndRideScreen extends ConsumerWidget {
             children: [
               Icon(Icons.check_circle, size: 64.w, color: AppColors.success),
               SizedBox(height: 16.h),
-              Text('Course terminée !', style: AppTextStyles.headline2),
+              Text(loc.rideCompletedExclamation, style: AppTextStyles.headline2),
               SizedBox(height: 24.h),
               InggoCard(
                 child: Column(
                   children: [
-                    _row('Prix total', Formatters.formatPrice(price)),
-                    _row('Votre gain', Formatters.formatPrice(driverEarning)),
-                    _row('Commission', Formatters.formatPrice(commission)),
-                    _row('Paiement', _formatPaymentMethod(paymentMethod)),
+                    _row(loc.totalPrice, Formatters.formatPrice(price)),
+                    _row(loc.yourEarning, Formatters.formatPrice(driverEarning)),
+                    _row(loc.commission, Formatters.formatPrice(commission)),
+                    _row(loc.payment, _formatPaymentMethod(paymentMethod, loc)),
                   ],
                 ),
               ),
               SizedBox(height: 24.h),
               Text(
-                'N\'oubliez pas de collecter les ${price.toInt()} FDJ du client.',
+                '${loc.collectReminder} ${price.toInt()} FDJ ${loc.fromClient}',
                 style: AppTextStyles.bodyLarge
                     .copyWith(color: AppColors.warning),
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 32.h),
               InggoButton(
-                label: 'Retour à l\'accueil',
+                label: loc.backToHome,
                 onPressed: () {
                   // Clear the completed ride data and go back to home
                   ref.read(driverProvider.notifier).clearCompletedRide();
@@ -78,20 +80,20 @@ class EndRideScreen extends ConsumerWidget {
     );
   }
 
-  String _formatPaymentMethod(String method) {
+  String _formatPaymentMethod(String method, AppLocalizations loc) {
     switch (method) {
       case 'waafi':
-        return 'Waafi';
+        return loc.paymentWaafi;
       case 'dmoney':
-        return 'DMoney';
+        return loc.paymentDMoney;
       case 'cacpay':
-        return 'CacPay';
+        return loc.paymentCacPay;
       case 'sabapay':
-        return 'SabaPay';
+        return loc.paymentSabaPay;
       case 'dahabplus':
-        return 'Dahab+';
+        return loc.paymentDahabPlus;
       default:
-        return 'Espèces';
+        return loc.paymentCash;
     }
   }
 }

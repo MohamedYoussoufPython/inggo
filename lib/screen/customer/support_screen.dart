@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/constants.dart';
 import '../../widget/widgets.dart';
+import '../../l10n/app_localizations.dart';
 
 class SupportScreen extends StatefulWidget {
   const SupportScreen({super.key});
@@ -17,14 +18,15 @@ class _SupportScreenState extends State<SupportScreen> {
   static const String _supportWhatsapp = '2537780606';
 
   Future<void> _makePhoneCall() async {
+    final loc = AppLocalizations.of(context);
     final uri = Uri.parse('tel:$_supportPhone');
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     } else {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Impossible de lancer l\'appel téléphonique.'),
+          SnackBar(
+            content: Text(loc.unableToMakePhoneCall),
             backgroundColor: AppColors.error,
             duration: Duration(seconds: 3),
           ),
@@ -34,6 +36,7 @@ class _SupportScreenState extends State<SupportScreen> {
   }
 
   Future<void> _sendMessage() async {
+    final loc = AppLocalizations.of(context);
     // Try WhatsApp first, fallback to SMS
     final whatsappUri = Uri.parse('https://wa.me/$_supportWhatsapp?text=Bonjour%20Inggo%20Support%2C%20');
     final smsUri = Uri.parse('sms:$_supportPhone?body=Bonjour%20Inggo%20Support%2C%20');
@@ -45,8 +48,8 @@ class _SupportScreenState extends State<SupportScreen> {
     } else {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Aucune application de messagerie disponible.'),
+          SnackBar(
+            content: Text(loc.noMessagingApp),
             backgroundColor: AppColors.error,
             duration: Duration(seconds: 3),
           ),
@@ -57,47 +60,44 @@ class _SupportScreenState extends State<SupportScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     return Scaffold(
-      appBar: const InggoAppBar(title: 'Support'),
+      appBar: InggoAppBar(title: loc.support),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(AppSpacing.screenPadding),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Questions fréquentes', style: AppTextStyles.labelLarge),
+            Text(loc.faq, style: AppTextStyles.labelLarge),
             SizedBox(height: 12.h),
             _FaqItem(
-              question: 'Combien coûte une course ?',
-              answer:
-                  'Le prix est fixe : 250 FDJ par course, quel que soit le trajet dans Djibouti ville.',
+              question: loc.faqPriceQuestion,
+              answer: loc.faqPriceAnswer,
             ),
             _FaqItem(
-              question: 'Comment payer ?',
-              answer:
-                  'Pour le moment, seul le paiement en espèces est disponible. Les paiements mobiles arrivent bientôt.',
+              question: loc.faqPaymentQuestion,
+              answer: loc.faqPaymentAnswer,
             ),
             _FaqItem(
-              question: 'Comment devenir chauffeur ?',
-              answer:
-                  'Inscrivez-vous en tant que chauffeur, soumettez vos documents et attendez la vérification.',
+              question: loc.faqDriverQuestion,
+              answer: loc.faqDriverAnswer,
             ),
             _FaqItem(
-              question: 'Puis-je annuler une course ?',
-              answer:
-                  'Oui, vous pouvez annuler gratuitement dans les 2 premières minutes après la confirmation.',
+              question: loc.faqCancelQuestion,
+              answer: loc.faqCancelAnswer,
             ),
             SizedBox(height: 24.h),
-            Text('Nous contacter', style: AppTextStyles.labelLarge),
+            Text(loc.contactUs, style: AppTextStyles.labelLarge),
             SizedBox(height: 12.h),
             InggoButton(
-              label: 'Nous appeler',
+              label: loc.callUs,
               icon: Icons.phone,
               type: InggoButtonType.outline,
               onPressed: _makePhoneCall,
             ),
             SizedBox(height: 12.h),
             InggoButton(
-              label: 'Envoyer un message',
+              label: loc.sendMessage,
               icon: Icons.message,
               type: InggoButtonType.outline,
               onPressed: _sendMessage,

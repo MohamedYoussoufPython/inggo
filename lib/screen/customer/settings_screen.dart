@@ -7,6 +7,7 @@ import '../../core/services/notification_service.dart';
 import '../../core/services/supabase_service.dart';
 import '../../widget/widgets.dart';
 import '../../provider/auth_provider.dart';
+import '../../l10n/app_localizations.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -54,15 +55,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final auth = ref.watch(authProvider);
+    final loc = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: const InggoAppBar(title: 'Paramètres'),
+      appBar: InggoAppBar(title: loc.settings),
       body: Padding(
         padding: EdgeInsets.all(AppSpacing.screenPadding),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Langue', style: AppTextStyles.labelLarge),
+            Text(loc.language, style: AppTextStyles.labelLarge),
             SizedBox(height: 12.h),
             LanguageSelector(
               currentLanguage: auth.locale.languageCode,
@@ -71,19 +73,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
             SizedBox(height: 24.h),
             SwitchListTile(
-              title: Text('Notifications', style: AppTextStyles.bodyLarge),
-              subtitle: Text('Recevoir les notifications push',
+              title: Text(loc.notifications, style: AppTextStyles.bodyLarge),
+              subtitle: Text(loc.pushNotifications,
                   style: AppTextStyles.bodySmall),
               value: _notificationsEnabled,
               activeThumbColor: AppColors.primary,
               onChanged: _prefsLoaded ? _onNotificationChanged : null,
             ),
             SizedBox(height: 24.h),
-            Text('À propos', style: AppTextStyles.labelLarge),
+            Text(loc.about, style: AppTextStyles.labelLarge),
             SizedBox(height: 12.h),
-            _aboutRow('Version', '1.0.0'),
-            _aboutRow('Application', 'Inggo VTC'),
-            _aboutRow('Ville', 'Djibouti'),
+            _aboutRow(loc.version, '1.0.0'),
+            _aboutRow(loc.application, 'Inggo VTC'),
+            _aboutRow(loc.city, 'Djibouti'),
           ],
         ),
       ),

@@ -7,6 +7,7 @@ import '../../core/utils/formatters.dart';
 import '../../model/ride_model.dart';
 import '../../widget/widgets.dart';
 import '../../provider/ride_provider.dart';
+import '../../l10n/app_localizations.dart';
 
 class EndTripScreen extends ConsumerStatefulWidget {
   const EndTripScreen({super.key});
@@ -25,21 +26,21 @@ class _EndTripScreenState extends ConsumerState<EndTripScreen> {
     super.dispose();
   }
 
-  /// Map PaymentMethod enum to a human-readable French label
-  String _paymentMethodLabel(PaymentMethod method) {
+  /// Map PaymentMethod enum to a human-readable localized label
+  String _paymentMethodLabel(PaymentMethod method, AppLocalizations loc) {
     switch (method) {
       case PaymentMethod.cash:
-        return 'Espèces';
+        return loc.paymentCash;
       case PaymentMethod.waafi:
-        return 'Waafi';
+        return loc.paymentWaafi;
       case PaymentMethod.dmoney:
-        return 'D-Money';
+        return loc.paymentDMoney;
       case PaymentMethod.cacpay:
-        return 'CAC Pay';
+        return loc.paymentCacPay;
       case PaymentMethod.sabapay:
-        return 'Saba Pay';
+        return loc.paymentSabaPay;
       case PaymentMethod.dahabplus:
-        return 'Dahabplus';
+        return loc.paymentDahabplus;
     }
   }
 
@@ -47,6 +48,7 @@ class _EndTripScreenState extends ConsumerState<EndTripScreen> {
   Widget build(BuildContext context) {
     final ride = ref.watch(rideProvider);
     final currentRide = ride.currentRide;
+    final loc = AppLocalizations.of(context);
 
     return Scaffold(
       body: SafeArea(
@@ -58,28 +60,28 @@ class _EndTripScreenState extends ConsumerState<EndTripScreen> {
               Icon(Icons.check_circle,
                   size: 64.w, color: AppColors.success),
               SizedBox(height: 16.h),
-              Text('Course terminée !',
+              Text(loc.rideCompletedExclamation,
                   style: AppTextStyles.headline2),
               SizedBox(height: 24.h),
               InggoCard(
                 child: Column(
                   children: [
-                    _infoRow('Départ', currentRide?.pickupAddress ?? '-'),
-                    _infoRow('Arrivée', currentRide?.dropoffAddress ?? '-'),
+                    _infoRow(loc.pickup, currentRide?.pickupAddress ?? '-'),
+                    _infoRow(loc.dropoff, currentRide?.dropoffAddress ?? '-'),
                     const Divider(),
-                    _infoRow('Prix',
+                    _infoRow(loc.price,
                         Formatters.formatPrice(currentRide?.price ?? 250),
                         valueStyle: AppTextStyles.priceSmall),
                     _infoRow(
-                      'Paiement',
+                      loc.payment,
                       _paymentMethodLabel(
-                          currentRide?.paymentMethod ?? PaymentMethod.cash),
+                          currentRide?.paymentMethod ?? PaymentMethod.cash, loc),
                     ),
                   ],
                 ),
               ),
               SizedBox(height: 32.h),
-              Text('Notez votre chauffeur',
+              Text(loc.rateDriver,
                   style: AppTextStyles.headline4),
               SizedBox(height: 12.h),
               Row(
@@ -99,13 +101,13 @@ class _EndTripScreenState extends ConsumerState<EndTripScreen> {
               ),
               SizedBox(height: 16.h),
               InggoInput(
-                hint: 'Laisser un avis (optionnel)',
+                hint: loc.leaveReview,
                 controller: _reviewController,
                 maxLines: 3,
               ),
               SizedBox(height: 32.h),
               InggoButton(
-                label: 'Terminé',
+                label: loc.done,
                 onPressed: () {
                   ref.read(rideProvider.notifier).rateDriver(
                         _rating,

@@ -8,6 +8,7 @@ import '../../core/services/supabase_service.dart';
 import '../../core/router/app_router.dart';
 import '../../widget/widgets.dart';
 import '../../widget/inggo_stepper.dart';
+import '../../l10n/app_localizations.dart';
 
 class RegisterClientScreen extends StatefulWidget {
   const RegisterClientScreen({super.key});
@@ -120,7 +121,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
   Future<void> _sendOtp() async {
     final phone = _phoneCtrl.text.trim().replaceAll(' ', '');
     if (phone.isEmpty || phone.length < 6) {
-      _setError('phone', 'Numéro invalide');
+      _setError('phone', AppLocalizations.of(context).errorInvalidPhone);
       return;
     }
 
@@ -143,12 +144,12 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
       });
       _startTimer();
       HapticFeedback.mediumImpact();
-      _showToast('Code envoyé au $_fullPhone');
+      _showToast('${AppLocalizations.of(context).otpSentTo} $_fullPhone');
     } catch (e) {
       if (!mounted) return;
       setState(() => _otpSending = false);
-      _setError('otp', 'Erreur d\'envoi. Réessayez.');
-      _showToast('Erreur: ${e.toString()}');
+      _setError('otp', AppLocalizations.of(context).otpSendError);
+      _showToast('${AppLocalizations.of(context).errorWithDetail}: ${e.toString()}');
     }
   }
 
@@ -194,13 +195,13 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
         _otpVerifying = false;
       });
       HapticFeedback.heavyImpact();
-      _showToast('Numéro vérifié !');
+      _showToast(AppLocalizations.of(context).phoneVerified);
     } catch (e) {
       if (!mounted) return;
       AppRouter.setOtpVerifying(false);
       setState(() => _otpVerifying = false);
-      _setError('otp', 'Code invalide');
-      _showToast('Code incorrect. Réessayez.');
+      _setError('otp', AppLocalizations.of(context).invalidOtp);
+      _showToast(AppLocalizations.of(context).otpIncorrect);
     }
   }
 
@@ -213,61 +214,62 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
     final emailRegex = RegExp(
       r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
     );
+    final loc = AppLocalizations.of(context);
 
     if (_currentStep == 1) {
       if (_nomCtrl.text.trim().isEmpty) {
-        _setError('nom', 'Le nom est requis');
+        _setError('nom', loc.errorNameRequired);
         valid = false;
       } else if (!nameRegex.hasMatch(_nomCtrl.text.trim())) {
-        _setError('nom', 'Format invalide');
+        _setError('nom', loc.errorInvalidFormat);
         valid = false;
       }
       if (_pereCtrl.text.trim().isEmpty) {
-        _setError('pere', 'Requis');
+        _setError('pere', loc.fieldRequired);
         valid = false;
       }
       if (_grandpereCtrl.text.trim().isEmpty) {
-        _setError('grandpere', 'Requis');
+        _setError('grandpere', loc.fieldRequired);
         valid = false;
       }
       if (_sexe.isEmpty) {
-        _setError('sexe', 'Requis');
+        _setError('sexe', loc.fieldRequired);
         valid = false;
       }
     } else if (_currentStep == 2) {
       if (_emailCtrl.text.trim().isEmpty) {
-        _setError('email', 'Email requis');
+        _setError('email', loc.errorEmailRequired);
         valid = false;
       } else if (!emailRegex.hasMatch(_emailCtrl.text.trim())) {
-        _setError('email', 'Email invalide');
+        _setError('email', loc.errorEmailInvalidFormat);
         valid = false;
       }
       if (_phoneCtrl.text.trim().isEmpty || _phoneCtrl.text.trim().replaceAll(' ', '').length < 6) {
-        _setError('phone', 'Numéro invalide');
+        _setError('phone', loc.errorInvalidPhone);
         valid = false;
       }
       if (!_phoneVerified) {
-        _setError('phone_verify', 'Vérifiez votre numéro');
+        _setError('phone_verify', loc.verifyYourNumber);
         valid = false;
       }
     } else if (_currentStep == 3) {
       if (_passwordCtrl.text.length < 6) {
-        _setError('password', 'Min 6 caractères');
+        _setError('password', loc.errorPasswordMinLength);
         valid = false;
       }
       if (_passwordCtrl.text != _confirmPasswordCtrl.text) {
-        _setError('confirm', 'Les mots de passe sont différents');
+        _setError('confirm', loc.passwordsDiffer);
         valid = false;
       }
       if (!_isLegalChecked) {
-        _setError('legal', 'Acceptez les conditions');
+        _setError('legal', loc.acceptTerms);
         valid = false;
       }
     }
 
     if (!valid) {
       HapticFeedback.mediumImpact();
-      _showToast('Veuillez corriger les erreurs.');
+      _showToast(loc.pleaseCorrectErrors);
     }
     return valid;
   }
@@ -347,7 +349,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
     } catch (e) {
       if (!mounted) return;
       setState(() => _isSubmitting = false);
-      _showToast('Erreur: ${e.toString()}');
+      _showToast('${AppLocalizations.of(context).errorWithDetail}: ${e.toString()}');
     }
   }
 
@@ -443,6 +445,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
   }
 
   Widget _buildHeader() {
+    final loc = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
       child: Column(
@@ -471,14 +474,14 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
             ],
           ),
           const SizedBox(height: 16),
-          const Text(
-            'Créer un compte',
-            style: TextStyle(fontSize: 26, fontWeight: FontWeight.w900, color: Color(0xFF121212)),
+          Text(
+            loc.createAccount,
+            style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w900, color: Color(0xFF121212)),
           ),
           const SizedBox(height: 4),
-          const Text(
-            'Rejoignez la communauté Inggo en 3 étapes.',
-            style: TextStyle(fontSize: 14, color: Color(0xFF757575)),
+          Text(
+            loc.joinCommunity3,
+            style: const TextStyle(fontSize: 14, color: Color(0xFF757575)),
           ),
         ],
       ),
@@ -487,16 +490,17 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
 
   // ─── STEP 1: Identité ───
   Widget _buildStep1() {
+    final loc = AppLocalizations.of(context);
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _sectionTitle(Icons.person, 'Qui êtes-vous ?'),
+          _sectionTitle(Icons.person, loc.whoAreYou),
           const SizedBox(height: 24),
           InggoInput(
-            label: 'Votre Nom',
-            hint: 'Votre nom',
+            label: loc.yourName,
+            hint: loc.yourNameHint,
             controller: _nomCtrl,
             prefixIcon: Icons.person_outline,
             onChanged: (_) => _clearErrors(),
@@ -505,8 +509,8 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
             _errorText(_errors['nom']!),
           const SizedBox(height: 16),
           InggoInput(
-            label: 'Nom du père',
-            hint: 'Nom du père',
+            label: loc.fatherName,
+            hint: loc.fatherName,
             controller: _pereCtrl,
             onChanged: (_) => _clearErrors(),
           ),
@@ -514,8 +518,8 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
             _errorText(_errors['pere']!),
           const SizedBox(height: 16),
           InggoInput(
-            label: 'Nom du grand-père',
-            hint: 'Nom du grand-père',
+            label: loc.grandfatherName,
+            hint: loc.grandfatherName,
             controller: _grandpereCtrl,
             onChanged: (_) => _clearErrors(),
           ),
@@ -523,15 +527,15 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
             _errorText(_errors['grandpere']!),
           const SizedBox(height: 20),
           // Gender
-          const Padding(
-            padding: EdgeInsets.only(left: 4, bottom: 8),
-            child: Text('Sexe', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 0.5)),
+          Padding(
+            padding: const EdgeInsets.only(left: 4, bottom: 8),
+            child: Text(loc.gender, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 0.5)),
           ),
           Row(
             children: [
               Expanded(
                 child: _GenderCard(
-                  label: 'Homme',
+                  label: loc.male,
                   icon: Icons.male,
                   isSelected: _sexe == 'H',
                   onTap: () => setState(() { _sexe = 'H'; _clearErrors(); }),
@@ -540,7 +544,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
               const SizedBox(width: 10),
               Expanded(
                 child: _GenderCard(
-                  label: 'Femme',
+                  label: loc.female,
                   icon: Icons.female,
                   isSelected: _sexe == 'F',
                   onTap: () => setState(() { _sexe = 'F'; _clearErrors(); }),
@@ -552,9 +556,9 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
             _errorText(_errors['sexe']!),
           const SizedBox(height: 20),
           // Pays
-          const Padding(
-            padding: EdgeInsets.only(left: 4, bottom: 8),
-            child: Text('Pays', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 0.5)),
+          Padding(
+            padding: const EdgeInsets.only(left: 4, bottom: 8),
+            child: Text(loc.country, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 0.5)),
           ),
           Container(
             height: 56,
@@ -569,7 +573,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
                 isExpanded: true,
                 icon: const Icon(Icons.keyboard_arrow_down),
                 style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Color(0xFF121212)),
-                items: ['Djibouti', 'Autre'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+                items: [('Djibouti', 'Djibouti'), ('Autre', loc.other)].map((e) => DropdownMenuItem(value: e.$1, child: Text(e.$2))).toList(),
                 onChanged: (v) => setState(() => _pays = v ?? 'Djibouti'),
               ),
             ),
@@ -581,16 +585,17 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
 
   // ─── STEP 2: Coordonnées + OTP ───
   Widget _buildStep2() {
+    final loc = AppLocalizations.of(context);
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _sectionTitle(Icons.contact_mail, 'Vos Coordonnées'),
+          _sectionTitle(Icons.contact_mail, loc.contactAndSecurity),
           const SizedBox(height: 24),
           InggoInput(
-            label: 'Email',
-            hint: 'votre-nom@gmail.com',
+            label: loc.email,
+            hint: loc.emailHint,
             controller: _emailCtrl,
             keyboardType: TextInputType.emailAddress,
             prefixIcon: Icons.email_outlined,
@@ -603,9 +608,9 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
-                padding: EdgeInsets.only(left: 4, bottom: 8),
-                child: Text('Numéro de téléphone', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 0.5)),
+              Padding(
+                padding: const EdgeInsets.only(left: 4, bottom: 8),
+                child: Text(loc.phoneNumber, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 0.5)),
               ),
               Row(
                 children: [
@@ -643,7 +648,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
               width: double.infinity,
               height: 48,
               child: InggoButton(
-                label: 'Envoi en cours...',
+                label: loc.uploading,
                 icon: Icons.sms_outlined,
                 isLoading: true,
                 onPressed: null,
@@ -655,8 +660,8 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
               height: 48,
               child: InggoButton(
                 label: _resendTimer > 0
-                    ? 'Renvoyer le code (${_resendTimer}s)'
-                    : 'Renvoyer le code',
+                    ? '${loc.resendOtp} (${_resendTimer}s)'
+                    : loc.resendOtp,
                 icon: Icons.refresh,
                 onPressed: _resendTimer > 0 ? null : _sendOtp,
               ),
@@ -670,7 +675,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
                   const Icon(Icons.info_outline, size: 14, color: AppColors.primary),
                   const SizedBox(width: 6),
                   Text(
-                    'Un code sera envoyé automatiquement.',
+                    loc.otpAutoSend,
                     style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
                   ),
                 ],
@@ -691,7 +696,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
                   const Icon(Icons.verified, color: AppColors.success, size: 20),
                   const SizedBox(width: 10),
                   Text(
-                    'Numéro vérifié : $_fullPhone',
+                    '${loc.phoneVerifiedWith} $_fullPhone',
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
@@ -706,11 +711,11 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
           // ─── OTP Input (visible after sending) ───
           if (_otpSent && !_phoneVerified) ...[
             const SizedBox(height: 20),
-            const Padding(
-              padding: EdgeInsets.only(left: 4, bottom: 10),
+            Padding(
+              padding: const EdgeInsets.only(left: 4, bottom: 10),
               child: Text(
-                'Entrez le code de vérification',
-                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF444444)),
+                loc.enterVerificationCode,
+                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF444444)),
               ),
             ),
             Center(
@@ -752,16 +757,17 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
 
   // ─── STEP 3: Sécurité ───
   Widget _buildStep3() {
+    final loc = AppLocalizations.of(context);
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _sectionTitle(Icons.lock, 'Sécurité'),
+          _sectionTitle(Icons.lock, loc.security),
           const SizedBox(height: 24),
           InggoInput(
-            label: 'Mot de passe',
-            hint: 'Au moins 6 caractères',
+            label: loc.password,
+            hint: loc.atLeast6Chars,
             controller: _passwordCtrl,
             obscureText: true,
             prefixIcon: Icons.lock_outline,
@@ -772,8 +778,8 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
             _errorText(_errors['password']!),
           const SizedBox(height: 16),
           InggoInput(
-            label: 'Confirmer le mot de passe',
-            hint: 'Répétez le mot de passe',
+            label: loc.confirmPassword,
+            hint: loc.repeatPasswordHint,
             controller: _confirmPasswordCtrl,
             obscureText: true,
             prefixIcon: Icons.lock_outline,
@@ -826,15 +832,15 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
                   Expanded(
                     child: Text.rich(
                       TextSpan(
-                        text: "Je reconnais avoir lu et accepté les ",
+                        text: loc.iAcknowledgeRead,
                         style: const TextStyle(fontSize: 13, color: Color(0xFF121212), height: 1.5),
                         children: [
                           WidgetSpan(
                             child: GestureDetector(
-                              onTap: () => _showLegalModal('Conditions Générales', _cguText),
-                              child: const Text(
-                                'CGU',
-                                style: TextStyle(
+                              onTap: () => _showLegalModal(loc.cgu, _cguText),
+                              child: Text(
+                                loc.cgu,
+                                style: const TextStyle(
                                   fontSize: 13,
                                   color: Color(0xFF336D91),
                                   fontWeight: FontWeight.w700,
@@ -843,13 +849,13 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
                               ),
                             ),
                           ),
-                          const TextSpan(text: ' et la '),
+                          TextSpan(text: loc.andThe),
                           WidgetSpan(
                             child: GestureDetector(
-                              onTap: () => _showLegalModal('Politique de Confidentialité', _privacyText),
-                              child: const Text(
-                                'Politique de Confidentialité',
-                                style: TextStyle(
+                              onTap: () => _showLegalModal(loc.privacyPolicy, _privacyText),
+                              child: Text(
+                                loc.privacyPolicy,
+                                style: const TextStyle(
                                   fontSize: 13,
                                   color: Color(0xFF336D91),
                                   fontWeight: FontWeight.w700,
@@ -858,7 +864,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
                               ),
                             ),
                           ),
-                          const TextSpan(text: " d'Inggo."),
+                          TextSpan(text: loc.ofInggo),
                         ],
                       ),
                     ),
@@ -875,6 +881,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
   }
 
   Widget _buildFooter() {
+    final loc = AppLocalizations.of(context);
     return Container(
       padding: EdgeInsets.fromLTRB(24, 16, 24, MediaQuery.of(context).padding.bottom + 16),
       decoration: BoxDecoration(
@@ -901,8 +908,8 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
                   Expanded(
                     child: Text(
                       _otpSent
-                          ? 'Vérifiez votre numéro pour continuer'
-                          : 'Saisissez et vérifiez votre numéro',
+                          ? loc.verifyNumberToContinue
+                          : loc.enterAndVerifyNumber,
                       style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.warning),
                     ),
                   ),
@@ -929,7 +936,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
               ],
               Expanded(
                 child: InggoButton(
-                  label: _currentStep == _totalSteps ? 'Créer mon compte' : 'Suivant',
+                  label: _currentStep == _totalSteps ? loc.createMyAccount : loc.next,
                   icon: _currentStep == _totalSteps ? Icons.check : Icons.arrow_forward,
                   isLoading: _isSubmitting,
                   onPressed: (_isSubmitting || (_currentStep == 2 && !_phoneVerified))
@@ -945,6 +952,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
   }
 
   Widget _buildSuccessScreen() {
+    final loc = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -965,9 +973,9 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
                 ),
               ),
               const SizedBox(height: 24),
-              const Text('Bienvenue !', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900, color: Color(0xFF121212))),
+              Text(loc.welcome, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w900, color: Color(0xFF121212))),
               const SizedBox(height: 10),
-              Text('Votre compte Inggo a été créé avec succès.', style: TextStyle(fontSize: 15, color: Colors.grey.shade600)),
+              Text(loc.accountCreatedSuccess, style: TextStyle(fontSize: 15, color: Colors.grey.shade600)),
               const SizedBox(height: 60),
               GestureDetector(
                 onTap: () {
@@ -983,7 +991,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Text('Commencer', style: TextStyle(color: AppColors.primary, fontSize: 18, fontWeight: FontWeight.w900)),
+                      Text(loc.getStarted, style: const TextStyle(color: AppColors.primary, fontSize: 18, fontWeight: FontWeight.w900)),
                       const SizedBox(width: 12),
                       Container(
                         width: 40,

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/constants.dart';
 import '../../widget/widgets.dart';
 import '../../provider/ride_provider.dart';
+import '../../l10n/app_localizations.dart';
 
 class BookingScreen extends ConsumerStatefulWidget {
   const BookingScreen({super.key});
@@ -57,17 +58,18 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
   @override
   Widget build(BuildContext context) {
     final ride = ref.watch(rideProvider);
+    final loc = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: InggoAppBar(title: 'Réserver'),
+      appBar: InggoAppBar(title: loc.bookRide),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(AppSpacing.screenPadding),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             RideSummaryCard(
-              pickupAddress: ride.pickupAddress ?? 'Position actuelle',
-              dropoffAddress: ride.dropoffAddress ?? 'Destination',
+              pickupAddress: ride.pickupAddress ?? loc.currentPosition,
+              dropoffAddress: ride.dropoffAddress ?? loc.destinationFallback,
               price: AppConstants.ridePrice, // Fixed price 250 FDJ
               paymentMethod: _selectedPayment,
             ),
@@ -82,8 +84,8 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
             SizedBox(height: 32.h),
             InggoButton(
               label: _isCreating
-                  ? 'Création en cours...'
-                  : 'Confirmer la réservation — ${AppConstants.ridePrice.toInt()} FDJ',
+                  ? loc.creatingBooking
+                  : '${loc.confirmBookingPrice} — ${AppConstants.ridePrice.toInt()} FDJ',
               isLoading: _isCreating,
               onPressed: _confirmBooking,
             ),

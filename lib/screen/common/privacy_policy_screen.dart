@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../core/constants/constants.dart';
+import '../../l10n/app_localizations.dart';
 import '../../widget/widgets.dart';
 
 class PrivacyPolicyScreen extends StatelessWidget {
@@ -8,16 +9,17 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     return Scaffold(
-      appBar: const InggoAppBar(title: 'Politique de confidentialité', showBack: true),
+      appBar: InggoAppBar(title: loc.privacyPolicyTitle, showBack: true),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(AppSpacing.screenPadding),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Politique de confidentialité', style: AppTextStyles.headline3),
+            Text(loc.privacyPolicyTitle, style: AppTextStyles.headline3),
             SizedBox(height: 4.h),
-            Text('Dernière mise à jour : Janvier 2025',
+            Text(loc.lastUpdated,
                 style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary)),
             SizedBox(height: 24.h),
 

@@ -10,6 +10,7 @@ import '../../core/services/supabase_service.dart';
 import '../../core/router/app_router.dart';
 import '../../widget/widgets.dart';
 import '../../widget/inggo_stepper.dart';
+import '../../l10n/app_localizations.dart';
 
 class RegisterDriverScreen extends StatefulWidget {
   const RegisterDriverScreen({super.key});
@@ -134,7 +135,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
   Future<void> _sendOtp() async {
     final phone = _phoneCtrl.text.trim().replaceAll(' ', '');
     if (phone.isEmpty || phone.length < 6) {
-      _setError('phone', 'Numéro invalide');
+      _setError('phone', AppLocalizations.of(context).errorInvalidPhone);
       return;
     }
 
@@ -157,12 +158,12 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
       });
       _startTimer();
       HapticFeedback.mediumImpact();
-      _showToast('Code envoyé au $_fullPhone');
+      _showToast('${AppLocalizations.of(context).otpSentTo} $_fullPhone');
     } catch (e) {
       if (!mounted) return;
       setState(() => _otpSending = false);
-      _setError('otp', 'Erreur d\'envoi. Réessayez.');
-      _showToast('Erreur: ${e.toString()}');
+      _setError('otp', AppLocalizations.of(context).otpSendError);
+      _showToast('${AppLocalizations.of(context).errorWithDetail}: ${e.toString()}');
     }
   }
 
@@ -208,13 +209,13 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
         _otpVerifying = false;
       });
       HapticFeedback.heavyImpact();
-      _showToast('Numéro vérifié !');
+      _showToast(AppLocalizations.of(context).phoneVerified);
     } catch (e) {
       if (!mounted) return;
       AppRouter.setOtpVerifying(false);
       setState(() => _otpVerifying = false);
-      _setError('otp', 'Code invalide');
-      _showToast('Code incorrect. Réessayez.');
+      _setError('otp', AppLocalizations.of(context).invalidOtp);
+      _showToast(AppLocalizations.of(context).otpIncorrect);
     }
   }
 
@@ -227,71 +228,72 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
     final emailRegex = RegExp(
       r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
     );
+    final loc = AppLocalizations.of(context);
 
     if (_currentStep == 1) {
       if (_nomCtrl.text.trim().isEmpty) {
-        _setError('nom', 'Requis');
+        _setError('nom', loc.fieldRequired);
         valid = false;
       } else if (!nameRegex.hasMatch(_nomCtrl.text.trim())) {
-        _setError('nom', 'Format invalide');
+        _setError('nom', loc.errorInvalidFormat);
         valid = false;
       }
       if (_pereCtrl.text.trim().isEmpty) {
-        _setError('pere', 'Requis');
+        _setError('pere', loc.fieldRequired);
         valid = false;
       }
       if (_grandpereCtrl.text.trim().isEmpty) {
-        _setError('grandpere', 'Requis');
+        _setError('grandpere', loc.fieldRequired);
         valid = false;
       }
       if (_sexe.isEmpty) {
-        _setError('sexe', 'Sélectionnez un genre');
+        _setError('sexe', loc.selectGender);
         valid = false;
       }
     } else if (_currentStep == 2) {
       if (_emailCtrl.text.trim().isEmpty) {
-        _setError('email', 'Email requis');
+        _setError('email', loc.errorEmailRequired);
         valid = false;
       } else if (!emailRegex.hasMatch(_emailCtrl.text.trim())) {
-        _setError('email', 'Email invalide');
+        _setError('email', loc.errorEmailInvalidFormat);
         valid = false;
       }
       if (_phoneCtrl.text.trim().isEmpty || _phoneCtrl.text.trim().replaceAll(' ', '').length < 6) {
-        _setError('phone', 'Numéro invalide');
+        _setError('phone', loc.errorInvalidPhone);
         valid = false;
       }
       if (!_phoneVerified) {
-        _setError('phone_verify', 'Vérifiez votre numéro');
+        _setError('phone_verify', loc.verifyYourNumber);
         valid = false;
       }
       if (_passwordCtrl.text.length < 6) {
-        _setError('password', 'Min 6 caractères');
+        _setError('password', loc.errorPasswordMinLength);
         valid = false;
       }
       if (_passwordCtrl.text != _confirmPasswordCtrl.text) {
-        _setError('confirm', 'Mots de passe différents');
+        _setError('confirm', loc.passwordsDiffer);
         valid = false;
       }
     } else if (_currentStep == 3) {
       if (_plateCtrl.text.trim().isEmpty) {
-        _setError('plate', 'Numéro de plaque requis');
+        _setError('plate', loc.plateNumberRequired);
         valid = false;
       }
       final allFilled = _documentFiles.values.every((f) => f != null);
       if (!allFilled) {
-        _setError('docs', 'Tous les documents sont requis');
+        _setError('docs', loc.allDocsRequired);
         valid = false;
       }
     } else if (_currentStep == 4) {
       if (!_cguChecked || !_privacyChecked) {
-        _setError('legal', 'Acceptez toutes les conditions');
+        _setError('legal', loc.acceptAllTerms);
         valid = false;
       }
     }
 
     if (!valid) {
       HapticFeedback.mediumImpact();
-      _showToast('Veuillez corriger les erreurs.');
+      _showToast(loc.pleaseCorrectErrors);
     }
     return valid;
   }
@@ -336,6 +338,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
   }
 
   Future<void> _showSourceChooser(String docKey) async {
+    final loc = AppLocalizations.of(context);
     await showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
@@ -357,12 +360,12 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              const Text('Ajouter un document',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+              Text(loc.uploadDocument,
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
               const SizedBox(height: 20),
               ListTile(
                 leading: const Icon(Icons.camera_alt, color: AppColors.primary),
-                title: const Text('Prendre une photo'),
+                title: Text(loc.takePhoto),
                 onTap: () async {
                   Navigator.pop(ctx);
                   final image = await _picker.pickImage(source: ImageSource.camera, imageQuality: 80);
@@ -373,7 +376,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
               ),
               ListTile(
                 leading: const Icon(Icons.photo_library, color: AppColors.primary),
-                title: const Text('Choisir depuis la galerie'),
+                title: Text(loc.chooseFromGallery),
                 onTap: () async {
                   Navigator.pop(ctx);
                   final image = await _picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
@@ -390,6 +393,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
   }
 
   Future<void> _showRemoveDialog(String docKey) async {
+    final loc = AppLocalizations.of(context);
     await showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
@@ -402,11 +406,11 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('Document déjà ajouté',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+              Text(loc.documentAlreadyAdded,
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
               const SizedBox(height: 16),
               InggoButton(
-                label: 'Supprimer et reprendre',
+                label: loc.deleteAndRetry,
                 type: InggoButtonType.danger,
                 onPressed: () {
                   Navigator.pop(ctx);
@@ -415,7 +419,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
               ),
               const SizedBox(height: 8),
               InggoButton(
-                label: 'Conserver',
+                label: loc.keep,
                 type: InggoButtonType.text,
                 onPressed: () => Navigator.pop(ctx),
               ),
@@ -451,7 +455,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
 
       if (!mounted) return;
       final userId = response.user?.id;
-      if (userId == null) throw Exception('Erreur création compte');
+      if (userId == null) throw Exception(AppLocalizations.of(context).accountCreationError);
 
       // 2. Insert profile (trigger fallback)
       try {
@@ -499,7 +503,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
     } catch (e) {
       if (!mounted) return;
       setState(() => _isSubmitting = false);
-      _showToast('Erreur: ${e.toString()}');
+      _showToast('${AppLocalizations.of(context).errorWithDetail}: ${e.toString()}');
     }
   }
 
@@ -594,6 +598,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
   }
 
   Widget _buildHeader() {
+    final loc = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
       child: Column(
@@ -622,9 +627,9 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
             ],
           ),
           const SizedBox(height: 16),
-          const Text('Devenir Conducteur', style: TextStyle(fontSize: 26, fontWeight: FontWeight.w900, color: Color(0xFF121212))),
+          Text(loc.becomeDriver, style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w900, color: Color(0xFF121212))),
           const SizedBox(height: 4),
-          const Text('Rejoignez la flotte Inggo en 4 étapes.', style: TextStyle(fontSize: 14, color: Color(0xFF757575))),
+          Text(loc.joinFleet4Steps, style: const TextStyle(fontSize: 14, color: Color(0xFF757575))),
         ],
       ),
     );
@@ -632,35 +637,36 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
 
   // ─── STEP 1: Identité ───
   Widget _buildStep1() {
+    final loc = AppLocalizations.of(context);
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _sectionTitle(Icons.person, 'Qui êtes-vous ?'),
+          _sectionTitle(Icons.person, loc.whoAreYou),
           const SizedBox(height: 24),
-          InggoInput(label: 'Votre Nom', hint: 'Votre nom', controller: _nomCtrl, prefixIcon: Icons.person_outline, onChanged: (_) => _clearErrors()),
+          InggoInput(label: loc.yourName, hint: loc.yourNameHint, controller: _nomCtrl, prefixIcon: Icons.person_outline, onChanged: (_) => _clearErrors()),
           if (_errors.containsKey('nom')) _errorText(_errors['nom']!),
           const SizedBox(height: 16),
-          InggoInput(label: 'Nom du père', hint: 'Nom du père', controller: _pereCtrl, onChanged: (_) => _clearErrors()),
+          InggoInput(label: loc.fatherName, hint: loc.fatherName, controller: _pereCtrl, onChanged: (_) => _clearErrors()),
           if (_errors.containsKey('pere')) _errorText(_errors['pere']!),
           const SizedBox(height: 16),
-          InggoInput(label: 'Nom du grand-père', hint: 'Nom du grand-père', controller: _grandpereCtrl, onChanged: (_) => _clearErrors()),
+          InggoInput(label: loc.grandfatherName, hint: loc.grandfatherName, controller: _grandpereCtrl, onChanged: (_) => _clearErrors()),
           if (_errors.containsKey('grandpere')) _errorText(_errors['grandpere']!),
           const SizedBox(height: 20),
           // Gender
-          const Padding(padding: EdgeInsets.only(left: 4, bottom: 8), child: Text('Sexe', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 0.5))),
+          Padding(padding: const EdgeInsets.only(left: 4, bottom: 8), child: Text(loc.gender, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 0.5))),
           Row(
             children: [
-              Expanded(child: _GenderCard(label: 'Homme', icon: Icons.male, isSelected: _sexe == 'H', onTap: () => setState(() { _sexe = 'H'; _clearErrors(); }))),
+              Expanded(child: _GenderCard(label: loc.male, icon: Icons.male, isSelected: _sexe == 'H', onTap: () => setState(() { _sexe = 'H'; _clearErrors(); }))),
               const SizedBox(width: 10),
-              Expanded(child: _GenderCard(label: 'Femme', icon: Icons.female, isSelected: _sexe == 'F', onTap: () => setState(() { _sexe = 'F'; _clearErrors(); }))),
+              Expanded(child: _GenderCard(label: loc.female, icon: Icons.female, isSelected: _sexe == 'F', onTap: () => setState(() { _sexe = 'F'; _clearErrors(); }))),
             ],
           ),
           if (_errors.containsKey('sexe')) _errorText(_errors['sexe']!),
           const SizedBox(height: 20),
           // Pays
-          const Padding(padding: EdgeInsets.only(left: 4, bottom: 8), child: Text('Pays', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 0.5))),
+          Padding(padding: const EdgeInsets.only(left: 4, bottom: 8), child: Text(loc.country, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 0.5))),
           Container(
             height: 56,
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -671,7 +677,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
                 isExpanded: true,
                 icon: const Icon(Icons.keyboard_arrow_down),
                 style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Color(0xFF121212)),
-                items: ['Djibouti', 'Autre'].map((e) => DropdownMenuItem(value: e, child: Text(e))).toList(),
+                items: [('Djibouti', 'Djibouti'), ('Autre', loc.other)].map((e) => DropdownMenuItem(value: e.$1, child: Text(e.$2))).toList(),
                 onChanged: (v) => setState(() => _pays = v ?? 'Djibouti'),
               ),
             ),
@@ -683,22 +689,23 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
 
   // ─── STEP 2: Coordonnées + Sécurité + OTP ───
   Widget _buildStep2() {
+    final loc = AppLocalizations.of(context);
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _sectionTitle(Icons.contact_mail, 'Coordonnées & Sécurité'),
+          _sectionTitle(Icons.contact_mail, loc.contactAndSecurity),
           const SizedBox(height: 24),
           // Email
-          InggoInput(label: 'Email', hint: 'votre-nom@gmail.com', controller: _emailCtrl, keyboardType: TextInputType.emailAddress, prefixIcon: Icons.email_outlined, onChanged: (_) => _clearErrors()),
+          InggoInput(label: loc.email, hint: loc.emailHint, controller: _emailCtrl, keyboardType: TextInputType.emailAddress, prefixIcon: Icons.email_outlined, onChanged: (_) => _clearErrors()),
           if (_errors.containsKey('email')) _errorText(_errors['email']!),
           const SizedBox(height: 20),
           // Phone
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(padding: EdgeInsets.only(left: 4, bottom: 8), child: Text('Numéro de téléphone', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 0.5))),
+              Padding(padding: const EdgeInsets.only(left: 4, bottom: 8), child: Text(loc.phoneNumber, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700, letterSpacing: 0.5))),
               Row(
                 children: [
                   Container(
@@ -727,7 +734,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
               width: double.infinity,
               height: 48,
               child: InggoButton(
-                label: 'Envoi en cours...',
+                label: loc.uploading,
                 icon: Icons.sms_outlined,
                 isLoading: true,
                 onPressed: null,
@@ -739,8 +746,8 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
               height: 48,
               child: InggoButton(
                 label: _resendTimer > 0
-                    ? 'Renvoyer le code (${_resendTimer}s)'
-                    : 'Renvoyer le code',
+                    ? '${loc.resendOtp} (${_resendTimer}s)'
+                    : loc.resendOtp,
                 icon: Icons.refresh,
                 onPressed: _resendTimer > 0 ? null : _sendOtp,
               ),
@@ -754,7 +761,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
                   const Icon(Icons.info_outline, size: 14, color: AppColors.primary),
                   const SizedBox(width: 6),
                   Text(
-                    'Un code sera envoyé automatiquement.',
+                    loc.otpAutoSend,
                     style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
                   ),
                 ],
@@ -775,7 +782,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
                   const Icon(Icons.verified, color: AppColors.success, size: 20),
                   const SizedBox(width: 10),
                   Text(
-                    'Numéro vérifié : $_fullPhone',
+                    '${loc.phoneVerifiedWith} $_fullPhone',
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
@@ -790,11 +797,11 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
           // ─── OTP Input (visible after sending) ───
           if (_otpSent && !_phoneVerified) ...[
             const SizedBox(height: 20),
-            const Padding(
-              padding: EdgeInsets.only(left: 4, bottom: 10),
+            Padding(
+              padding: const EdgeInsets.only(left: 4, bottom: 10),
               child: Text(
-                'Entrez le code de vérification',
-                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF444444)),
+                loc.enterVerificationCode,
+                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF444444)),
               ),
             ),
             Center(
@@ -832,10 +839,10 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
           const SizedBox(height: 20),
 
           // Password fields (always visible)
-          InggoInput(label: 'Mot de passe', hint: 'Au moins 6 caractères', controller: _passwordCtrl, obscureText: true, prefixIcon: Icons.lock_outline, onChanged: (_) => _clearErrors()),
+          InggoInput(label: loc.password, hint: loc.atLeast6Chars, controller: _passwordCtrl, obscureText: true, prefixIcon: Icons.lock_outline, onChanged: (_) => _clearErrors()),
           if (_errors.containsKey('password')) _errorText(_errors['password']!),
           const SizedBox(height: 16),
-          InggoInput(label: 'Confirmer le mot de passe', hint: 'Répétez le mot de passe', controller: _confirmPasswordCtrl, obscureText: true, prefixIcon: Icons.lock_outline, onChanged: (_) => _clearErrors()),
+          InggoInput(label: loc.confirmPassword, hint: loc.repeatPasswordHint, controller: _confirmPasswordCtrl, obscureText: true, prefixIcon: Icons.lock_outline, onChanged: (_) => _clearErrors()),
           if (_errors.containsKey('confirm')) _errorText(_errors['confirm']!),
         ],
       ),
@@ -844,11 +851,12 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
 
   // ─── STEP 3: Véhicule + Documents ───
   Widget _buildStep3() {
+    final loc = AppLocalizations.of(context);
     final docLabels = {
-      'cni': {'label': 'Carte d\'identité', 'icon': Icons.badge},
-      'permis': {'label': 'Permis de conduire', 'icon': Icons.drive_eta},
-      'assurance': {'label': 'Assurance', 'icon': Icons.security},
-      'moto': {'label': 'Photo de la moto', 'icon': Icons.two_wheeler},
+      'cni': {'label': loc.idCard, 'icon': Icons.badge},
+      'permis': {'label': loc.driverLicense, 'icon': Icons.drive_eta},
+      'assurance': {'label': loc.insurance, 'icon': Icons.security},
+      'moto': {'label': loc.motorcyclePhoto, 'icon': Icons.two_wheeler},
     };
 
     return SingleChildScrollView(
@@ -856,13 +864,13 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _sectionTitle(Icons.two_wheeler, 'Votre Moto'),
+          _sectionTitle(Icons.two_wheeler, loc.yourMotorcycle),
           const SizedBox(height: 8),
-          Text('Renseignez les informations de votre véhicule et téléchargez vos documents.', style: TextStyle(fontSize: 13, color: Colors.grey.shade600)),
+          Text(loc.vehicleInfoHint, style: TextStyle(fontSize: 13, color: Colors.grey.shade600)),
           const SizedBox(height: 20),
           // Plaque
           InggoInput(
-            label: 'Numéro de plaque',
+            label: loc.plateNumber,
             hint: 'Ex: DJ 1234 A',
             controller: _plateCtrl,
             prefixIcon: Icons.pin,
@@ -872,7 +880,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
           const SizedBox(height: 16),
           // Couleur
           InggoInput(
-            label: 'Couleur du véhicule',
+            label: loc.vehicleColor,
             hint: 'Ex: Noir, Rouge...',
             controller: _vehicleColorCtrl,
             prefixIcon: Icons.palette,
@@ -880,9 +888,9 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
           ),
           const SizedBox(height: 24),
           // Documents section
-          _sectionTitle(Icons.folder, 'Vos Documents'),
+          _sectionTitle(Icons.folder, loc.yourDocumentsCap),
           const SizedBox(height: 8),
-          Text('Tous les documents sont requis pour vérifier votre dossier.', style: TextStyle(fontSize: 13, color: Colors.grey.shade600)),
+          Text(loc.allDocsRequiredHint, style: TextStyle(fontSize: 13, color: Colors.grey.shade600)),
           const SizedBox(height: 20),
           ...docLabels.entries.map((entry) {
             final key = entry.key;
@@ -931,7 +939,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              file != null ? 'Document ajouté' : 'Appuyez pour ajouter',
+                              file != null ? loc.documentAdded : loc.tapToAdd,
                               style: TextStyle(fontSize: 12, color: file != null ? AppColors.success : Colors.grey.shade500),
                             ),
                           ],
@@ -955,21 +963,22 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
 
   // ─── STEP 4: Conditions ───
   Widget _buildStep4() {
+    final loc = AppLocalizations.of(context);
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _sectionTitle(Icons.gavel, 'Conditions'),
+          _sectionTitle(Icons.gavel, loc.conditions),
           const SizedBox(height: 24),
           // CGU
           GestureDetector(
             onTap: () => setState(() { _cguChecked = !_cguChecked; _clearErrors(); }),
             child: _LegalCheckbox(
               checked: _cguChecked,
-              label: 'J\'accepte les ',
-              linkLabel: 'Conditions Générales d\'Utilisation',
-              onLinkTap: () => _showLegalModal('CGU', _cguText),
+              label: loc.iAcceptThe,
+              linkLabel: loc.termsOfUse,
+              onLinkTap: () => _showLegalModal(loc.termsOfUse, _cguText),
             ),
           ),
           const SizedBox(height: 16),
@@ -978,9 +987,9 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
             onTap: () => setState(() { _privacyChecked = !_privacyChecked; _clearErrors(); }),
             child: _LegalCheckbox(
               checked: _privacyChecked,
-              label: 'J\'accepte la ',
-              linkLabel: 'Politique de Confidentialité',
-              onLinkTap: () => _showLegalModal('Confidentialité', _privacyText),
+              label: loc.iAcceptTheFem,
+              linkLabel: loc.privacyPolicy,
+              onLinkTap: () => _showLegalModal(loc.privacyPolicy, _privacyText),
             ),
           ),
           if (_errors.containsKey('legal')) _errorText(_errors['legal']!),
@@ -998,7 +1007,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Votre dossier sera examiné par notre équipe. Vous serez notifié dès que votre compte sera activé.',
+                    loc.dossierUnderReview,
                     style: TextStyle(fontSize: 13, color: Colors.grey.shade700, height: 1.5),
                   ),
                 ),
@@ -1011,6 +1020,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
   }
 
   Widget _buildFooter() {
+    final loc = AppLocalizations.of(context);
     return Container(
       padding: EdgeInsets.fromLTRB(24, 16, 24, MediaQuery.of(context).padding.bottom + 16),
       decoration: BoxDecoration(
@@ -1033,8 +1043,8 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
                   Expanded(
                     child: Text(
                       _otpSent
-                          ? 'Vérifiez votre numéro pour continuer'
-                          : 'Saisissez et vérifiez votre numéro',
+                          ? loc.verifyNumberToContinue
+                          : loc.enterAndVerifyNumber,
                       style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.warning),
                     ),
                   ),
@@ -1058,7 +1068,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
               ],
               Expanded(
                 child: InggoButton(
-                  label: _currentStep == _totalSteps ? 'Soumettre mon dossier' : 'Suivant',
+                  label: _currentStep == _totalSteps ? loc.submitMyDossier : loc.next,
                   icon: _currentStep == _totalSteps ? Icons.send : Icons.arrow_forward,
                   isLoading: _isSubmitting,
                   onPressed: (_isSubmitting || (_currentStep == 2 && !_phoneVerified))
@@ -1074,6 +1084,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
   }
 
   Widget _buildSuccessScreen() {
+    final loc = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -1094,9 +1105,9 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
                 ),
               ),
               const SizedBox(height: 24),
-              const Text('Dossier soumis !', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900, color: Color(0xFF121212))),
+              Text(loc.dossierSubmitted, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w900, color: Color(0xFF121212))),
               const SizedBox(height: 10),
-              Text('Votre dossier est en cours de vérification.\nVous serez notifié dès validation.',
+              Text(loc.dossierVerificationPending,
                   textAlign: TextAlign.center, style: TextStyle(fontSize: 15, color: Colors.grey.shade600)),
               const SizedBox(height: 60),
               GestureDetector(
@@ -1110,7 +1121,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Text('Compris', style: TextStyle(color: AppColors.primary, fontSize: 18, fontWeight: FontWeight.w900)),
+                      Text(loc.understood, style: const TextStyle(color: AppColors.primary, fontSize: 18, fontWeight: FontWeight.w900)),
                       const SizedBox(width: 12),
                       Container(
                         width: 40,
@@ -1194,6 +1205,7 @@ class _LegalCheckbox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -1231,7 +1243,7 @@ class _LegalCheckbox extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const TextSpan(text: ' d\'Inggo.'),
+                  TextSpan(text: loc.ofInggo),
                 ],
               ),
             ),

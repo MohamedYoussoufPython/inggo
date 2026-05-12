@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../core/constants/constants.dart';
+import '../l10n/app_localizations.dart';
 import '../core/utils/formatters.dart';
 
 class DriverCard extends StatelessWidget {
@@ -23,6 +24,7 @@ class DriverCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     return Container(
       padding: EdgeInsets.all(12.w),
       decoration: BoxDecoration(
@@ -55,7 +57,7 @@ class DriverCard extends StatelessWidget {
                     Text(Formatters.formatRating(rating),
                         style: AppTextStyles.bodySmall),
                     SizedBox(width: 8.w),
-                    Text('($totalRides courses)', style: AppTextStyles.bodySmall),
+                    Text('($totalRides ${loc.ridesCount})', style: AppTextStyles.bodySmall),
                   ],
                 ),
                 if (plateNumber != null) ...[

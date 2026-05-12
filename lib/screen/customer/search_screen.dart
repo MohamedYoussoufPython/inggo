@@ -35,8 +35,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   Future<void> _setPickupFromGps() async {
     final position = await LocationService.instance.getCurrentPosition();
     if (position != null) {
+      final loc = AppLocalizations.of(context);
       ref.read(rideProvider.notifier).setPickup(
-            'Position actuelle',
+            loc.currentPosition,
             position.latitude,
             position.longitude,
           );
@@ -55,9 +56,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       });
     } catch (e) {
       if (mounted) {
+        final loc = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Impossible de charger les lieux. Tirez vers le bas pour réessayer.'),
+            content: Text(loc.profileUpdateError),
             backgroundColor: AppColors.error,
             duration: Duration(seconds: 3),
           ),
@@ -88,14 +90,15 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   /// then to 'Destination'.
   String _getLandmarkName(Map<String, dynamic> landmark) {
     final locale = Localizations.localeOf(context).languageCode;
+    final loc = AppLocalizations.of(context);
     if (locale == 'en') {
       return (landmark['name_en'] as String?)?.isNotEmpty == true
           ? landmark['name_en'] as String
-          : (landmark['name_fr'] as String?) ?? 'Destination';
+          : (landmark['name_fr'] as String?) ?? loc.destinationFallback;
     } else {
       return (landmark['name_fr'] as String?)?.isNotEmpty == true
           ? landmark['name_fr'] as String
-          : (landmark['name_en'] as String?) ?? 'Destination';
+          : (landmark['name_en'] as String?) ?? loc.destinationFallback;
     }
   }
 
@@ -110,8 +113,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   void _selectOnMap(LatLng pos) {
+    final loc = AppLocalizations.of(context);
     ref.read(rideProvider.notifier).setDropoff(
-          'Position sélectionnée',
+          loc.selectedPosition,
           pos.latitude,
           pos.longitude,
         );
@@ -192,7 +196,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       final lm = _filtered[index];
                       return _LandmarkTile(
                         name: _getLandmarkName(lm),
-                        category: lm['category'] as String? ?? 'autre',
+                        category: lm['category'] as String? ?? loc.categoryOther,
                         onTap: () => _selectLandmark(lm),
                       );
                     },

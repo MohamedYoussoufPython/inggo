@@ -8,6 +8,7 @@ import '../../core/services/location_service.dart';
 import '../../widget/widgets.dart';
 import '../../provider/favorites_provider.dart';
 import '../../provider/ride_provider.dart';
+import '../../l10n/app_localizations.dart';
 
 class FavoritesScreen extends ConsumerStatefulWidget {
   const FavoritesScreen({super.key});
@@ -27,9 +28,10 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
   @override
   Widget build(BuildContext context) {
     final favs = ref.watch(favoritesProvider);
+    final loc = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: const InggoAppBar(title: 'Favoris'),
+      appBar: InggoAppBar(title: loc.favorites),
       body: favs.isLoading
           ? const InggoLoading()
           : favs.favorites.isEmpty
@@ -39,11 +41,11 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
                     children: [
                       Icon(Icons.favorite_border, size: 64.w, color: AppColors.textHint),
                       SizedBox(height: 16.h),
-                      Text('Aucun favori',
+                      Text(loc.noFavorites,
                           style: AppTextStyles.bodyLarge
                               .copyWith(color: AppColors.textSecondary)),
                       SizedBox(height: 8.h),
-                      Text('Appuyez sur + pour ajouter un lieu favori',
+                      Text(loc.addFavoriteHint,
                           style: AppTextStyles.bodySmall
                               .copyWith(color: AppColors.textHint)),
                     ],
@@ -86,7 +88,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
                                     .read(favoritesProvider.notifier)
                                     .deleteFavorite(fav.id);
                                 if (mounted) {
-                                  InggoToast.success(context, 'Favori supprimé');
+                                  InggoToast.success(context, AppLocalizations.of(context).favoriteDeleted);
                                 }
                               },
                             ),
@@ -111,8 +113,9 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
     // Set pickup from current GPS position
     final position = await LocationService.instance.getCurrentPosition();
     if (position != null) {
+      final loc = AppLocalizations.of(context);
       ref.read(rideProvider.notifier).setPickup(
-            'Position actuelle',
+            loc.currentPosition,
             position.latitude,
             position.longitude,
           );
@@ -129,11 +132,12 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
     final formKey = GlobalKey<FormState>();
     double? selectedLat;
     double? selectedLng;
+    final loc = AppLocalizations.of(context);
 
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Ajouter un favori'),
+        title: Text(loc.addFavorite),
         content: Form(
           key: formKey,
           child: Column(
@@ -141,29 +145,29 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
             children: [
               TextFormField(
                 controller: labelController,
-                decoration: const InputDecoration(
-                  labelText: 'Nom du lieu',
-                  hintText: 'Ex: Maison, Travail...',
+                decoration: InputDecoration(
+                  labelText: loc.favoriteLabel,
+                  hintText: loc.favoriteLabelHint,
                   prefixIcon: Icon(Icons.label),
                 ),
                 validator: (v) =>
-                    v == null || v.trim().isEmpty ? 'Champ requis' : null,
+                    v == null || v.trim().isEmpty ? loc.fieldRequired : null,
               ),
               SizedBox(height: 12.h),
               TextFormField(
                 controller: addressController,
-                decoration: const InputDecoration(
-                  labelText: 'Adresse',
-                  hintText: 'Ex: Quartier Haramous...',
+                decoration: InputDecoration(
+                  labelText: loc.address,
+                  hintText: loc.addressHint,
                   prefixIcon: Icon(Icons.location_on),
                 ),
                 validator: (v) =>
-                    v == null || v.trim().isEmpty ? 'Champ requis' : null,
+                    v == null || v.trim().isEmpty ? loc.fieldRequired : null,
               ),
               SizedBox(height: 12.h),
               OutlinedButton.icon(
                 icon: const Icon(Icons.map),
-                label: const Text('Choisir sur la carte'),
+                label: Text(loc.chooseOnMap),
                 onPressed: () async {
                   // Close dialog temporarily and show map picker
                   Navigator.pop(ctx);
@@ -172,7 +176,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
                     selectedLat = result.latitude;
                     selectedLng = result.longitude;
                     if (addressController.text.trim().isEmpty) {
-                      addressController.text = 'Position sélectionnée';
+                      addressController.text = loc.selectedPosition;
                     }
                     // Re-show dialog with updated state
                     if (mounted) _showAddFavoriteDialogWithValues(
@@ -191,7 +195,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Annuler'),
+            child: Text(loc.cancel),
           ),
           ElevatedButton(
             onPressed: () {
@@ -209,9 +213,9 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
                     lng: lng,
                   );
               Navigator.pop(ctx);
-              InggoToast.success(context, 'Favori ajouté');
+              InggoToast.success(context, loc.favoriteAdded);
             },
-            child: const Text('Ajouter'),
+            child: Text(loc.add),
           ),
         ],
       ),
@@ -228,11 +232,12 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
     final labelController = TextEditingController(text: label);
     final addressController = TextEditingController(text: address);
     final formKey = GlobalKey<FormState>();
+    final loc = AppLocalizations.of(context);
 
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Ajouter un favori'),
+        title: Text(loc.addFavorite),
         content: Form(
           key: formKey,
           child: Column(
@@ -240,24 +245,24 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
             children: [
               TextFormField(
                 controller: labelController,
-                decoration: const InputDecoration(
-                  labelText: 'Nom du lieu',
-                  hintText: 'Ex: Maison, Travail...',
+                decoration: InputDecoration(
+                  labelText: loc.favoriteLabel,
+                  hintText: loc.favoriteLabelHint,
                   prefixIcon: Icon(Icons.label),
                 ),
                 validator: (v) =>
-                    v == null || v.trim().isEmpty ? 'Champ requis' : null,
+                    v == null || v.trim().isEmpty ? loc.fieldRequired : null,
               ),
               SizedBox(height: 12.h),
               TextFormField(
                 controller: addressController,
-                decoration: const InputDecoration(
-                  labelText: 'Adresse',
-                  hintText: 'Ex: Quartier Haramous...',
+                decoration: InputDecoration(
+                  labelText: loc.address,
+                  hintText: loc.addressHint,
                   prefixIcon: Icon(Icons.location_on),
                 ),
                 validator: (v) =>
-                    v == null || v.trim().isEmpty ? 'Champ requis' : null,
+                    v == null || v.trim().isEmpty ? loc.fieldRequired : null,
               ),
               if (lat != null && lng != null) ...[
                 SizedBox(height: 8.h),
@@ -265,7 +270,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
                   children: [
                     Icon(Icons.check_circle, size: 16.w, color: AppColors.success),
                     SizedBox(width: 6.w),
-                    Text('Position sélectionnée sur la carte',
+                    Text(loc.positionSelectedOnMap,
                         style: AppTextStyles.bodySmall.copyWith(color: AppColors.success)),
                   ],
                 ),
@@ -276,7 +281,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Annuler'),
+            child: Text(loc.cancel),
           ),
           ElevatedButton(
             onPressed: () {
@@ -293,9 +298,9 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
                     lng: favLng,
                   );
               Navigator.pop(ctx);
-              InggoToast.success(context, 'Favori ajouté');
+              InggoToast.success(context, loc.favoriteAdded);
             },
-            child: const Text('Ajouter'),
+            child: Text(loc.add),
           ),
         ],
       ),

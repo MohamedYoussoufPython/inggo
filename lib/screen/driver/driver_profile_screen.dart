@@ -6,6 +6,7 @@ import '../../core/constants/constants.dart';
 import '../../widget/widgets.dart';
 import '../../provider/auth_provider.dart';
 import '../../provider/driver_provider.dart';
+import '../../l10n/app_localizations.dart';
 
 class DriverProfileScreen extends ConsumerWidget {
   const DriverProfileScreen({super.key});
@@ -15,9 +16,10 @@ class DriverProfileScreen extends ConsumerWidget {
     final auth = ref.watch(authProvider);
     final driver = ref.watch(driverProvider);
     final user = auth.user;
+    final loc = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: const InggoAppBar(title: 'Profil'),
+      appBar: InggoAppBar(title: loc.profile),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(AppSpacing.screenPadding),
         child: Column(
@@ -34,7 +36,7 @@ class DriverProfileScreen extends ConsumerWidget {
                   : null,
             ),
             SizedBox(height: 16.h),
-            Text(user?.fullName ?? 'Chauffeur', style: AppTextStyles.headline3),
+            Text(user?.fullName ?? loc.driver, style: AppTextStyles.headline3),
             SizedBox(height: 4.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -44,37 +46,37 @@ class DriverProfileScreen extends ConsumerWidget {
                 Text('${driver.driver?.rating ?? 5.0}',
                     style: AppTextStyles.bodyMedium),
                 SizedBox(width: 8.w),
-                Text('(${driver.totalRides} courses)',
+                Text('(${driver.totalRides} ${loc.ridesCount})',
                     style: AppTextStyles.bodySmall),
               ],
             ),
             SizedBox(height: 32.h),
-            _MenuTile(Icons.person_outline, 'Modifier le profil',
+            _MenuTile(Icons.person_outline, loc.editProfile,
                 () => context.push('/driver/edit-profile')),
-            _MenuTile(Icons.notifications_outlined, 'Notifications',
+            _MenuTile(Icons.notifications_outlined, loc.notifications,
                 () => context.push('/driver/notifications')),
-            _MenuTile(Icons.language, 'Langue',
+            _MenuTile(Icons.language, loc.language,
                 () => context.push('/driver/settings')),
-            _MenuTile(Icons.help_outline, 'Support',
+            _MenuTile(Icons.help_outline, loc.support,
                 () => context.push('/support')),
-            _MenuTile(Icons.info_outline, 'À propos',
+            _MenuTile(Icons.info_outline, loc.about,
                 () => context.push('/about')),
-            _MenuTile(Icons.privacy_tip_outlined, 'Politique de confidentialité',
+            _MenuTile(Icons.privacy_tip_outlined, loc.privacyPolicy,
                 () => context.push('/privacy-policy')),
             SizedBox(height: 16.h),
             InggoButton(
-              label: 'Déconnexion',
+              label: loc.logout,
               type: InggoButtonType.danger,
               onPressed: () {
                 showDialog(
                   context: context,
                   builder: (ctx) => AlertDialog(
-                    title: const Text('Déconnexion'),
-                    content: const Text('Voulez-vous vraiment vous déconnecter ?'),
+                    title: Text(loc.logout),
+                    content: Text(loc.logoutMessage),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(ctx),
-                        child: const Text('Annuler'),
+                        child: Text(loc.cancel),
                       ),
                       TextButton(
                         onPressed: () {
@@ -82,7 +84,7 @@ class DriverProfileScreen extends ConsumerWidget {
                           ref.read(authProvider.notifier).signOut();
                           context.go('/login');
                         },
-                        child: const Text('Déconnexion',
+                        child: Text(loc.logout,
                             style: TextStyle(color: AppColors.error)),
                       ),
                     ],

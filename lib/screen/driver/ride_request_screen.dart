@@ -8,6 +8,7 @@ import '../../core/utils/formatters.dart';
 import '../../model/ride_model.dart';
 import '../../widget/widgets.dart';
 import '../../provider/driver_provider.dart';
+import '../../l10n/app_localizations.dart';
 
 class RideRequestScreen extends ConsumerStatefulWidget {
   final RideModel ride;
@@ -66,8 +67,8 @@ class _RideRequestScreenState extends ConsumerState<RideRequestScreen>
       // Accept failed (ride taken by another driver, network error, etc.)
       setState(() => _isAccepting = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Impossible d\'accepter cette course. Elle a peut-être été prise par un autre chauffeur.'),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.rideAcceptFailed),
           backgroundColor: AppColors.error,
         ),
       );
@@ -90,6 +91,7 @@ class _RideRequestScreenState extends ConsumerState<RideRequestScreen>
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     final ride = widget.ride;
 
     return PopScope(
@@ -105,7 +107,7 @@ class _RideRequestScreenState extends ConsumerState<RideRequestScreen>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Nouvelle demande !', style: AppTextStyles.headline2),
+                Text(loc.newRideRequestExclamation, style: AppTextStyles.headline2),
                 SizedBox(height: 8.h),
                 Text(
                   '$_remainingSeconds s',
@@ -117,14 +119,14 @@ class _RideRequestScreenState extends ConsumerState<RideRequestScreen>
                 InggoCard(
                   child: Column(
                     children: [
-                      _row(Icons.trip_origin, 'Départ', ride.pickupAddress),
+                      _row(Icons.trip_origin, loc.pickup, ride.pickupAddress),
                       SizedBox(height: 8.h),
-                      _row(Icons.location_on, 'Arrivée', ride.dropoffAddress),
+                      _row(Icons.location_on, loc.dropoff, ride.dropoffAddress),
                       const Divider(),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Prix', style: AppTextStyles.bodyMedium),
+                          Text(loc.price, style: AppTextStyles.bodyMedium),
                           Text(Formatters.formatPrice(ride.price),
                               style: AppTextStyles.priceSmall),
                         ],
@@ -133,8 +135,8 @@ class _RideRequestScreenState extends ConsumerState<RideRequestScreen>
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Paiement', style: AppTextStyles.bodyMedium),
-                          Text(_formatPaymentMethod(ride.paymentMethod.name),
+                          Text(loc.payment, style: AppTextStyles.bodyMedium),
+                          Text(_formatPaymentMethod(ride.paymentMethod.name, loc),
                               style: AppTextStyles.bodyLarge),
                         ],
                       ),
@@ -152,7 +154,7 @@ class _RideRequestScreenState extends ConsumerState<RideRequestScreen>
                     children: [
                       Expanded(
                         child: InggoButton(
-                          label: 'Refuser',
+                          label: loc.decline,
                           type: InggoButtonType.outline,
                           onPressed: _reject,
                         ),
@@ -160,7 +162,7 @@ class _RideRequestScreenState extends ConsumerState<RideRequestScreen>
                       SizedBox(width: 12.w),
                       Expanded(
                         child: InggoButton(
-                          label: 'Accepter',
+                          label: loc.accept,
                           onPressed: _accept,
                         ),
                       ),
@@ -194,20 +196,20 @@ class _RideRequestScreenState extends ConsumerState<RideRequestScreen>
     );
   }
 
-  String _formatPaymentMethod(String method) {
+  String _formatPaymentMethod(String method, AppLocalizations loc) {
     switch (method) {
       case 'waafi':
-        return 'Waafi';
+        return loc.paymentWaafi;
       case 'dmoney':
-        return 'DMoney';
+        return loc.paymentDMoney;
       case 'cacpay':
-        return 'CacPay';
+        return loc.paymentCacPay;
       case 'sabapay':
-        return 'SabaPay';
+        return loc.paymentSabaPay;
       case 'dahabplus':
-        return 'Dahab+';
+        return loc.paymentDahabPlus;
       default:
-        return 'Espèces';
+        return loc.paymentCash;
     }
   }
 }

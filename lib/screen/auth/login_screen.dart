@@ -5,6 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/constants.dart';
 import '../../core/router/app_router.dart';
+import '../../l10n/app_localizations.dart';
 import '../../widget/widgets.dart';
 import '../../provider/auth_provider.dart';
 
@@ -76,13 +77,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   void _validateEmail(String value) {
+    final loc = AppLocalizations.of(context);
     setState(() {
       _emailTouched = true;
       if (value.isEmpty) {
-        _emailError = 'Email requis';
+        _emailError = loc.errorEmailRequired;
         _emailValid = false;
       } else if (!_isValidEmail(value)) {
-        _emailError = 'Format email invalide';
+        _emailError = loc.errorEmailInvalidFormat;
         _emailValid = false;
       } else {
         _emailError = null;
@@ -92,13 +94,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   void _validatePassword(String value) {
+    final loc = AppLocalizations.of(context);
     setState(() {
       _passwordTouched = true;
       if (value.isEmpty) {
-        _passwordError = 'Mot de passe requis';
+        _passwordError = loc.errorPasswordRequired;
         _passwordValid = false;
       } else if (value.length < 6) {
-        _passwordError = 'Minimum 6 caractères';
+        _passwordError = loc.errorPasswordMinLength;
         _passwordValid = false;
       } else {
         _passwordError = null;
@@ -120,6 +123,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   void _showSnackBar(String message, Color backgroundColor) {
+    final loc = AppLocalizations.of(context);
     if (!mounted) return;
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
@@ -129,7 +133,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 3),
         action: SnackBarAction(
-          label: 'OK',
+          label: loc.ok,
           textColor: Colors.white,
           onPressed: () {},
         ),
@@ -138,15 +142,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Future<void> _handleLogin() async {
+    final loc = AppLocalizations.of(context);
     if (_loginAttempts >= _maxLoginAttempts) {
       _showSnackBar(
-        'Trop de tentatives. Réessayez plus tard.',
+        loc.tooManyAttempts,
         AppColors.error,
       );
       return;
     }
     if (!_emailValid || !_passwordValid) {
-      _showSnackBar('Corrigez les erreurs avant de continuer', AppColors.warning);
+      _showSnackBar(loc.fixErrorsFirst, AppColors.warning);
       return;
     }
 
@@ -160,7 +165,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       );
 
       if (!mounted) return;
-      if (response.session == null) throw Exception('Identifiants incorrects');
+      if (response.session == null) throw Exception(loc.incorrectCredentials);
 
       final user = response.user;
 
@@ -183,7 +188,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       // Cache the role for the router's redirect logic
       AppRouter.setCachedRole(role);
 
-      _showSnackBar('Connexion réussie !', AppColors.success);
+      _showSnackBar(loc.loginSuccess, AppColors.success);
       await Future.delayed(const Duration(milliseconds: 400));
 
       if (!mounted) return;
@@ -207,11 +212,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       }
     } on AuthException catch (e) {
       if (!mounted) return;
-      String errorMessage = 'Erreur de connexion';
+      String errorMessage = loc.loginError;
       if (e.message.contains('Invalid login credentials')) {
-        errorMessage = 'Email ou mot de passe incorrect';
+        errorMessage = loc.invalidEmailOrPassword;
       } else if (e.message.contains('Email not confirmed')) {
-        errorMessage = 'Confirmez votre email avant de vous connecter';
+        errorMessage = loc.confirmEmailFirst;
       } else {
         errorMessage = e.message;
       }
@@ -225,11 +230,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   void _showRegisterModal() {
+    final loc = AppLocalizations.of(context);
     HapticFeedback.mediumImpact();
     showGeneralDialog(
       context: context,
       barrierDismissible: true,
-      barrierLabel: 'Fermer',
+      barrierLabel: loc.close,
       barrierColor: Colors.black.withValues(alpha: 0.45),
       transitionDuration: const Duration(milliseconds: 280),
       transitionBuilder: (context, anim1, anim2, child) {
@@ -291,13 +297,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Widget _buildHeader() {
+    final loc = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Connexion', style: AppTextStyles.headline1),
+        Text(loc.loginTitle, style: AppTextStyles.headline1),
         const SizedBox(height: 8),
         Text(
-          'Connectez-vous pour continuer',
+          loc.loginSubtitle,
           style: AppTextStyles.bodyLarge.copyWith(color: AppColors.textSecondary),
         ),
       ],
@@ -305,10 +312,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Widget _buildEmailField() {
+    final loc = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Email', style: AppTextStyles.labelMedium),
+        Text(loc.email, style: AppTextStyles.labelMedium),
         const SizedBox(height: 8),
         TextFormField(
           controller: _emailController,
@@ -318,7 +326,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           onChanged: _validateEmail,
           style: AppTextStyles.bodyLarge,
           decoration: InputDecoration(
-            hintText: 'votre.email@exemple.com',
+            hintText: loc.emailHint,
             hintStyle: AppTextStyles.bodyLarge.copyWith(color: AppColors.textHint),
             prefixIcon: Icon(
               Icons.email_outlined,
@@ -375,7 +383,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
-                  _emailError ?? 'Adresse email valide',
+                  _emailError ?? loc.emailValid,
                   style: AppTextStyles.bodySmall.copyWith(
                     color: _emailValid ? AppColors.success : AppColors.error,
                   ),
@@ -389,10 +397,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Widget _buildPasswordField() {
+    final loc = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Mot de passe', style: AppTextStyles.labelMedium),
+        Text(loc.password, style: AppTextStyles.labelMedium),
         const SizedBox(height: 8),
         TextFormField(
           controller: _passwordController,
@@ -403,7 +412,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           onFieldSubmitted: (_) => _handleLogin(),
           style: AppTextStyles.bodyLarge,
           decoration: InputDecoration(
-            hintText: 'Entrez votre mot de passe',
+            hintText: loc.passwordHint,
             hintStyle: AppTextStyles.bodyLarge.copyWith(color: AppColors.textHint),
             prefixIcon: Icon(
               Icons.lock_outlined,
@@ -472,7 +481,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
-                  _passwordError ?? 'Mot de passe conforme',
+                  _passwordError ?? loc.passwordValid,
                   style: AppTextStyles.bodySmall.copyWith(
                     color: _passwordValid ? AppColors.success : AppColors.error,
                   ),
@@ -486,22 +495,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Widget _buildLoginButton() {
+    final loc = AppLocalizations.of(context);
     final canLogin = _emailValid && _passwordValid && !_loading;
     return InggoButton(
-      label: 'Se connecter',
+      label: loc.loginButton,
       onPressed: canLogin ? _handleLogin : null,
       isLoading: _loading,
     );
   }
 
   Widget _buildForgotPasswordLink() {
+    final loc = AppLocalizations.of(context);
     return Center(
       child: TextButton(
         onPressed: () {
           _showForgotPasswordDialog();
         },
         child: Text(
-          'Mot de passe oublié ?',
+          loc.forgotPassword,
           style: AppTextStyles.button.copyWith(color: AppColors.textPrimary),
         ),
       ),
@@ -515,85 +526,89 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     showDialog(
       context: context,
       builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setDialogState) => AlertDialog(
-          title: const Text('Mot de passe oublié'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'Entrez votre adresse email. Un lien de réinitialisation vous sera envoyé.',
-                style: TextStyle(fontSize: 14, color: Color(0xFF757575)),
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: emailController,
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  hintText: 'votre.email@exemple.com',
-                  prefixIcon: const Icon(Icons.email_outlined),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+        builder: (ctx, setDialogState) {
+          final loc = AppLocalizations.of(ctx);
+          return AlertDialog(
+            title: Text(loc.forgotPasswordTitle),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  loc.forgotPasswordMessage,
+                  style: const TextStyle(fontSize: 14, color: Color(0xFF757575)),
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(
+                    hintText: loc.emailHint,
+                    prefixIcon: const Icon(Icons.email_outlined),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                    ),
                   ),
                 ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: Text(loc.cancel),
+              ),
+              ElevatedButton(
+                onPressed: isSending
+                    ? null
+                    : () async {
+                        final email = emailController.text.trim();
+                        if (email.isEmpty || !_isValidEmail(email)) {
+                          return;
+                        }
+                        setDialogState(() => isSending = true);
+                        try {
+                          await Supabase.instance.client.auth.resetPasswordForEmail(email);
+                          if (ctx.mounted) {
+                            Navigator.pop(ctx);
+                            _showSnackBar(
+                              loc.resetEmailSent,
+                              AppColors.success,
+                            );
+                          }
+                        } catch (e) {
+                          if (ctx.mounted) {
+                            setDialogState(() => isSending = false);
+                            Navigator.pop(ctx);
+                            _showSnackBar(
+                              'Erreur: ${e.toString()}',
+                              AppColors.error,
+                            );
+                          }
+                        }
+                      },
+                child: isSending
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : Text(loc.send),
               ),
             ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text('Annuler'),
-            ),
-            ElevatedButton(
-              onPressed: isSending
-                  ? null
-                  : () async {
-                      final email = emailController.text.trim();
-                      if (email.isEmpty || !_isValidEmail(email)) {
-                        return;
-                      }
-                      setDialogState(() => isSending = true);
-                      try {
-                        await Supabase.instance.client.auth.resetPasswordForEmail(email);
-                        if (ctx.mounted) {
-                          Navigator.pop(ctx);
-                          _showSnackBar(
-                            'Email de réinitialisation envoyé !',
-                            AppColors.success,
-                          );
-                        }
-                      } catch (e) {
-                        if (ctx.mounted) {
-                          setDialogState(() => isSending = false);
-                          Navigator.pop(ctx);
-                          _showSnackBar(
-                            'Erreur: ${e.toString()}',
-                            AppColors.error,
-                          );
-                        }
-                      }
-                    },
-              child: isSending
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Text('Envoyer'),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
 
   Widget _buildDivider() {
+    final loc = AppLocalizations.of(context);
     return Row(
       children: [
         const Expanded(child: Divider(color: AppColors.border)),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Text(
-            'OU',
+            loc.or,
             style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.w500),
           ),
         ),
@@ -603,16 +618,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Widget _buildSignUpSection() {
+    final loc = AppLocalizations.of(context);
     return Column(
       children: [
         Text(
-          "Vous n'avez pas de compte ?",
+          loc.noAccount,
           textAlign: TextAlign.center,
           style: AppTextStyles.bodyLarge.copyWith(color: AppColors.textSecondary),
         ),
         const SizedBox(height: 12),
         InggoButton(
-          label: 'Créer un compte',
+          label: loc.createAccount,
           onPressed: _showRegisterModal,
           type: InggoButtonType.outline,
         ),
@@ -630,6 +646,7 @@ class _RegisterRoleModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -664,17 +681,17 @@ class _RegisterRoleModal extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-                Text('Créer un compte', style: AppTextStyles.headline3),
+                Text(loc.createAccount, style: AppTextStyles.headline3),
                 const SizedBox(height: 6),
-                Text('Choisissez votre profil', style: AppTextStyles.bodySmall),
+                Text(loc.chooseRole, style: AppTextStyles.bodySmall),
                 const SizedBox(height: 24),
                 // Passager
                 _RoleOption(
                   icon: Icons.person_rounded,
                   iconBg: AppColors.background,
                   iconColor: AppColors.textSecondary,
-                  title: 'Passager',
-                  subtitle: 'Commandez une course',
+                  title: loc.passenger,
+                  subtitle: loc.orderRide,
                   onTap: () {
                     HapticFeedback.selectionClick();
                     Navigator.of(context).pop();
@@ -687,8 +704,8 @@ class _RegisterRoleModal extends StatelessWidget {
                   icon: Icons.two_wheeler_rounded,
                   iconBg: AppColors.primaryLight,
                   iconColor: AppColors.primaryDark,
-                  title: 'Conducteur',
-                  subtitle: 'Rejoignez la flotte Inggo',
+                  title: loc.conductor,
+                  subtitle: loc.joinFleet,
                   highlightBorder: true,
                   onTap: () {
                     HapticFeedback.selectionClick();
@@ -700,7 +717,7 @@ class _RegisterRoleModal extends StatelessWidget {
                 GestureDetector(
                   onTap: () => Navigator.of(context).pop(),
                   child: Text(
-                    'Annuler',
+                    loc.cancel,
                     style: AppTextStyles.button.copyWith(color: AppColors.textHint),
                   ),
                 ),

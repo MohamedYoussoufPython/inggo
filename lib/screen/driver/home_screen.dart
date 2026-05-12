@@ -7,6 +7,7 @@ import '../../core/services/connectivity_service.dart';
 import '../../core/utils/formatters.dart';
 import '../../widget/widgets.dart';
 import '../../provider/driver_provider.dart';
+import '../../l10n/app_localizations.dart';
 import '../../model/ride_model.dart';
 
 class DriverHomeScreen extends ConsumerStatefulWidget {
@@ -33,6 +34,7 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
   @override
   Widget build(BuildContext context) {
     final driver = ref.watch(driverProvider);
+    final loc = AppLocalizations.of(context);
 
     // Listen for new ride requests from Realtime
     ref.listen<DriverState>(driverProvider, (prev, next) {
@@ -105,7 +107,7 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
                               ),
                             SizedBox(width: 16.w),
                             Text(
-                              driver.isOnline ? 'En ligne' : 'Hors ligne',
+                              driver.isOnline ? loc.online : loc.offline,
                               style: AppTextStyles.headline3.copyWith(
                                 color: driver.isOnline
                                     ? AppColors.success
@@ -129,7 +131,7 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
                                         driver.totalEarnings),
                                     style: AppTextStyles.priceSmall),
                                 SizedBox(height: 4.h),
-                                Text('Revenus', style: AppTextStyles.bodySmall),
+                                Text(loc.earnings, style: AppTextStyles.bodySmall),
                               ],
                             ),
                           ),
@@ -142,7 +144,7 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
                                 Text('${driver.totalRides}',
                                     style: AppTextStyles.headline3),
                                 SizedBox(height: 4.h),
-                                Text('Courses', style: AppTextStyles.bodySmall),
+                                Text(loc.rides, style: AppTextStyles.bodySmall),
                               ],
                             ),
                           ),
@@ -159,7 +161,7 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
                                 size: 64.w, color: AppColors.textHint),
                             SizedBox(height: 16.h),
                             Text(
-                                'Activez-vous pour recevoir des courses',
+                                loc.goOnlinePrompt,
                                 style: AppTextStyles.bodyLarge.copyWith(
                                     color: AppColors.textSecondary),
                                 textAlign: TextAlign.center),

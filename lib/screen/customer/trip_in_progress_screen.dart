@@ -8,6 +8,7 @@ import '../../core/utils/formatters.dart';
 import '../../widget/widgets.dart';
 import '../../provider/ride_provider.dart';
 import '../../model/ride_model.dart';
+import '../../l10n/app_localizations.dart';
 
 class TripInProgressScreen extends ConsumerWidget {
   const TripInProgressScreen({super.key});
@@ -15,6 +16,7 @@ class TripInProgressScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final ride = ref.watch(rideProvider);
+    final loc = AppLocalizations.of(context);
 
     ref.listen<RideState>(rideProvider, (prev, next) {
       if (next.currentRide?.status == RideStatus.completed) {
@@ -27,8 +29,8 @@ class TripInProgressScreen extends ConsumerWidget {
 
     final currentRide = ride.currentRide;
     final isInProgress = currentRide?.status == RideStatus.inProgress;
-    final statusLabel = isInProgress ? 'Course en cours' : 'Votre chauffeur arrive';
-    final topLabel = isInProgress ? 'Course en cours' : 'Chauffeur en route';
+    final statusLabel = isInProgress ? loc.rideInProgressLabel : loc.driverOnTheWayLabel;
+    final topLabel = isInProgress ? loc.rideInProgressLabel : loc.driverEnRoute;
 
     return Scaffold(
       body: Stack(
@@ -101,7 +103,7 @@ class TripInProgressScreen extends ConsumerWidget {
                   Text(statusLabel, style: AppTextStyles.labelLarge),
                   SizedBox(height: 12.h),
                   DriverCard(
-                    name: ride.driverName ?? 'Chauffeur',
+                    name: ride.driverName ?? loc.driver,
                     rating: ride.driverRating,
                     totalRides: ride.driverTotalRides,
                     plateNumber: ride.driverPlateNumber,
@@ -112,7 +114,7 @@ class TripInProgressScreen extends ConsumerWidget {
                     children: [
                       Expanded(
                         child: InggoButton(
-                          label: 'Appeler',
+                          label: loc.callDriver,
                           type: InggoButtonType.outline,
                           size: InggoButtonSize.medium,
                           icon: Icons.phone,
@@ -123,13 +125,13 @@ class TripInProgressScreen extends ConsumerWidget {
                       SizedBox(width: 12.w),
                       Expanded(
                         child: InggoButton(
-                          label: 'Annuler',
+                          label: loc.cancelRideLabel,
                           type: InggoButtonType.danger,
                           size: InggoButtonSize.medium,
                           onPressed: () {
                             ref
                                 .read(rideProvider.notifier)
-                                .cancelRide('Annulée par le client');
+                                .cancelRide(loc.cancelReasonClient);
                             context.go('/client/home');
                           },
                         ),
@@ -147,10 +149,11 @@ class TripInProgressScreen extends ConsumerWidget {
 
   /// Launch phone dialer with the driver's phone number
   Future<void> _callDriver(BuildContext context, String? phone) async {
+    final loc = AppLocalizations.of(context);
     if (phone == null || phone.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Numéro de téléphone du chauffeur non disponible.'),
+        SnackBar(
+          content: Text(loc.driverPhoneUnavailable),
           backgroundColor: AppColors.error,
         ),
       );
@@ -166,8 +169,8 @@ class TripInProgressScreen extends ConsumerWidget {
     } else {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Impossible de lancer l\'appel.'),
+          SnackBar(
+            content: Text(loc.unableToMakeCall),
             backgroundColor: AppColors.error,
           ),
         );

@@ -7,6 +7,7 @@ import '../../core/services/location_service.dart';
 import '../../core/services/connectivity_service.dart';
 import '../../widget/widgets.dart';
 import '../../provider/auth_provider.dart';
+import '../../l10n/app_localizations.dart';
 
 class CustomerHomeScreen extends ConsumerStatefulWidget {
   const CustomerHomeScreen({super.key});
@@ -31,6 +32,7 @@ class _CustomerHomeScreenState extends ConsumerState<CustomerHomeScreen> {
   Widget build(BuildContext context) {
     final auth = ref.watch(authProvider);
     final position = LocationService.instance.currentPosition;
+    final loc = AppLocalizations.of(context);
 
     return Scaffold(
       body: Stack(
@@ -109,7 +111,7 @@ class _CustomerHomeScreenState extends ConsumerState<CustomerHomeScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('Où allez-vous ?', style: AppTextStyles.headline4),
+                  Text(loc.whereTo, style: AppTextStyles.headline4),
                   SizedBox(height: 12.h),
                   GestureDetector(
                     onTap: () => context.push('/client/search'),
@@ -126,7 +128,7 @@ class _CustomerHomeScreenState extends ConsumerState<CustomerHomeScreen> {
                           Icon(Icons.search,
                               color: AppColors.textHint, size: 20.w),
                           SizedBox(width: 12.w),
-                          Text('Rechercher une destination...',
+                          Text(loc.searchDestination,
                               style: AppTextStyles.bodyMedium
                                   .copyWith(color: AppColors.textHint)),
                         ],

@@ -7,6 +7,7 @@ import '../../core/utils/formatters.dart';
 import '../../widget/widgets.dart';
 import '../../provider/driver_provider.dart';
 import '../../model/ride_model.dart';
+import '../../l10n/app_localizations.dart';
 
 class DriverRideScreen extends ConsumerStatefulWidget {
   const DriverRideScreen({super.key});
@@ -29,6 +30,7 @@ class _DriverRideScreenState extends ConsumerState<DriverRideScreen> {
   Widget build(BuildContext context) {
     final driverState = ref.watch(driverProvider);
     final ride = driverState.currentRide;
+    final loc = AppLocalizations.of(context);
 
     // If no current ride, show loading
     if (ride == null) {
@@ -40,10 +42,10 @@ class _DriverRideScreenState extends ConsumerState<DriverRideScreen> {
               children: [
                 const CircularProgressIndicator(),
                 SizedBox(height: 16.h),
-                Text('Chargement de la course...', style: AppTextStyles.bodyLarge),
+                Text(loc.loadRide, style: AppTextStyles.bodyLarge),
                 SizedBox(height: 16.h),
                 InggoButton(
-                  label: 'Retour',
+                  label: loc.back,
                   type: InggoButtonType.outline,
                   onPressed: () => context.go('/driver/home'),
                 ),
@@ -98,7 +100,7 @@ class _DriverRideScreenState extends ConsumerState<DriverRideScreen> {
                   ),
                   SizedBox(height: 16.h),
                   Text(
-                    pickedUp ? 'Course en cours' : 'Aller au départ',
+                    pickedUp ? loc.rideInProgressLabel : loc.goToPickup,
                     style: AppTextStyles.headline4,
                   ),
                   SizedBox(height: 8.h),
@@ -119,7 +121,7 @@ class _DriverRideScreenState extends ConsumerState<DriverRideScreen> {
                     ),
                     SizedBox(height: 16.h),
                     InggoButton(
-                      label: 'Arrivé au départ',
+                      label: loc.arrivedAtPickup,
                       icon: Icons.check_circle,
                       onPressed: () async {
                         final success = await ref
@@ -127,8 +129,8 @@ class _DriverRideScreenState extends ConsumerState<DriverRideScreen> {
                             .updateRideStatus(RideStatus.inProgress);
                         if (!success && mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Erreur lors de la mise à jour du statut.'),
+                            SnackBar(
+                              content: Text(loc.rideUpdateFailed),
                               backgroundColor: AppColors.error,
                             ),
                           );
@@ -157,7 +159,7 @@ class _DriverRideScreenState extends ConsumerState<DriverRideScreen> {
                             child: CircularProgressIndicator(),
                           )
                         : InggoButton(
-                            label: 'Terminer la course',
+                            label: loc.completeRideLabel,
                             icon: Icons.flag,
                             onPressed: () async {
                               setState(() => _isCompleting = true);
@@ -172,8 +174,8 @@ class _DriverRideScreenState extends ConsumerState<DriverRideScreen> {
                               } else {
                                 setState(() => _isCompleting = false);
                                 messenger.showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Erreur lors de la finalisation de la course.'),
+                                  SnackBar(
+                                    content: Text(AppLocalizations.of(context)!.rideCompleteFailed),
                                     backgroundColor: AppColors.error,
                                   ),
                                 );

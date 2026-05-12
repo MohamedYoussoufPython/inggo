@@ -5,6 +5,7 @@ import '../../core/constants/constants.dart';
 import '../../core/utils/formatters.dart';
 import '../../widget/widgets.dart';
 import '../../provider/notification_provider.dart';
+import '../../l10n/app_localizations.dart';
 
 class NotificationsScreen extends ConsumerStatefulWidget {
   const NotificationsScreen({super.key});
@@ -25,16 +26,17 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
   @override
   Widget build(BuildContext context) {
     final notifState = ref.watch(notificationProvider);
+    final loc = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: InggoAppBar(
-        title: 'Notifications',
+        title: loc.notifications,
         actions: [
           if (notifState.unreadCount > 0)
             TextButton(
               onPressed: () =>
                   ref.read(notificationProvider.notifier).markAllAsRead(),
-              child: Text('Tout lire',
+              child: Text(loc.markAllReadShort,
                   style: AppTextStyles.labelSmall.copyWith(color: AppColors.primary)),
             ),
         ],
@@ -48,7 +50,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                     children: [
                       Icon(Icons.notifications_none, size: 64.w, color: AppColors.textHint),
                       SizedBox(height: 16.h),
-                      Text('Aucune notification', style: AppTextStyles.bodyLarge.copyWith(color: AppColors.textSecondary)),
+                      Text(loc.noNotifications, style: AppTextStyles.bodyLarge.copyWith(color: AppColors.textSecondary)),
                     ],
                   ),
                 )

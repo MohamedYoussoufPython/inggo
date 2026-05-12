@@ -7,6 +7,7 @@ import '../../core/services/notification_service.dart';
 import '../../core/services/supabase_service.dart';
 import '../../widget/widgets.dart';
 import '../../provider/auth_provider.dart';
+import '../../l10n/app_localizations.dart';
 
 class DriverSettingsScreen extends ConsumerStatefulWidget {
   const DriverSettingsScreen({super.key});
@@ -55,14 +56,15 @@ class _DriverSettingsScreenState extends ConsumerState<DriverSettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final auth = ref.watch(authProvider);
+    final loc = AppLocalizations.of(context);
     return Scaffold(
-      appBar: const InggoAppBar(title: 'Paramètres'),
+      appBar: InggoAppBar(title: loc.settings),
       body: Padding(
         padding: EdgeInsets.all(AppSpacing.screenPadding),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Langue', style: AppTextStyles.labelLarge),
+            Text(loc.language, style: AppTextStyles.labelLarge),
             SizedBox(height: 12.h),
             LanguageSelector(
               currentLanguage: auth.locale.languageCode,
@@ -71,8 +73,8 @@ class _DriverSettingsScreenState extends ConsumerState<DriverSettingsScreen> {
             ),
             SizedBox(height: 24.h),
             SwitchListTile(
-              title: Text('Notifications', style: AppTextStyles.bodyLarge),
-              subtitle: Text('Nouvelles demandes de course',
+              title: Text(loc.notifications, style: AppTextStyles.bodyLarge),
+              subtitle: Text(loc.newRideRequests,
                   style: AppTextStyles.bodySmall),
               value: _notificationsEnabled,
               activeThumbColor: AppColors.primary,

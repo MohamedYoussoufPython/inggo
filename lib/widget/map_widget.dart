@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../core/constants/constants.dart';
+import '../l10n/app_localizations.dart';
 
 class MapWidget extends StatefulWidget {
   final double initialLat;
@@ -42,7 +43,9 @@ class _MapWidgetState extends State<MapWidget> {
   @override
   void initState() {
     super.initState();
-    _updateMarkers();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _updateMarkers();
+    });
   }
 
   @override
@@ -68,6 +71,7 @@ class _MapWidgetState extends State<MapWidget> {
   }
 
   void _updateMarkers() {
+    final loc = AppLocalizations.of(context);
     final markers = <Marker>{};
 
     if (widget.pickupLat != null && widget.pickupLng != null) {
@@ -75,7 +79,7 @@ class _MapWidgetState extends State<MapWidget> {
         markerId: const MarkerId('pickup'),
         position: LatLng(widget.pickupLat!, widget.pickupLng!),
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueYellow),
-        infoWindow: const InfoWindow(title: 'Départ'),
+        infoWindow: InfoWindow(title: loc.pickup),
       ));
     }
     if (widget.dropoffLat != null && widget.dropoffLng != null) {
@@ -83,7 +87,7 @@ class _MapWidgetState extends State<MapWidget> {
         markerId: const MarkerId('dropoff'),
         position: LatLng(widget.dropoffLat!, widget.dropoffLng!),
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-        infoWindow: const InfoWindow(title: 'Destination'),
+        infoWindow: InfoWindow(title: loc.destinationMapLabel),
       ));
     }
     // Driver live marker — green to distinguish from pickup/dropoff
@@ -92,7 +96,7 @@ class _MapWidgetState extends State<MapWidget> {
         markerId: const MarkerId('driver'),
         position: LatLng(widget.driverLat!, widget.driverLng!),
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-        infoWindow: const InfoWindow(title: 'Votre chauffeur'),
+        infoWindow: InfoWindow(title: loc.yourDriverMapLabel),
       ));
     }
 

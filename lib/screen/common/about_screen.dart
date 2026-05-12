@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/constants/constants.dart';
+import '../../l10n/app_localizations.dart';
 import '../../widget/widgets.dart';
 
 class AboutScreen extends StatelessWidget {
@@ -9,8 +10,9 @@ class AboutScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     return Scaffold(
-      appBar: const InggoAppBar(title: 'À propos', showBack: true),
+      appBar: InggoAppBar(title: loc.about, showBack: true),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(AppSpacing.screenPadding),
         child: Column(
@@ -30,7 +32,7 @@ class AboutScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 24.h),
-            Text('Inggo VTC', style: AppTextStyles.headline2),
+            Text(loc.appNameVtc, style: AppTextStyles.headline2),
             SizedBox(height: 4.h),
             Text('Version ${AppConstants.appVersion}',
                 style: AppTextStyles.bodyMedium
@@ -39,27 +41,24 @@ class AboutScreen extends StatelessWidget {
             InggoCard(
               child: Column(
                 children: [
-                  _aboutRow(Icons.info_outline, 'Application',
-                      'Moto-taxi à Djibouti'),
+                  _aboutRow(Icons.info_outline, loc.application,
+                      loc.appDescription),
                   Divider(height: 24.h),
-                  _aboutRow(Icons.location_city, 'Ville', 'Djibouti'),
+                  _aboutRow(Icons.location_city, loc.city, 'Djibouti'),
                   Divider(height: 24.h),
-                  _aboutRow(Icons.phone_android, 'Contact',
+                  _aboutRow(Icons.phone_android, loc.contact,
                       '${AppConstants.countryCode} 77 78 06 06'),
                   Divider(height: 24.h),
-                  _aboutRow(Icons.email_outlined, 'Email',
+                  _aboutRow(Icons.email_outlined, loc.email,
                       'admin@inngroupsarl.com'),
                   Divider(height: 24.h),
-                  _aboutRow(Icons.language, 'Site web', 'www.inggo.dj'),
+                  _aboutRow(Icons.language, loc.website, 'www.inggo.dj'),
                 ],
               ),
             ),
             SizedBox(height: 24.h),
             Text(
-              'Inggo est le premier service de moto-taxi en République de Djibouti. '
-              'Nous offrons des courses sûres, abordables et rapides dans toute la ville de Djibouti. '
-              'Notre mission est de faciliter vos déplacements quotidiens avec des chauffeurs vérifiés '
-              'et des prix transparents.',
+              loc.aboutDescription,
               style: AppTextStyles.bodyMedium
                   .copyWith(color: AppColors.textSecondary),
               textAlign: TextAlign.center,
@@ -71,13 +70,13 @@ class AboutScreen extends StatelessWidget {
               children: [
                 TextButton(
                   onPressed: () => context.push('/privacy-policy'),
-                  child: Text('Politique de confidentialité',
+                  child: Text(loc.privacyPolicy,
                       style: AppTextStyles.bodyMedium.copyWith(color: AppColors.primary)),
                 ),
               ],
             ),
             Text(
-              '\u00a9 ${DateTime.now().year} Inggo VTC. Tous droits réservés.',
+              '\u00a9 ${DateTime.now().year} Inggo VTC. ${loc.allRightsReserved}',
               style: AppTextStyles.caption.copyWith(color: AppColors.textHint),
               textAlign: TextAlign.center,
             ),

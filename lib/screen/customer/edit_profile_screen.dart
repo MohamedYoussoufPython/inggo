@@ -8,6 +8,7 @@ import '../../core/services/supabase_service.dart';
 import '../../model/user_model.dart';
 import '../../widget/widgets.dart';
 import '../../provider/auth_provider.dart';
+import '../../l10n/app_localizations.dart';
 
 class EditProfileScreen extends ConsumerStatefulWidget {
   /// If true, this is the driver editing their profile
@@ -61,7 +62,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     setState(() => _isLoading = true);
     try {
       final userId = SupabaseService.instance.currentUserId;
-      if (userId == null) throw Exception('Non authentifié');
+      if (userId == null) throw Exception(AppLocalizations.of(context).notAuthenticated);
 
       final newName = _nameController.text.trim();
       final newPhone = _phoneController.text.trim();
@@ -89,7 +90,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         // Update the auth state with the new user data
         ref.read(authProvider.notifier).updateUser(updatedUser);
 
-        InggoToast.success(context, 'Profil mis à jour');
+        InggoToast.success(context, AppLocalizations.of(context).profileUpdated);
         Navigator.pop(context);
       }
     } catch (e) {
@@ -104,9 +105,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(authProvider).user;
+    final loc = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: const InggoAppBar(title: 'Modifier le profil', showBack: true),
+      appBar: InggoAppBar(title: loc.editProfile, showBack: true),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(AppSpacing.screenPadding),
         child: Form(
@@ -153,35 +155,35 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               ),
               SizedBox(height: 8.h),
               Center(
-                child: Text('Changer la photo',
+                child: Text(loc.changePhoto,
                     style: AppTextStyles.bodySmall.copyWith(
                         color: AppColors.primary)),
               ),
               SizedBox(height: 32.h),
-              Text('Informations personnelles',
+              Text(loc.personalInfo,
                   style: AppTextStyles.labelLarge),
               SizedBox(height: 16.h),
               InggoInput(
-                label: 'Nom complet',
-                hint: 'Votre nom complet',
+                label: loc.fullName,
+                hint: loc.fullNameHint,
                 controller: _nameController,
                 prefixIcon: Icons.person_outline,
                 validator: (v) =>
-                    v == null || v.trim().isEmpty ? 'Champ requis' : null,
+                    v == null || v.trim().isEmpty ? loc.fieldRequired : null,
               ),
               SizedBox(height: 16.h),
               InggoInput(
-                label: 'Téléphone',
+                label: loc.phone,
                 hint: '+253 77 XX XX XX',
                 controller: _phoneController,
                 keyboardType: TextInputType.phone,
                 prefixIcon: Icons.phone_android,
                 validator: (v) =>
-                    v == null || v.trim().isEmpty ? 'Champ requis' : null,
+                    v == null || v.trim().isEmpty ? loc.fieldRequired : null,
               ),
               SizedBox(height: 48.h),
               InggoButton(
-                label: 'Enregistrer',
+                label: loc.save,
                 onPressed: _isLoading ? null : _saveProfile,
                 isLoading: _isLoading,
               ),

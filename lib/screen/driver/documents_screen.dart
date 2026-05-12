@@ -7,6 +7,7 @@ import '../../core/constants/constants.dart';
 import '../../core/services/supabase_service.dart';
 import '../../widget/widgets.dart';
 import '../../provider/driver_provider.dart';
+import '../../l10n/app_localizations.dart';
 
 class DocumentsScreen extends ConsumerStatefulWidget {
   const DocumentsScreen({super.key});
@@ -42,7 +43,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
 
     try {
       final userId = SupabaseService.instance.currentUserId;
-      if (userId == null) throw Exception('Non authentifié');
+      if (userId == null) throw Exception(AppLocalizations.of(context)!.notAuthenticated);
 
       final bytes = await File(image.path).readAsBytes();
       final path = '$userId/$bucketPath/${DateTime.now().millisecondsSinceEpoch}.jpg';
@@ -55,7 +56,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
       await ref.read(driverProvider.notifier).loadDriver();
 
       if (mounted) {
-        InggoToast.success(context, 'Document envoyé avec succès');
+        InggoToast.success(context, AppLocalizations.of(context)!.uploadSuccess);
       }
     } catch (e) {
       if (mounted) {
@@ -88,7 +89,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
 
     try {
       final userId = SupabaseService.instance.currentUserId;
-      if (userId == null) throw Exception('Non authentifié');
+      if (userId == null) throw Exception(AppLocalizations.of(context)!.notAuthenticated);
 
       final bytes = await File(image.path).readAsBytes();
       final path = '$userId/$bucketPath/${DateTime.now().millisecondsSinceEpoch}.jpg';
@@ -98,7 +99,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
       await ref.read(driverProvider.notifier).loadDriver();
 
       if (mounted) {
-        InggoToast.success(context, 'Document envoyé avec succès');
+        InggoToast.success(context, AppLocalizations.of(context)!.uploadSuccess);
       }
     } catch (e) {
       if (mounted) {
@@ -115,6 +116,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
   }
 
   void _showUploadOptions(String field, String bucketPath, String label) {
+    final loc = AppLocalizations.of(context);
     showModalBottomSheet(
       context: context,
       shape: RoundedRectangleBorder(
@@ -126,10 +128,10 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Soumettre : $label', style: AppTextStyles.headline4),
+              Text('${loc.submitColon} $label', style: AppTextStyles.headline4),
               SizedBox(height: 20.h),
               InggoButton(
-                label: 'Prendre une photo',
+                label: loc.takePhoto,
                 icon: Icons.camera_alt,
                 onPressed: () {
                   Navigator.pop(ctx);
@@ -138,7 +140,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
               ),
               SizedBox(height: 12.h),
               InggoButton(
-                label: 'Choisir depuis la galerie',
+                label: loc.chooseFromGallery,
                 icon: Icons.photo_library,
                 type: InggoButtonType.outline,
                 onPressed: () {
@@ -148,7 +150,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
               ),
               SizedBox(height: 12.h),
               InggoButton(
-                label: 'Annuler',
+                label: loc.cancel,
                 type: InggoButtonType.text,
                 onPressed: () => Navigator.pop(ctx),
               ),
@@ -163,6 +165,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
   Widget build(BuildContext context) {
     final driver = ref.watch(driverProvider);
     final d = driver.driver;
+    final loc = AppLocalizations.of(context);
 
     final idCardUploaded = d?.idCardUrl != null && d!.idCardUrl!.isNotEmpty;
     final licenseUploaded = d?.licenseUrl != null && d!.licenseUrl!.isNotEmpty;
@@ -172,53 +175,53 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
     final allUploaded = idCardUploaded && licenseUploaded && insuranceUploaded && vehiclePhotoUploaded;
 
     return Scaffold(
-      appBar: const InggoAppBar(title: 'Documents'),
+      appBar: InggoAppBar(title: loc.documents),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(AppSpacing.screenPadding),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Vos documents', style: AppTextStyles.labelLarge),
+            Text(loc.yourDocuments, style: AppTextStyles.labelLarge),
             SizedBox(height: 4.h),
             Text(
-              'Soumettez vos documents pour vérification',
+              loc.submitForVerification,
               style: AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary),
             ),
             SizedBox(height: 12.h),
             _DocTile(
               icon: Icons.badge,
-              label: 'Carte d\'identité',
+              label: loc.idCard,
               isUploaded: idCardUploaded,
               isVerified: isVerified,
               isUploading: _isUploading && _uploadingField == 'id_card_url',
-              onUpload: () => _showUploadOptions('id_card_url', 'id-card', 'Carte d\'identité'),
+              onUpload: () => _showUploadOptions('id_card_url', 'id-card', loc.idCard),
             ),
             _DocTile(
               icon: Icons.card_membership,
-              label: 'Permis de conduire',
+              label: loc.driverLicense,
               isUploaded: licenseUploaded,
               isVerified: isVerified,
               isUploading: _isUploading && _uploadingField == 'license_url',
-              onUpload: () => _showUploadOptions('license_url', 'license', 'Permis de conduire'),
+              onUpload: () => _showUploadOptions('license_url', 'license', loc.driverLicense),
             ),
             _DocTile(
               icon: Icons.shield,
-              label: 'Assurance',
+              label: loc.insurance,
               isUploaded: insuranceUploaded,
               isVerified: isVerified,
               isUploading: _isUploading && _uploadingField == 'insurance_url',
-              onUpload: () => _showUploadOptions('insurance_url', 'insurance', 'Assurance'),
+              onUpload: () => _showUploadOptions('insurance_url', 'insurance', loc.insurance),
             ),
             _DocTile(
               icon: Icons.motorcycle,
-              label: 'Photo du véhicule',
+              label: loc.vehiclePhoto,
               isUploaded: vehiclePhotoUploaded,
               isVerified: isVerified,
               isUploading: _isUploading && _uploadingField == 'vehicle_photo_url',
-              onUpload: () => _showUploadOptions('vehicle_photo_url', 'vehicle', 'Photo du véhicule'),
+              onUpload: () => _showUploadOptions('vehicle_photo_url', 'vehicle', loc.vehiclePhoto),
             ),
             SizedBox(height: 24.h),
-            Text('Statut du compte', style: AppTextStyles.labelLarge),
+            Text(loc.accountStatus, style: AppTextStyles.labelLarge),
             SizedBox(height: 12.h),
             InggoCard(
               child: Row(
@@ -243,18 +246,18 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
                       children: [
                         Text(
                           isVerified
-                              ? 'Vérifié'
+                              ? loc.verifiedLabel
                               : allUploaded
-                                  ? 'En cours de vérification'
-                                  : 'Documents manquants',
+                                  ? loc.verificationInProgressLabel
+                                  : loc.missingDocumentsLabel,
                           style: AppTextStyles.labelMedium,
                         ),
                         Text(
                           isVerified
-                              ? 'Votre compte est vérifié et actif'
+                              ? loc.accountVerified
                               : allUploaded
-                                  ? 'Vos documents sont en cours d\'examen par l\'équipe'
-                                  : 'Veuillez soumettre tous les documents requis',
+                                  ? loc.underReview
+                                  : loc.submitAllRequired,
                           style: AppTextStyles.bodySmall,
                         ),
                       ],
@@ -288,15 +291,17 @@ class _DocTile extends StatelessWidget {
     this.onUpload,
   });
 
-  String get _status {
-    if (isUploading) return 'Envoi en cours...';
-    if (!isUploaded) return 'Non soumis';
-    if (isVerified) return 'Vérifié';
-    return 'En attente de vérification';
+  String _status(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+    if (isUploading) return loc.uploading;
+    if (!isUploaded) return loc.notSubmitted;
+    if (isVerified) return loc.verifiedLabel;
+    return loc.pendingVerificationLabel;
   }
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     return Padding(
       padding: EdgeInsets.only(bottom: 8.h),
       child: InggoCard(
@@ -315,7 +320,7 @@ class _DocTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(label, style: AppTextStyles.bodyLarge),
-                      Text(_status,
+                      Text(_status(context),
                           style: AppTextStyles.bodySmall.copyWith(
                             color: isUploading
                                 ? AppColors.info
@@ -356,7 +361,7 @@ class _DocTile extends StatelessWidget {
                     size: 16.w,
                   ),
                   label: Text(
-                    isUploaded ? 'Remplacer' : 'Soumettre',
+                    isUploaded ? loc.replace : loc.submitDocument,
                     style: AppTextStyles.bodySmall,
                   ),
                   style: OutlinedButton.styleFrom(

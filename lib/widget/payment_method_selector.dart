@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../core/constants/constants.dart';
+import '../l10n/app_localizations.dart';
 import '../core/services/payment_service.dart';
 
 class PaymentMethodSelector extends StatefulWidget {
@@ -20,11 +21,12 @@ class PaymentMethodSelector extends StatefulWidget {
 class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     final methods = PaymentService.instance.getPaymentMethods();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Mode de paiement', style: AppTextStyles.labelLarge),
+        Text(loc.paymentMethod, style: AppTextStyles.labelLarge),
         SizedBox(height: 12.h),
         ...methods.map((m) => _PaymentItem(
               method: m,
@@ -53,6 +55,7 @@ class _PaymentItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     final available = method['available'] == true;
     return GestureDetector(
       onTap: onTap,
@@ -84,7 +87,7 @@ class _PaymentItem extends StatelessWidget {
                             : AppColors.textHint,
                       )),
                   if (!available)
-                    Text('Bientôt disponible', style: AppTextStyles.caption),
+                    Text(loc.comingSoon, style: AppTextStyles.caption),
                 ],
               ),
             ),

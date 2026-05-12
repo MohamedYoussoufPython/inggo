@@ -7,6 +7,7 @@ import '../../core/constants/constants.dart';
 import '../../widget/widgets.dart';
 import '../../provider/ride_provider.dart';
 import '../../model/ride_model.dart';
+import '../../l10n/app_localizations.dart';
 
 class SearchingDriverScreen extends ConsumerStatefulWidget {
   const SearchingDriverScreen({super.key});
@@ -60,13 +61,13 @@ class _SearchingDriverScreenState extends ConsumerState<SearchingDriverScreen> {
   void _showNoDriverDialog() {
     if (_navigated) return; // Driver already accepted, don't show dialog
     _navigated = true;
+    final loc = AppLocalizations.of(context);
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (ctx) => AlertDialog(
-        title: const Text('Aucun chauffeur trouvé'),
-        content: const Text(
-            'Désolé, aucun chauffeur n\'est disponible pour le moment. Veuillez réessayer.'),
+        title: Text(loc.noDriverFoundTitle),
+        content: Text(loc.noDriverFoundMessage),
         actions: [
           TextButton(
             onPressed: () {
@@ -74,7 +75,7 @@ class _SearchingDriverScreenState extends ConsumerState<SearchingDriverScreen> {
               ref.read(rideProvider.notifier).reset();
               context.go('/client/home');
             },
-            child: const Text('OK'),
+            child: Text(loc.ok),
           ),
         ],
       ),
@@ -83,7 +84,8 @@ class _SearchingDriverScreenState extends ConsumerState<SearchingDriverScreen> {
 
   void _cancelRide() async {
     _timer?.cancel();
-    await ref.read(rideProvider.notifier).cancelRide('Client a annulé');
+    final loc = AppLocalizations.of(context);
+    await ref.read(rideProvider.notifier).cancelRide(loc.cancelReasonClient);
     ref.read(rideProvider.notifier).reset();
     if (mounted) context.go('/client/home');
   }
@@ -99,6 +101,7 @@ class _SearchingDriverScreenState extends ConsumerState<SearchingDriverScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -127,11 +130,11 @@ class _SearchingDriverScreenState extends ConsumerState<SearchingDriverScreen> {
                 ),
               ),
               SizedBox(height: 24.h),
-              Text('Recherche d\'un chauffeur...',
+              Text(loc.searchingDriverLabel,
                   style: AppTextStyles.headline3),
               SizedBox(height: 8.h),
               Text(
-                'Veuillez patienter...',
+                loc.pleaseWait,
                 style: AppTextStyles.bodyLarge
                     .copyWith(color: AppColors.textSecondary),
               ),
@@ -142,7 +145,7 @@ class _SearchingDriverScreenState extends ConsumerState<SearchingDriverScreen> {
               ),
               SizedBox(height: 40.h),
               InggoButton(
-                label: 'Annuler',
+                label: loc.cancelSearch,
                 type: InggoButtonType.outline,
                 onPressed: _cancelRide,
               ),

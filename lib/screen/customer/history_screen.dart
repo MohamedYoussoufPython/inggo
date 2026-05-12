@@ -5,6 +5,7 @@ import '../../core/constants/constants.dart';
 import '../../core/utils/formatters.dart';
 import '../../widget/widgets.dart';
 import '../../provider/ride_provider.dart';
+import '../../l10n/app_localizations.dart';
 
 class HistoryScreen extends ConsumerStatefulWidget {
   const HistoryScreen({super.key});
@@ -55,9 +56,10 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
   @override
   Widget build(BuildContext context) {
     final ride = ref.watch(rideProvider);
+    final loc = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: const InggoAppBar(title: 'Historique'),
+      appBar: InggoAppBar(title: loc.history),
       body: ride.isLoading && ride.rideHistory.isEmpty
           ? const InggoLoading()
           : ride.rideHistory.isEmpty
@@ -67,7 +69,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                     children: [
                       Icon(Icons.history, size: 64.w, color: AppColors.textHint),
                       SizedBox(height: 16.h),
-                      Text('Aucune course', style: AppTextStyles.bodyLarge.copyWith(color: AppColors.textSecondary)),
+                      Text(loc.noRides, style: AppTextStyles.bodyLarge.copyWith(color: AppColors.textSecondary)),
                     ],
                   ),
                 )
