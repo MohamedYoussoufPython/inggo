@@ -1,7 +1,12 @@
 # Environment
-.env
-admin_panel/.env
-*.env.local
+# NOTE: .env files are currently tracked in git for convenience.
+# Once you fill in real secrets, re-add them to .gitignore:
+#   .env
+#   admin_panel/.env
+#   *.env.local
+# .env
+# admin_panel/.env
+# *.env.local
 
 # Dart / Flutter
 .dart_tool/
@@ -16,7 +21,7 @@ pubspec.lock
 # Android
 android/.gradle/
 android/.kotlin/
-android/local.properties
+# android/local.properties  (currently tracked — re-ignore after filling real keys)
 android/app/build/
 android/build/
 
