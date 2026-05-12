@@ -9,13 +9,20 @@ import 'core/services/connectivity_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Load environment — tryLoad won't throw if .env is missing
-  // (dotenv.env will just be empty, triggering the fail-fast below)
-  await dotenv.tryLoad(fileName: '.env');
+  // Load environment variables from .env file.
+  // If the file doesn't exist (e.g. CI builds), dotenv stays uninitialized
+  // and the fail-fast check below will show a clear error message.
+  bool dotenvReady = false;
+  try {
+    await dotenv.load(fileName: '.env');
+    dotenvReady = true;
+  } catch (_) {
+    // .env file not found — dotenv.env is NOT safe to access
+  }
 
   // Init Supabase — fail fast with clear error if config missing
-  final supabaseUrl = dotenv.env['SUPABASE_URL'] ?? '';
-  final supabaseAnonKey = dotenv.env['SUPABASE_ANON_KEY'] ?? '';
+  final supabaseUrl = dotenvReady ? (dotenv.env['SUPABASE_URL'] ?? '') : '';
+  final supabaseAnonKey = dotenvReady ? (dotenv.env['SUPABASE_ANON_KEY'] ?? '') : '';
 
   if (supabaseUrl.isEmpty || supabaseAnonKey.isEmpty) {
     debugPrint('═══════════════════════════════════════════════════');
