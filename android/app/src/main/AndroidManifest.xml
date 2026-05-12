@@ -44,11 +44,10 @@
         </activity>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
-        <!-- Google Maps API Key — injected from build.gradle.kts manifestPlaceholders.
-             Set GOOGLE_MAPS_API_KEY in your env vars or local.properties file. -->
+        <!-- Google Maps API Key -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="${GOOGLE_MAPS_API_KEY}" />
+            android:value="AIzaSyBspCWgSoAi0qgl31huzEaO59OzZDFEeyg" />
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
