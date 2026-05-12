@@ -7,23 +7,7 @@
 -- have one non-cancelled driver assignment.
 -- ============================================================
 
--- 1. Add a trigger that enforces valid status transitions
--- Only allow: searching→accepted, accepted→in_progress, in_progress→completed,
--- and any status→cancelled
-DO $$
-BEGIN
-  IF NOT EXISTS (
-    SELECT 1 FROM pg_trigger WHERE tgname = 'enforce_ride_status_transition'
-  ) THEN
-    CREATE CONSTRAINT TRIGGER enforce_ride_status_transition
-      AFTER UPDATE ON rides
-      DEFERRABLE INITIALLY IMMEDIATE
-      FOR EACH ROW
-      EXECUTE FUNCTION check_ride_status_transition();
-  END IF;
-END $$;
-
--- 2. Create the trigger function (safe create-or-replace)
+-- 1. Create the trigger function FIRST (must exist before the trigger)
 CREATE OR REPLACE FUNCTION check_ride_status_transition()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -61,10 +45,24 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- 2. Add the trigger that uses the function (safe: check if already exists)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_trigger WHERE tgname = 'enforce_ride_status_transition'
+  ) THEN
+    CREATE CONSTRAINT TRIGGER enforce_ride_status_transition
+      AFTER UPDATE ON rides
+      DEFERRABLE INITIALLY IMMEDIATE
+      FOR EACH ROW
+      EXECUTE FUNCTION check_ride_status_transition();
+  END IF;
+END $$;
+
 -- 3. Add a partial unique index: only one driver can be assigned to a ride
 -- that is in an active state (accepted or in_progress).
 -- This is a safety net at the DB level in addition to the trigger.
-DO $$$
+DO $$
 BEGIN
   IF NOT EXISTS (
     SELECT 1 FROM pg_indexes WHERE indexname = 'rides_one_driver_active'
@@ -73,4 +71,4 @@ BEGIN
       ON rides (id)
       WHERE status IN ('accepted', 'in_progress') AND driver_id IS NOT NULL;
   END IF;
-END $$$;
+END $$;
