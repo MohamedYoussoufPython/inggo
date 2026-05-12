@@ -472,6 +472,77 @@ class AppLocalizations {
   String get ofInggo => _t(' d\'Inggo.', ' of Inggo.');
   String get errorNameRequired => _t('Le nom est requis', 'Name is required');
 
+  // ─── About Screen ───
+  String get versionLabel => _t('Version', 'Version');
+
+  // ─── Privacy Policy Screen Sections ───
+  String get privacySection1Title => _t('1. Responsable du traitement', '1. Data Controller');
+  String get privacySection1Content => _t('InnGroup SARL, société immatriculée à Djibouti, est le responsable du traitement de vos données personnelles dans le cadre de l\'application Inggo VTC. Pour nous contacter : admin@inngroupsarl.com ou +253 77 78 06 06.', 'InnGroup SARL, a company registered in Djibouti, is the data controller for your personal data within the Inggo VTC application. To contact us: admin@inngroupsarl.com or +253 77 78 06 06.');
+  String get privacySection2Title => _t('2. Données collectées', '2. Data Collected');
+  String get privacySection2Content => _t('Nous collectons les données suivantes lors de votre inscription et utilisation de l\'application : nom complet, numéro de téléphone, adresse e-mail, position géographique (en temps réel pendant l\'utilisation), photos de profil, et pour les chauffeurs : carte d\'identité, permis de conduire et photo du véhicule.', 'We collect the following data during your registration and use of the application: full name, phone number, email address, geographic location (in real-time during use), profile photos, and for drivers: ID card, driver\'s license, and vehicle photo.');
+  String get privacySection3Title => _t('3. Finalité du traitement', '3. Purpose of Processing');
+  String get privacySection3Content => _t('Vos données sont utilisées pour : la création et la gestion de votre compte, la mise en relation entre clients et chauffeurs, le suivi des courses en temps réel, la facturation et le paiement, la vérification d\'identité des chauffeurs, l\'amélioration de nos services, et les communications liées à votre compte.', 'Your data is used for: creating and managing your account, connecting clients and drivers, real-time ride tracking, billing and payment, driver identity verification, improving our services, and communications related to your account.');
+  String get privacySection4Title => _t('4. Base légale', '4. Legal Basis');
+  String get privacySection4Content => _t('Le traitement de vos données repose sur : l\'exécution du contrat de service de transport, votre consentement (notifications, géolocalisation), nos obligations légales, et notre intérêt légitime à améliorer nos services.', 'The processing of your data is based on: the execution of the transport service contract, your consent (notifications, geolocation), our legal obligations, and our legitimate interest in improving our services.');
+  String get privacySection5Title => _t('5. Partage des données', '5. Data Sharing');
+  String get privacySection5Content => _t('Vos données ne sont pas vendues à des tiers. Elles peuvent être partagées avec : votre chauffeur/client (nom, note) dans le cadre de la course, nos prestataires techniques (Supabase pour l\'hébergement, Google Maps pour la cartographie), et les autorités compétentes si requis par la loi.', 'Your data is not sold to third parties. It may be shared with: your driver/client (name, rating) in the context of the ride, our technical providers (Supabase for hosting, Google Maps for mapping), and competent authorities if required by law.');
+  String get privacySection6Title => _t('6. Géolocalisation', '6. Geolocation');
+  String get privacySection6Content => _t('La géolocalisation est essentielle au fonctionnement de l\'application. Pour les clients, elle permet de déterminer votre position de départ. Pour les chauffeurs, elle est transmise en temps réel au client pendant la course. Vous pouvez désactiver la géolocalisation dans les paramètres de votre appareil, mais cela empêchera l\'utilisation du service.', 'Geolocation is essential for the application to function. For clients, it determines your starting position. For drivers, it is transmitted in real-time to the client during the ride. You can disable geolocation in your device settings, but this will prevent the use of the service.');
+  String get privacySection7Title => _t('7. Conservation des données', '7. Data Retention');
+  String get privacySection7Content => _t('Vos données sont conservées aussi longtemps que votre compte est actif. Les données de course sont conservées pendant 5 ans à des fins comptables et légales. Vous pouvez demander la suppression de votre compte à tout moment en contactant notre support.', 'Your data is retained as long as your account is active. Ride data is retained for 5 years for accounting and legal purposes. You can request the deletion of your account at any time by contacting our support.');
+  String get privacySection8Title => _t('8. Sécurité', '8. Security');
+  String get privacySection8Content => _t('Nous mettons en œuvre des mesures techniques et organisationnelles appropriées pour protéger vos données, notamment : chiffrement des données en transit (HTTPS/TLS), stockage sécurisé chez Supabase, contrôle d\'accès basé sur les rôles (RLS), et vérification d\'identité des chauffeurs.', 'We implement appropriate technical and organizational measures to protect your data, including: data encryption in transit (HTTPS/TLS), secure storage with Supabase, role-based access control (RLS), and driver identity verification.');
+  String get privacySection9Title => _t('9. Vos droits', '9. Your Rights');
+  String get privacySection9Content => _t('Conformément à la législation applicable, vous disposez d\'un droit d\'accès, de rectification, de suppression et de portabilité de vos données. Pour exercer ces droits, contactez-nous à admin@inngroupsarl.com.', 'In accordance with applicable legislation, you have the right to access, rectify, delete, and port your data. To exercise these rights, contact us at admin@inngroupsarl.com.');
+  String get privacySection10Title => _t('10. Cookies et traceurs', '10. Cookies and Trackers');
+  String get privacySection10Content => _t('L\'application Inggo n\'utilise pas de cookies publicitaires. Nous utilisons uniquement les données techniques nécessaires au fonctionnement du service (jeton d\'authentification, préférences de langue et de notifications).', 'The Inggo application does not use advertising cookies. We only use the technical data necessary for the service to function (authentication token, language and notification preferences).');
+  String get privacySection11Title => _t('11. Modifications', '11. Changes');
+  String get privacySection11Content => _t('Nous nous réservons le droit de modifier cette politique. Toute modification substantielle vous sera notifiée via l\'application ou par e-mail. L\'utilisation continue du service après notification constitue votre acceptation des modifications.', 'We reserve the right to modify this policy. Any substantial changes will be notified via the application or by email. Continued use of the service after notification constitutes your acceptance of the changes.');
+  String get privacyFooter => _t('Inggo VTC — InnGroup SARL\nDjibouti, République de Djibouti\nContact : admin@inngroupsarl.com | +253 77 78 06 06', 'Inggo VTC — InnGroup SARL\nDjibouti, Republic of Djibouti\nContact: admin@inngroupsarl.com | +253 77 78 06 06');
+
+  // ─── CGU Sections ───
+  String get cguTitle => _t('Conditions Générales d\'Utilisation (CGU) – Inggo', 'Terms of Use – Inggo');
+  String get cguLastUpdated => _t('Dernière mise à jour : Mercredi 7 janvier', 'Last updated: Wednesday, January 7');
+  String get cguPreamble => _t('Les présentes Conditions Générales d\'Utilisation régissent l\'accès et l\'utilisation de l\'application mobile Inggo, plateforme technologique de mise en relation entre utilisateurs et conducteurs privés indépendants sur moto.', 'These Terms of Use govern access to and use of the Inggo mobile application, a technological platform connecting users and independent private motorcycle drivers.');
+  String get cguOwnership => _t('L\'application Inggo est la propriété exclusive et est exploitée par la société InnGroup SARL, société de droit djiboutien, dont le siège social est situé à Gabode 5, République de Djibouti.', 'The Inggo application is the exclusive property of and operated by InnGroup SARL, a company under Djiboutian law, headquartered at Gabode 5, Republic of Djibouti.');
+  String get cguArticle1Title => _t('Article 1 – Définitions', 'Article 1 – Definitions');
+  String get cguArticle1Content => _t('• Application : désigne l\'application mobile Inggo.\n• Société : désigne InnGroup SARL.\n• Utilisateur : toute personne physique utilisant l\'application afin de solliciter un trajet.\n• Conducteur Partenaire : toute personne indépendante utilisant l\'application pour proposer un service de transport sur moto.\n• Service : service de mise en relation technologique fourni par l\'application Inggo.', '• Application: refers to the Inggo mobile application.\n• Company: refers to InnGroup SARL.\n• User: any natural person using the application to request a ride.\n• Partner Driver: any independent person using the application to offer a motorcycle transport service.\n• Service: the technological matching service provided by the Inggo application.');
+  String get cguArticle2Title => _t('Article 2 – Objet', 'Article 2 – Purpose');
+  String get cguArticle2Content => _t('Les présentes CGU ont pour objet de définir les conditions d\'accès et d\'utilisation de l\'application Inggo.', 'These Terms of Use aim to define the conditions of access and use of the Inggo application.');
+  String get cguArticle3Title => _t('Article 3 – Accès à l\'application', 'Article 3 – Access to the Application');
+  String get cguArticle3Content => _t('L\'accès à l\'application Inggo est réservé aux personnes majeures et juridiquement capables. La création d\'un compte est obligatoire pour accéder aux services.', 'Access to the Inggo application is reserved for adults who are legally capable. Creating an account is mandatory to access the services.');
+  String get cguArticle4Title => _t('Article 4 – Fonctionnement du service', 'Article 4 – Service Operation');
+  String get cguArticle4Content => _t('L\'application permet à un Utilisateur de solliciter un Conducteur Partenaire disponible à proximité.', 'The application allows a User to request a nearby Partner Driver who is available.');
+  String get cguArticle5Title => _t('Article 5 – Statut des Conducteurs Partenaires', 'Article 5 – Status of Partner Drivers');
+  String get cguArticle5Content => _t('Les Conducteurs Partenaires exercent leur activité de manière totalement indépendante. Ils ne sont ni salariés, ni agents, ni représentants de InnGroup SARL.', 'Partner Drivers carry out their activity in a completely independent manner. They are not employees, agents, or representatives of InnGroup SARL.');
+  String get cguArticle6Title => _t('Article 6 – Responsabilité', 'Article 6 – Liability');
+  String get cguArticle6Content => _t('La Société ne saurait être tenue responsable des accidents, dommages, blessures, retards, litiges ou incidents survenus lors d\'un trajet.', 'The Company cannot be held responsible for accidents, damages, injuries, delays, disputes, or incidents occurring during a ride.');
+  String get cguArticle7Title => _t('Article 7 – Données personnelles', 'Article 7 – Personal Data');
+  String get cguArticle7Content => _t('La collecte et le traitement des données personnelles sont régis par la Politique de Confidentialité Inggo.', 'The collection and processing of personal data are governed by the Inggo Privacy Policy.');
+  String get cguArticle8Title => _t('Article 8 – Droit applicable', 'Article 8 – Applicable Law');
+  String get cguArticle8Content => _t('Les présentes CGU sont régies par le droit en vigueur en République de Djibouti.', 'These Terms of Use are governed by the laws in force in the Republic of Djibouti.');
+
+  // ─── Privacy Legal Text (registration) ───
+  String get privacyRegTitle => _t('Inggo – Politique de Confidentialité', 'Inggo – Privacy Policy');
+  String get privacyRegOwner => _t('Propriétaire : InnGroup SARL', 'Owner: InnGroup SARL');
+  String get privacyRegCountry => _t('Pays : République de Djibouti', 'Country: Republic of Djibouti');
+  String get privacyRegLastUpdated => _t('Dernière mise à jour : Mercredi 7 janvier', 'Last updated: Wednesday, January 7');
+  String get privacyRegIntro => _t('Cette Politique de Confidentialité décrit comment InnGroup SARL collecte, utilise, traite, stocke, protège et divulgue les données personnelles des Utilisateurs et des Conducteurs Partenaires.', 'This Privacy Policy describes how InnGroup SARL collects, uses, processes, stores, protects, and discloses the personal data of Users and Partner Drivers.');
+  String get privacyRegDataTitle => _t('1. Données collectées', '1. Data Collected');
+  String get privacyRegDataContent => _t('• Nom complet, numéro de téléphone, adresse email\n• Photo de profil (optionnelle)\n• Données de géolocalisation GPS (pendant les courses actives)\n• Adresse IP et identifiants d\'appareil\n• Données d\'utilisation de l\'application', '• Full name, phone number, email address\n• Profile photo (optional)\n• GPS geolocation data (during active rides)\n• IP address and device identifiers\n• Application usage data');
+  String get privacyRegPurposeTitle => _t('2. Finalité du traitement', '2. Purpose of Processing');
+  String get privacyRegPurposeContent => _t('• Mise en relation des Utilisateurs avec les Conducteurs Partenaires\n• Calcul des tarifs\n• Gestion des paiements et commissions\n• Envoi de communications liées au service', '• Connecting Users with Partner Drivers\n• Fare calculation\n• Payment and commission management\n• Sending service-related communications');
+  String get privacyRegSharingTitle => _t('3. Partage des données', '3. Data Sharing');
+  String get privacyRegSharingContent => _t('InnGroup SARL ne vend pas les données personnelles à des tiers.', 'InnGroup SARL does not sell personal data to third parties.');
+  String get privacyRegSecurityTitle => _t('4. Sécurité', '4. Security');
+  String get privacyRegSecurityContent => _t('Chiffrement des données en transit et au repos. Communications HTTPS sécurisées.', 'Data encryption in transit and at rest. Secure HTTPS communications.');
+  String get privacyRegRightsTitle => _t('5. Droits des utilisateurs', '5. User Rights');
+  String get privacyRegRightsContent => _t('Accès, correction, suppression, opposition, portabilité des données.', 'Access, correction, deletion, objection, data portability.');
+  String get privacyRegContact => _t('Contact : admin@inngroupsarl.com', 'Contact: admin@inngroupsarl.com');
+
+  // ─── Support WhatsApp message ───
+  String get supportWhatsappMessage => _t('Bonjour Inggo Support, ', 'Hello Inggo Support, ');
+
   String _t(String fr, String en) {
     return locale.languageCode == 'fr' ? fr : en;
   }

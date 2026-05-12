@@ -34,7 +34,7 @@ class AboutScreen extends StatelessWidget {
             SizedBox(height: 24.h),
             Text(loc.appNameVtc, style: AppTextStyles.headline2),
             SizedBox(height: 4.h),
-            Text('Version ${AppConstants.appVersion}',
+            Text('${loc.versionLabel} ${AppConstants.appVersion}',
                 style: AppTextStyles.bodyMedium
                     .copyWith(color: AppColors.textSecondary)),
             SizedBox(height: 32.h),

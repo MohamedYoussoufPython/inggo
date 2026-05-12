@@ -38,8 +38,9 @@ class _SupportScreenState extends State<SupportScreen> {
   Future<void> _sendMessage() async {
     final loc = AppLocalizations.of(context);
     // Try WhatsApp first, fallback to SMS
-    final whatsappUri = Uri.parse('https://wa.me/$_supportWhatsapp?text=Bonjour%20Inggo%20Support%2C%20');
-    final smsUri = Uri.parse('sms:$_supportPhone?body=Bonjour%20Inggo%20Support%2C%20');
+    final message = Uri.encodeComponent(loc.supportWhatsappMessage);
+    final whatsappUri = Uri.parse('https://wa.me/$_supportWhatsapp?text=$message');
+    final smsUri = Uri.parse('sms:$_supportPhone?body=$message');
 
     if (await canLaunchUrl(whatsappUri)) {
       await launchUrl(whatsappUri, mode: LaunchMode.externalApplication);

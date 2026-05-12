@@ -837,7 +837,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
                         children: [
                           WidgetSpan(
                             child: GestureDetector(
-                              onTap: () => _showLegalModal(loc.cgu, _cguText),
+                              onTap: () => _showLegalModal(loc.cgu, _getCguText(loc)),
                               child: Text(
                                 loc.cgu,
                                 style: const TextStyle(
@@ -852,7 +852,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
                           TextSpan(text: loc.andThe),
                           WidgetSpan(
                             child: GestureDetector(
-                              onTap: () => _showLegalModal(loc.privacyPolicy, _privacyText),
+                              onTap: () => _showLegalModal(loc.privacyPolicy, _getPrivacyText(loc)),
                               child: Text(
                                 loc.privacyPolicy,
                                 style: const TextStyle(
@@ -1068,72 +1068,44 @@ class _GenderCard extends StatelessWidget {
 
 // ─── Legal Texts ───
 
-const String _cguText = '''
-Conditions Générales d'Utilisation (CGU) – Inggo
-Dernière mise à jour : Mercredi 7 janvier
+String _getCguText(AppLocalizations loc) {
+  return '${loc.cguTitle}\n'
+      '${loc.cguLastUpdated}\n\n'
+      '${loc.cguPreamble}\n\n'
+      '${loc.cguOwnership}\n\n'
+      '${loc.cguArticle1Title}\n'
+      '${loc.cguArticle1Content}\n\n'
+      '${loc.cguArticle2Title}\n'
+      '${loc.cguArticle2Content}\n\n'
+      '${loc.cguArticle3Title}\n'
+      '${loc.cguArticle3Content}\n\n'
+      '${loc.cguArticle4Title}\n'
+      '${loc.cguArticle4Content}\n\n'
+      '${loc.cguArticle5Title}\n'
+      '${loc.cguArticle5Content}\n\n'
+      '${loc.cguArticle6Title}\n'
+      '${loc.cguArticle6Content}\n\n'
+      '${loc.cguArticle7Title}\n'
+      '${loc.cguArticle7Content}\n\n'
+      '${loc.cguArticle8Title}\n'
+      '${loc.cguArticle8Content}';
+}
 
-Les présentes Conditions Générales d'Utilisation régissent l'accès et l'utilisation de l'application mobile Inggo, plateforme technologique de mise en relation entre utilisateurs et conducteurs privés indépendants sur moto.
-
-L'application Inggo est la propriété exclusive et est exploitée par la société InnGroup SARL, société de droit djiboutien, dont le siège social est situé à Gabode 5, République de Djibouti.
-
-Article 1 – Définitions
-• Application : désigne l'application mobile Inggo.
-• Société : désigne InnGroup SARL.
-• Utilisateur : toute personne physique utilisant l'application afin de solliciter un trajet.
-• Conducteur Partenaire : toute personne indépendante utilisant l'application pour proposer un service de transport sur moto.
-• Service : service de mise en relation technologique fourni par l'application Inggo.
-
-Article 2 – Objet
-Les présentes CGU ont pour objet de définir les conditions d'accès et d'utilisation de l'application Inggo.
-
-Article 3 – Accès à l'application
-L'accès à l'application Inggo est réservé aux personnes majeures et juridiquement capables. La création d'un compte est obligatoire pour accéder aux services.
-
-Article 4 – Fonctionnement du service
-L'application permet à un Utilisateur de solliciter un Conducteur Partenaire disponible à proximité.
-
-Article 5 – Statut des Conducteurs Partenaires
-Les Conducteurs Partenaires exercent leur activité de manière totalement indépendante. Ils ne sont ni salariés, ni agents, ni représentants de InnGroup SARL.
-
-Article 6 – Responsabilité
-La Société ne saurait être tenue responsable des accidents, dommages, blessures, retards, litiges ou incidents survenus lors d'un trajet.
-
-Article 7 – Données personnelles
-La collecte et le traitement des données personnelles sont régis par la Politique de Confidentialité Inggo.
-
-Article 8 – Droit applicable
-Les présentes CGU sont régies par le droit en vigueur en République de Djibouti.
-''';
-
-const String _privacyText = '''
-Inggo – Politique de Confidentialité
-Propriétaire : InnGroup SARL
-Pays : République de Djibouti
-Dernière mise à jour : Mercredi 7 janvier
-
-Cette Politique de Confidentialité décrit comment InnGroup SARL collecte, utilise, traite, stocke, protège et divulgue les données personnelles des Utilisateurs et des Conducteurs Partenaires.
-
-1. Données collectées
-• Nom complet, numéro de téléphone, adresse email
-• Photo de profil (optionnelle)
-• Données de géolocalisation GPS (pendant les courses actives)
-• Adresse IP et identifiants d'appareil
-• Données d'utilisation de l'application
-
-2. Finalité du traitement
-• Mise en relation des Utilisateurs avec les Conducteurs Partenaires
-• Calcul des tarifs
-• Gestion des paiements et commissions
-• Envoi de communications liées au service
-
-3. Partage des données
-InnGroup SARL ne vend pas les données personnelles à des tiers.
-
-4. Sécurité
-Chiffrement des données en transit et au repos. Communications HTTPS sécurisées.
-
-5. Droits des utilisateurs
-Accès, correction, suppression, opposition, portabilité des données.
-
-Contact : admin@inngroupsarl.com
-''';
+String _getPrivacyText(AppLocalizations loc) {
+  return '${loc.privacyRegTitle}\n'
+      '${loc.privacyRegOwner}\n'
+      '${loc.privacyRegCountry}\n'
+      '${loc.privacyRegLastUpdated}\n\n'
+      '${loc.privacyRegIntro}\n\n'
+      '${loc.privacyRegDataTitle}\n'
+      '${loc.privacyRegDataContent}\n\n'
+      '${loc.privacyRegPurposeTitle}\n'
+      '${loc.privacyRegPurposeContent}\n\n'
+      '${loc.privacyRegSharingTitle}\n'
+      '${loc.privacyRegSharingContent}\n\n'
+      '${loc.privacyRegSecurityTitle}\n'
+      '${loc.privacyRegSecurityContent}\n\n'
+      '${loc.privacyRegRightsTitle}\n'
+      '${loc.privacyRegRightsContent}\n\n'
+      '${loc.privacyRegContact}';
+}

@@ -95,7 +95,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       }
     } catch (e) {
       if (mounted) {
-        InggoToast.error(context, '${loc.error}: $e');
+        InggoToast.error(context, '${AppLocalizations.of(context).error}: $e');
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);

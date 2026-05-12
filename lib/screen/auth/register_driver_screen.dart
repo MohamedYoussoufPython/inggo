@@ -978,7 +978,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
               checked: _cguChecked,
               label: loc.iAcceptThe,
               linkLabel: loc.termsOfUse,
-              onLinkTap: () => _showLegalModal(loc.termsOfUse, _cguText),
+              onLinkTap: () => _showLegalModal(loc.termsOfUse, _getCguText(loc)),
             ),
           ),
           const SizedBox(height: 16),
@@ -989,7 +989,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
               checked: _privacyChecked,
               label: loc.iAcceptTheFem,
               linkLabel: loc.privacyPolicy,
-              onLinkTap: () => _showLegalModal(loc.privacyPolicy, _privacyText),
+              onLinkTap: () => _showLegalModal(loc.privacyPolicy, _getPrivacyText(loc)),
             ),
           ),
           if (_errors.containsKey('legal')) _errorText(_errors['legal']!),
@@ -1256,53 +1256,44 @@ class _LegalCheckbox extends StatelessWidget {
 
 // ─── Legal Texts ───
 
-const String _cguText = '''
-Conditions Générales d'Utilisation (CGU) – Inggo Conducteur
-Dernière mise à jour : Mercredi 7 janvier
+String _getCguText(AppLocalizations loc) {
+  return '${loc.cguTitle}\n'
+      '${loc.cguLastUpdated}\n\n'
+      '${loc.cguPreamble}\n\n'
+      '${loc.cguOwnership}\n\n'
+      '${loc.cguArticle1Title}\n'
+      '${loc.cguArticle1Content}\n\n'
+      '${loc.cguArticle2Title}\n'
+      '${loc.cguArticle2Content}\n\n'
+      '${loc.cguArticle3Title}\n'
+      '${loc.cguArticle3Content}\n\n'
+      '${loc.cguArticle4Title}\n'
+      '${loc.cguArticle4Content}\n\n'
+      '${loc.cguArticle5Title}\n'
+      '${loc.cguArticle5Content}\n\n'
+      '${loc.cguArticle6Title}\n'
+      '${loc.cguArticle6Content}\n\n'
+      '${loc.cguArticle7Title}\n'
+      '${loc.cguArticle7Content}\n\n'
+      '${loc.cguArticle8Title}\n'
+      '${loc.cguArticle8Content}';
+}
 
-Les présentes CGU régissent l'accès et l'utilisation de l'application Inggo en tant que Conducteur Partenaire.
-
-Article 1 – Statut
-Le Conducteur Partenaire exerce en toute indépendance. Il n'est ni salarié, ni agent de InnGroup SARL.
-
-Article 2 – Inscription
-L'inscription nécessite la fourniture de documents (CNI, permis, assurance, photo véhicule). Le compte sera activé après vérification par l'équipe Inggo.
-
-Article 3 – Commission
-Inggo prélève une commission de 50% sur chaque course. Le conducteur perçoit 125 FDJ par course (prix fixe 250 FDJ).
-
-Article 4 – Responsabilité
-Le Conducteur est seul responsable de la conduite, du respect du code de la route et de l'état de son véhicule.
-
-Article 5 – Résiliation
-InnGroup SARL se réserve le droit de suspendre ou résilier l'accès en cas de non-respect des CGU.
-
-Article 6 – Droit applicable
-Les présentes CGU sont régies par le droit en vigueur en République de Djibouti.
-''';
-
-const String _privacyText = '''
-Inggo Conducteur – Politique de Confidentialité
-Propriétaire : InnGroup SARL
-Dernière mise à jour : Mercredi 7 janvier
-
-1. Données collectées
-• Nom complet, numéro de téléphone, adresse email
-• Photos de documents (CNI, permis, assurance, véhicule)
-• Données de géolocalisation GPS (en service)
-• Données de trajet et revenus
-
-2. Finalité
-• Vérification d'identité et activation du compte
-• Mise en relation avec les passagers
-• Calcul des revenus et commissions
-• Suivi des courses en temps réel
-
-3. Stockage
-Les documents sont stockés de manière sécurisée sur les serveurs Supabase avec chiffrement.
-
-4. Droits
-Accès, correction, suppression de vos données sur demande.
-
-Contact : admin@inngroupsarl.com
-''';
+String _getPrivacyText(AppLocalizations loc) {
+  return '${loc.privacyRegTitle}\n'
+      '${loc.privacyRegOwner}\n'
+      '${loc.privacyRegCountry}\n'
+      '${loc.privacyRegLastUpdated}\n\n'
+      '${loc.privacyRegIntro}\n\n'
+      '${loc.privacyRegDataTitle}\n'
+      '${loc.privacyRegDataContent}\n\n'
+      '${loc.privacyRegPurposeTitle}\n'
+      '${loc.privacyRegPurposeContent}\n\n'
+      '${loc.privacyRegSharingTitle}\n'
+      '${loc.privacyRegSharingContent}\n\n'
+      '${loc.privacyRegSecurityTitle}\n'
+      '${loc.privacyRegSecurityContent}\n\n'
+      '${loc.privacyRegRightsTitle}\n'
+      '${loc.privacyRegRightsContent}\n\n'
+      '${loc.privacyRegContact}';
+}

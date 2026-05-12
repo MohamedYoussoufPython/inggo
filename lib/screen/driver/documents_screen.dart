@@ -60,7 +60,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
       }
     } catch (e) {
       if (mounted) {
-        InggoToast.error(context, '${loc.error}: $e');
+        InggoToast.error(context, '${AppLocalizations.of(context).error}: $e');
       }
     } finally {
       if (mounted) {

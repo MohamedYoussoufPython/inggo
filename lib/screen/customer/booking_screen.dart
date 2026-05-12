@@ -33,6 +33,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
   Future<void> _confirmBooking() async {
     if (_isCreating) return;
     setState(() => _isCreating = true);
+    final loc = AppLocalizations.of(context);
 
     // Set payment method and fixed price
     ref.read(rideProvider.notifier).setPaymentMethod(_selectedPayment);
