@@ -1,50 +1,51 @@
 class Validators {
   Validators._();
 
-  static String? validatePhone(String? value) {
+  static String? validatePhone(String? value, {String? requiredMsg, String? lengthMsg, String? formatMsg}) {
     if (value == null || value.isEmpty) {
-      return 'Numéro de téléphone requis';
+      return requiredMsg ?? 'Numéro de téléphone requis';
     }
     final cleaned = value.replaceAll(RegExp(r'[^\d]'), '');
     if (cleaned.length != 8) {
-      return 'Le numéro doit contenir 8 chiffres';
+      return lengthMsg ?? 'Le numéro doit contenir 8 chiffres';
     }
     if (!cleaned.startsWith(RegExp(r'^7[0-9]'))) {
-      return 'Numéro invalide (commence par 77, 78...)';
+      return formatMsg ?? 'Numéro invalide (commence par 77, 78...)';
     }
     return null;
   }
 
-  static String? validateName(String? value) {
+  static String? validateName(String? value, {String? requiredMsg, String? lengthMsg}) {
     if (value == null || value.trim().isEmpty) {
-      return 'Nom requis';
+      return requiredMsg ?? 'Nom requis';
     }
     if (value.trim().length < 2) {
-      return 'Le nom doit contenir au moins 2 caractères';
+      return lengthMsg ?? 'Le nom doit contenir au moins 2 caractères';
     }
     return null;
   }
 
-  static String? validateOtp(String? value) {
+  static String? validateOtp(String? value, {String? requiredMsg, String? lengthMsg}) {
     if (value == null || value.isEmpty) {
-      return 'Code requis';
+      return requiredMsg ?? 'Code requis';
     }
     if (value.length != 6) {
-      return 'Le code doit contenir 6 chiffres';
+      return lengthMsg ?? 'Le code doit contenir 6 chiffres';
     }
     return null;
   }
 
-  static String? validatePlateNumber(String? value) {
+  static String? validatePlateNumber(String? value, {String? requiredMsg}) {
     if (value == null || value.trim().isEmpty) {
-      return 'Numéro de plaque requis';
+      return requiredMsg ?? 'Numéro de plaque requis';
     }
     return null;
   }
 
-  static String? validateRequired(String? value, [String field = 'Ce champ']) {
+  static String? validateRequired(String? value, {String? field, String? requiredMsg}) {
     if (value == null || value.trim().isEmpty) {
-      return '$field est requis';
+      final fieldName = field ?? 'Ce champ';
+      return requiredMsg ?? '$fieldName est requis';
     }
     return null;
   }

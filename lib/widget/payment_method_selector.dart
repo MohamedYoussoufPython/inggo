@@ -22,7 +22,7 @@ class _PaymentMethodSelectorState extends State<PaymentMethodSelector> {
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
-    final methods = PaymentService.instance.getPaymentMethods();
+    final methods = PaymentService.instance.getPaymentMethods(loc);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

@@ -1,5 +1,6 @@
 import 'package:logger/logger.dart';
 import '../constants/app_constants.dart';
+import '../../l10n/app_localizations.dart';
 
 class PaymentService {
   PaymentService._();
@@ -33,14 +34,16 @@ class PaymentService {
     return false;
   }
 
-  List<Map<String, dynamic>> getPaymentMethods() {
+  /// Returns the list of available payment methods.
+  /// Pass [loc] to get localized display names; otherwise French defaults are used.
+  List<Map<String, dynamic>> getPaymentMethods([AppLocalizations? loc]) {
     return [
-      {'id': 'cash', 'name': 'Espèces', 'available': true, 'icon': '💵'},
-      {'id': 'waafi', 'name': 'Waafi', 'available': false, 'icon': '📱'},
-      {'id': 'dmoney', 'name': 'D-Money', 'available': false, 'icon': '💳'},
-      {'id': 'cacpay', 'name': 'CAC Pay', 'available': false, 'icon': '🏦'},
-      {'id': 'sabapay', 'name': 'Saba Pay', 'available': false, 'icon': '📲'},
-      {'id': 'dahabplus', 'name': 'Dahabplus', 'available': false, 'icon': '🥇'},
+      {'id': 'cash', 'name': loc?.paymentCash ?? 'Espèces', 'available': true, 'icon': '💵'},
+      {'id': 'waafi', 'name': loc?.paymentWaafi ?? 'Waafi', 'available': false, 'icon': '📱'},
+      {'id': 'dmoney', 'name': loc?.paymentDMoney ?? 'D-Money', 'available': false, 'icon': '💳'},
+      {'id': 'cacpay', 'name': loc?.paymentCacPay ?? 'CAC Pay', 'available': false, 'icon': '🏦'},
+      {'id': 'sabapay', 'name': loc?.paymentSabaPay ?? 'Saba Pay', 'available': false, 'icon': '📲'},
+      {'id': 'dahabplus', 'name': loc?.paymentDahabplus ?? 'Dahabplus', 'available': false, 'icon': '🥇'},
     ];
   }
 }

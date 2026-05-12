@@ -158,7 +158,7 @@ class RideNotifier extends StateNotifier<RideState> {
     state = state.copyWith(isLoading: true, error: null);
     try {
       final userId = SupabaseService.instance.currentUserId;
-      if (userId == null) throw Exception('Non authentifié');
+      if (userId == null) throw Exception('Non authentifié'); // TODO: i18n — no BuildContext in provider
 
       final position = await LocationService.instance.getCurrentPosition();
       final pickupLat =
@@ -168,7 +168,7 @@ class RideNotifier extends StateNotifier<RideState> {
 
       final data = await SupabaseService.instance.insert('rides', {
         'client_id': userId,
-        'pickup_address': state.pickupAddress ?? 'Position actuelle',
+        'pickup_address': state.pickupAddress ?? 'Position actuelle', // TODO: i18n — no BuildContext in provider
         'pickup_lat': pickupLat,
         'pickup_lng': pickupLng,
         'dropoff_address': state.dropoffAddress ?? '',

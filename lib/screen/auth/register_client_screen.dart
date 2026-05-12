@@ -628,7 +628,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
                   const SizedBox(width: 10),
                   Expanded(
                     child: InggoInput(
-                      hint: '77 XX XX XX',
+                      hint: loc.phoneHintFormat,
                       controller: _phoneCtrl,
                       keyboardType: TextInputType.phone,
                       onChanged: _onPhoneChanged,

@@ -174,7 +174,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               SizedBox(height: 16.h),
               InggoInput(
                 label: loc.phone,
-                hint: '+253 77 XX XX XX',
+                hint: loc.phoneHintFull,
                 controller: _phoneController,
                 keyboardType: TextInputType.phone,
                 prefixIcon: Icons.phone_android,

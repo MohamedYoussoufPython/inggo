@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../core/constants/constants.dart';
+import '../l10n/app_localizations.dart';
 
 class LanguageSelector extends StatelessWidget {
   final String currentLanguage;
@@ -14,11 +15,12 @@ class LanguageSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     return Row(
       children: [
-        _option('Français', 'fr', currentLanguage == 'fr', onLanguageChanged),
+        _option(loc.french, 'fr', currentLanguage == 'fr', onLanguageChanged),
         SizedBox(width: 12.w),
-        _option('English', 'en', currentLanguage == 'en', onLanguageChanged),
+        _option(loc.english, 'en', currentLanguage == 'en', onLanguageChanged),
       ],
     );
   }

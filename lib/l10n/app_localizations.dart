@@ -472,6 +472,27 @@ class AppLocalizations {
   String get ofInggo => _t(' d\'Inggo.', ' of Inggo.');
   String get errorNameRequired => _t('Le nom est requis', 'Name is required');
 
+  // ─── Validator error messages ───
+  String get errorPhoneMustBe8Digits => _t('Le numéro doit contenir 8 chiffres', 'Phone number must be 8 digits');
+  String get errorPhoneInvalidFormat => _t('Numéro invalide (commence par 77, 78...)', 'Invalid number (starts with 77, 78...)');
+  String get errorNameMinLength => _t('Le nom doit contenir au moins 2 caractères', 'Name must be at least 2 characters');
+  String get errorCodeRequired => _t('Code requis', 'Code required');
+  String get errorCodeMustBe6Digits => _t('Le code doit contenir 6 chiffres', 'Code must be 6 digits');
+  String get fieldThisField => _t('Ce champ', 'This field');
+  String get fieldIsRequired => _t('est requis', 'is required');
+
+  // ─── Notification strings ───
+  String get notificationRideAcceptedTitle => _t('Chauffeur trouvé !', 'Driver found!');
+  String get notificationRideAcceptedBody => _t('Un chauffeur a accepté votre course. Il arrive...', 'A driver has accepted your ride. They are on the way...');
+  String get notificationRideCompletedTitle => _t('Course terminée', 'Ride completed');
+  String get notificationRideCompletedBody => _t('Votre course est terminée. Merci d\'avoir utilisé Inggo !', 'Your ride is completed. Thank you for using Inggo!');
+
+  // ─── Hint strings ───
+  String get phoneHintFormat => _t('77 XX XX XX', '77 XX XX XX');
+  String get phoneHintFull => _t('+253 77 XX XX XX', '+253 77 XX XX XX');
+  String get plateNumberHint => _t('Ex: DJ 1234 A', 'E.g.: DJ 1234 A');
+  String get vehicleColorHint => _t('Ex: Noir, Rouge...', 'E.g.: Black, Red...');
+
   // ─── About Screen ───
   String get versionLabel => _t('Version', 'Version');
 

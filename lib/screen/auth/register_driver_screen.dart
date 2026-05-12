@@ -716,7 +716,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
                   ),
                   const SizedBox(width: 10),
                   Expanded(child: InggoInput(
-                    hint: '77 XX XX XX',
+                    hint: loc.phoneHintFormat,
                     controller: _phoneCtrl,
                     keyboardType: TextInputType.phone,
                     onChanged: _onPhoneChanged,
@@ -871,7 +871,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
           // Plaque
           InggoInput(
             label: loc.plateNumber,
-            hint: 'Ex: DJ 1234 A',
+            hint: loc.plateNumberHint,
             controller: _plateCtrl,
             prefixIcon: Icons.pin,
             onChanged: (_) => _clearErrors(),
@@ -881,7 +881,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
           // Couleur
           InggoInput(
             label: loc.vehicleColor,
-            hint: 'Ex: Noir, Rouge...',
+            hint: loc.vehicleColorHint,
             controller: _vehicleColorCtrl,
             prefixIcon: Icons.palette,
             onChanged: (_) => _clearErrors(),
