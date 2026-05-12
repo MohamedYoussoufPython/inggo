@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import '../../core/constants/constants.dart';
 import '../../widget/widgets.dart';
 
@@ -64,6 +65,17 @@ class AboutScreen extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 24.h),
+            // Legal links
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextButton(
+                  onPressed: () => context.push('/privacy-policy'),
+                  child: Text('Politique de confidentialité',
+                      style: AppTextStyles.bodyMedium.copyWith(color: AppColors.primary)),
+                ),
+              ],
+            ),
             Text(
               '\u00a9 ${DateTime.now().year} Inggo VTC. Tous droits réservés.',
               style: AppTextStyles.caption.copyWith(color: AppColors.textHint),

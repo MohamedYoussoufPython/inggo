@@ -136,46 +136,4 @@ class InggoTheme {
           ),
         ),
       );
-
-  static ThemeData get dark => ThemeData(
-        useMaterial3: true,
-        brightness: Brightness.dark,
-        primaryColor: AppColors.primary,
-        scaffoldBackgroundColor: AppColors.surfaceDark,
-        colorScheme: const ColorScheme.dark(
-          primary: AppColors.primary,
-          primaryContainer: AppColors.primaryDark,
-          secondary: AppColors.primaryLight,
-          surface: AppColors.surfaceDark,
-          error: AppColors.error,
-          onPrimary: AppColors.secondary,
-          onSecondary: AppColors.textPrimary,
-          onSurface: AppColors.textWhite,
-          onError: AppColors.textWhite,
-        ),
-        textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme).apply(
-          bodyColor: AppColors.textWhite,
-          displayColor: AppColors.textWhite,
-        ),
-        appBarTheme: AppBarTheme(
-          backgroundColor: AppColors.surfaceDark,
-          foregroundColor: AppColors.textWhite,
-          elevation: 0,
-          centerTitle: true,
-          titleTextStyle: GoogleFonts.inter(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            color: AppColors.textWhite,
-          ),
-        ),
-        cardTheme: CardThemeData(
-          color: const Color(0xFF2C2C2C),
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.r),
-            side: const BorderSide(color: AppColors.borderDark),
-          ),
-          margin: EdgeInsets.zero,
-        ),
-      );
 }

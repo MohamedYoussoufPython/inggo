@@ -20,6 +20,7 @@ class _SearchingDriverScreenState extends ConsumerState<SearchingDriverScreen> {
   int _elapsed = 0;
   Timer? _timer;
   bool _navigated = false;
+  ProviderSubscription<RideState>? _rideSubscription;
 
   @override
   void initState() {
@@ -36,10 +37,9 @@ class _SearchingDriverScreenState extends ConsumerState<SearchingDriverScreen> {
       }
     });
 
-    // Listen for ride changes — now powered by Realtime Supabase
-    // The RideNotifier subscribes to Realtime when createRide() is called,
-    // so when the driver accepts, the state is updated automatically.
-    ref.listenManual(rideProvider, (prev, next) {
+    // Listen for ride changes using a proper ProviderSubscription
+    // that can be disposed when the screen is removed.
+    _rideSubscription = ref.listenManual(rideProvider, (prev, next) {
       if (_navigated) return; // Already navigated, ignore further updates
 
       final status = next.currentRide?.status;
@@ -91,6 +91,9 @@ class _SearchingDriverScreenState extends ConsumerState<SearchingDriverScreen> {
   @override
   void dispose() {
     _timer?.cancel();
+    // Properly close the ProviderSubscription to avoid memory leaks
+    _rideSubscription?.close();
+    _rideSubscription = null;
     super.dispose();
   }
 

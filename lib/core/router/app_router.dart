@@ -28,6 +28,7 @@ import '../../screen/driver/documents_screen.dart';
 import '../../screen/driver/driver_profile_screen.dart';
 import '../../screen/driver/driver_settings_screen.dart';
 import '../../screen/common/about_screen.dart';
+import '../../screen/common/privacy_policy_screen.dart';
 import '../../model/ride_model.dart';
 
 class AppRouter {
@@ -133,6 +134,10 @@ class AppRouter {
       GoRoute(
         path: '/about',
         builder: (context, state) => const AboutScreen(),
+      ),
+      GoRoute(
+        path: '/privacy-policy',
+        builder: (context, state) => const PrivacyPolicyScreen(),
       ),
       GoRoute(
         path: '/support',

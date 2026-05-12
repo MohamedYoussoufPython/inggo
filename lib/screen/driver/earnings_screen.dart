@@ -18,6 +18,9 @@ class EarningsScreen extends ConsumerStatefulWidget {
 class _EarningsScreenState extends ConsumerState<EarningsScreen> {
   List<RideModel> _rideHistory = [];
   bool _isLoadingHistory = false;
+  int _historyPage = 0;
+  bool _hasMoreHistory = true;
+  static const int _pageSize = 20;
 
   @override
   void initState() {
@@ -34,7 +37,7 @@ class _EarningsScreenState extends ConsumerState<EarningsScreen> {
       final userId = SupabaseService.instance.currentUserId;
       if (userId == null) return;
 
-      final data = await SupabaseService.instance.getAll(
+      final data = await SupabaseService.instance.getAllPaginated(
         'rides',
         query: {
           'driver_id': userId,
@@ -42,11 +45,49 @@ class _EarningsScreenState extends ConsumerState<EarningsScreen> {
         },
         orderBy: 'created_at',
         ascending: false,
+        limit: _pageSize,
+        offset: 0,
       );
       if (mounted) {
         setState(() {
           _rideHistory = data.map((e) => RideModel.fromJson(e)).toList();
           _isLoadingHistory = false;
+          _historyPage = 1;
+          _hasMoreHistory = data.length >= _pageSize;
+        });
+      }
+    } catch (e) {
+      if (mounted) setState(() => _isLoadingHistory = false);
+    }
+  }
+
+  Future<void> _loadMoreHistory() async {
+    if (!_hasMoreHistory || _isLoadingHistory) return;
+
+    setState(() => _isLoadingHistory = true);
+    try {
+      final userId = SupabaseService.instance.currentUserId;
+      if (userId == null) return;
+
+      final offset = _historyPage * _pageSize;
+      final data = await SupabaseService.instance.getAllPaginated(
+        'rides',
+        query: {
+          'driver_id': userId,
+          'status': 'completed',
+        },
+        orderBy: 'created_at',
+        ascending: false,
+        limit: _pageSize,
+        offset: offset,
+      );
+      if (mounted) {
+        final newRides = data.map((e) => RideModel.fromJson(e)).toList();
+        setState(() {
+          _rideHistory = [..._rideHistory, ...newRides];
+          _isLoadingHistory = false;
+          _historyPage++;
+          _hasMoreHistory = newRides.length >= _pageSize;
         });
       }
     } catch (e) {
@@ -124,7 +165,7 @@ class _EarningsScreenState extends ConsumerState<EarningsScreen> {
               SizedBox(height: 24.h),
               Text('Historique des courses', style: AppTextStyles.labelLarge),
               SizedBox(height: 12.h),
-              _isLoadingHistory
+              _rideHistory.isEmpty && _isLoadingHistory
                   ? const InggoLoading()
                   : _rideHistory.isEmpty
                       ? Center(
@@ -145,8 +186,18 @@ class _EarningsScreenState extends ConsumerState<EarningsScreen> {
                       : ListView.builder(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
-                          itemCount: _rideHistory.length,
+                          itemCount: _rideHistory.length + (_hasMoreHistory ? 1 : 0),
                           itemBuilder: (context, index) {
+                            // Load more trigger
+                            if (index == _rideHistory.length) {
+                              _loadMoreHistory();
+                              return Padding(
+                                padding: EdgeInsets.symmetric(vertical: 16.h),
+                                child: const Center(
+                                    child: CircularProgressIndicator()),
+                              );
+                            }
+
                             final ride = _rideHistory[index];
                             return Padding(
                               padding: EdgeInsets.only(bottom: 8.h),

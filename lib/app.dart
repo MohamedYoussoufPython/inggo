@@ -102,8 +102,6 @@ class _InggoAppState extends ConsumerState<InggoApp> with WidgetsBindingObserver
           title: 'Inggo',
           debugShowCheckedModeBanner: false,
           theme: InggoTheme.light,
-          darkTheme: InggoTheme.dark,
-          themeMode: ThemeMode.light,
           locale: authState.locale,
           supportedLocales: AppLocalizations.supportedLocales,
           localizationsDelegates: const [

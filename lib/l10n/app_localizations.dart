@@ -184,6 +184,18 @@ class AppLocalizations {
   String get documents => _t('Documents', 'Documents');
   String get uploadPhoto => _t('Prendre une photo', 'Take a photo');
   String get uploadGallery => _t('Choisir de la galerie', 'Choose from gallery');
+  String get submitDocument => _t('Soumettre', 'Submit');
+  String get notSubmitted => _t('Non soumis', 'Not submitted');
+  String get awaitingVerification => _t('En attente de vérification', 'Awaiting verification');
+  String get verified => _t('Vérifié', 'Verified');
+  String get accountStatus => _t('Statut du compte', 'Account status');
+  String get missingDocuments => _t('Documents manquants', 'Missing documents');
+  String get verificationInProgress => _t('En cours de vérification', 'Verification in progress');
+  String get submitAllDocs => _t('Veuillez soumettre tous les documents requis', 'Please submit all required documents');
+
+  // ─── Privacy Policy ───
+  String get privacyPolicyTitle => _t('Politique de confidentialité', 'Privacy Policy');
+  String get lastUpdated => _t('Dernière mise à jour : Janvier 2025', 'Last updated: January 2025');
 
   // ─── Offline ───
   String get noConnection => _t('Pas de connexion internet', 'No internet connection');

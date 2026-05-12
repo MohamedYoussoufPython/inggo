@@ -59,4 +59,4 @@ flutter:
 
   assets:
     - assets/images/
-    - assets/animations/
+    # - assets/animations/  # Uncomment when adding Lottie/animation files

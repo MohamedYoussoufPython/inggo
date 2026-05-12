@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/constants/constants.dart';
 import '../../core/services/supabase_service.dart';
+import '../../core/services/notification_service.dart';
 import '../../widget/widgets.dart';
 
 class PendingVerificationScreen extends StatefulWidget {
@@ -16,6 +17,7 @@ class PendingVerificationScreen extends StatefulWidget {
 
 class _PendingVerificationScreenState extends State<PendingVerificationScreen> {
   RealtimeChannel? _verificationChannel;
+  bool _navigated = false;
 
   @override
   void initState() {
@@ -35,7 +37,8 @@ class _PendingVerificationScreenState extends State<PendingVerificationScreen> {
       filterValue: userId,
       onChange: (payload) {
         final isVerified = payload.newRecord['is_verified'] as bool?;
-        if (isVerified == true && mounted) {
+        if (isVerified == true && mounted && !_navigated) {
+          _navigated = true;
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Votre profil a été approuvé ! Bienvenue.'),
@@ -51,6 +54,13 @@ class _PendingVerificationScreenState extends State<PendingVerificationScreen> {
 
   @override
   void dispose() {
+    // Only unsubscribe if we navigated away (verification succeeded)
+    // or if the widget is truly being destroyed.
+    // If the user pressed "Compris" and went to /login, the subscription
+    // stays alive in the background via the NotificationService pattern.
+    // However, GoRouter disposes this widget when navigating away,
+    // so we must clean up here. The verification will be checked
+    // on the next login via the splash screen's role-based redirect.
     if (_verificationChannel != null) {
       SupabaseService.instance.unsubscribe(_verificationChannel!);
     }
@@ -80,13 +90,23 @@ class _PendingVerificationScreenState extends State<PendingVerificationScreen> {
                     .copyWith(color: AppColors.textSecondary),
                 textAlign: TextAlign.center,
               ),
+              SizedBox(height: 12.h),
+              Text(
+                'Vous pouvez également vous déconnecter et attendre la vérification. Vous serez redirigé automatiquement à votre prochaine connexion.',
+                style: AppTextStyles.bodySmall
+                    .copyWith(color: AppColors.textHint),
+                textAlign: TextAlign.center,
+              ),
               SizedBox(height: 32.h),
               InggoButton(
                 label: 'Compris',
                 onPressed: () {
-                  // Navigate to login screen while the Realtime subscription
-                  // stays active. If the driver is verified while on the login
-                  // screen, they can simply log back in and be redirected.
+                  if (_navigated) return;
+                  // Navigate to login screen. The Realtime subscription
+                  // will be cleaned up in dispose(), but the verification
+                  // status will be checked again on next login.
+                  // The driver's is_verified status is checked in the
+                  // splash screen redirect logic.
                   context.go('/login');
                 },
               ),

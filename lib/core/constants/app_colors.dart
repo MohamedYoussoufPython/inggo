@@ -15,7 +15,6 @@ class AppColors {
   // Backgrounds
   static const Color background = Color(0xFFF5F5F5);
   static const Color surface = Color(0xFFFFFFFF);
-  static const Color surfaceDark = Color(0xFF1E1E1E);
 
   // Text
   static const Color textPrimary = Color(0xFF212121);
@@ -39,7 +38,6 @@ class AppColors {
 
   // Borders
   static const Color border = Color(0xFFE0E0E0);
-  static const Color borderDark = Color(0xFF424242);
 
   // Overlay
   static const Color overlay = Color(0x80000000);

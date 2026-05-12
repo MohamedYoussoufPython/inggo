@@ -3,10 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/constants.dart';
-import '../../core/services/supabase_service.dart';
 import '../../core/utils/formatters.dart';
 import '../../widget/widgets.dart';
 import '../../provider/driver_provider.dart';
+import '../../model/ride_model.dart';
 
 class DriverRideScreen extends ConsumerStatefulWidget {
   const DriverRideScreen({super.key});
@@ -16,8 +16,14 @@ class DriverRideScreen extends ConsumerStatefulWidget {
 }
 
 class _DriverRideScreenState extends ConsumerState<DriverRideScreen> {
-  bool _pickedUp = false;
   bool _isCompleting = false;
+
+  /// Derive _pickedUp from the ride status so it's always in sync
+  /// even if the screen is rebuilt (e.g. after navigation back).
+  bool get _pickedUp {
+    final ride = ref.read(driverProvider).currentRide;
+    return ride?.status == RideStatus.inProgress;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +53,8 @@ class _DriverRideScreenState extends ConsumerState<DriverRideScreen> {
         ),
       );
     }
+
+    final pickedUp = ride.status == RideStatus.inProgress;
 
     return Scaffold(
       body: Stack(
@@ -90,11 +98,11 @@ class _DriverRideScreenState extends ConsumerState<DriverRideScreen> {
                   ),
                   SizedBox(height: 16.h),
                   Text(
-                    _pickedUp ? 'Course en cours' : 'Aller au départ',
+                    pickedUp ? 'Course en cours' : 'Aller au départ',
                     style: AppTextStyles.headline4,
                   ),
                   SizedBox(height: 8.h),
-                  if (!_pickedUp) ...[
+                  if (!pickedUp) ...[
                     Row(
                       children: [
                         Icon(Icons.trip_origin, size: 16.w, color: AppColors.primary),
@@ -114,23 +122,16 @@ class _DriverRideScreenState extends ConsumerState<DriverRideScreen> {
                       label: 'Arrivé au départ',
                       icon: Icons.check_circle,
                       onPressed: () async {
-                        // Update ride status to in_progress in DB
-                        try {
-                          await SupabaseService.instance.update('rides', ride.id, {
-                            'status': 'in_progress',
-                          });
-                          if (mounted) {
-                            setState(() => _pickedUp = true);
-                          }
-                        } catch (e) {
-                          if (mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Erreur: $e'),
-                                backgroundColor: AppColors.error,
-                              ),
-                            );
-                          }
+                        final success = await ref
+                            .read(driverProvider.notifier)
+                            .updateRideStatus(RideStatus.inProgress);
+                        if (!success && mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Erreur lors de la mise à jour du statut.'),
+                              backgroundColor: AppColors.error,
+                            ),
+                          );
                         }
                       },
                     ),

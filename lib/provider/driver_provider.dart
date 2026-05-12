@@ -212,6 +212,32 @@ class DriverNotifier extends StateNotifier<DriverState> {
     }
   }
 
+  // ─── Update ride status (e.g. to in_progress) ───
+  /// Updates the ride status in DB and in local state.
+  /// This ensures both the client (via Realtime) and the driver see the change.
+  Future<bool> updateRideStatus(RideStatus newStatus) async {
+    final ride = state.currentRide;
+    if (ride == null) return false;
+
+    try {
+      await SupabaseService.instance.update('rides', ride.id, {
+        'status': newStatus.toSupabase(),
+      });
+
+      // Update local state
+      state = state.copyWith(
+        currentRide: ride.copyWith(status: newStatus),
+      );
+
+      _log.i('Ride ${ride.id} status updated to ${newStatus.toSupabase()}');
+      return true;
+    } catch (e) {
+      _log.e('Failed to update ride status: $e');
+      state = state.copyWith(error: e.toString());
+      return false;
+    }
+  }
+
   // ─── Reject a ride (just clear pending) ───
   void rejectRide() {
     state = state.copyWith(clearPendingRide: true);

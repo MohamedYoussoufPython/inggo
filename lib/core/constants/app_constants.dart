@@ -3,7 +3,6 @@ class AppConstants {
 
   // App Info
   static const String appName = 'Inggo';
-  static const String appNameAr = 'إنقو';
   static const String appVersion = '1.0.0';
 
   // Currency
@@ -23,15 +22,12 @@ class AppConstants {
   // Ride
   static const int searchDriverTimeoutSeconds = 180;
   static const int rideRequestTimeoutSeconds = 30;
-  static const int freeCancellationSeconds = 120;
-  static const int maxCancellationsPerHour = 3;
   static const double defaultLat = 11.5880;
   static const double defaultLng = 43.1456;
   static const String defaultCity = 'Djibouti';
 
   // Location
   static const int locationUpdateIntervalSeconds = 5;
-  static const double locationDistanceFilter = 10.0;
 
   // Pagination
   static const int pageSize = 20;
@@ -52,25 +48,11 @@ class AppConstants {
   // Roles
   static const String roleClient = 'client';
   static const String roleDriver = 'driver';
-  static const String roleAdmin = 'admin';
 
-  // Ride Status
-  static const String statusPending = 'pending';
+  // Ride Status — use RideStatus enum instead of these string constants
   static const String statusSearching = 'searching';
   static const String statusAccepted = 'accepted';
   static const String statusInProgress = 'in_progress';
   static const String statusCompleted = 'completed';
   static const String statusCancelled = 'cancelled';
-
-  // Languages
-  static const String langFr = 'fr';
-  static const String langEn = 'en';
-
-  // Supabase Tables
-  static const String tableProfiles = 'profiles';
-  static const String tableDrivers = 'drivers';
-  static const String tableRides = 'rides';
-  static const String tableFavorites = 'favorites';
-  static const String tableNotifications = 'notifications';
-  static const String tableLandmarks = 'landmarks';
 }

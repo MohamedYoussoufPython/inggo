@@ -1,4 +1,5 @@
 import os
+import time
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from dotenv import load_dotenv
 from supabase import create_client, Client
@@ -22,6 +23,41 @@ ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD')
 if not ADMIN_PASSWORD:
     raise RuntimeError('ADMIN_PASSWORD must be set in .env file')
 
+# ─── Brute-force protection ───
+# Track failed login attempts per IP address
+_login_attempts = {}  # {ip: {'count': int, 'last_attempt': float}}
+MAX_LOGIN_ATTEMPTS = 5
+LOCKOUT_DURATION = 300  # 5 minutes in seconds
+
+
+def _is_locked_out(ip):
+    """Check if the IP is currently locked out due to too many failed attempts."""
+    record = _login_attempts.get(ip)
+    if record is None:
+        return False
+    if record['count'] >= MAX_LOGIN_ATTEMPTS:
+        elapsed = time.time() - record['last_attempt']
+        if elapsed < LOCKOUT_DURATION:
+            return True
+        else:
+            # Lockout expired, reset
+            del _login_attempts[ip]
+            return False
+    return False
+
+
+def _record_failed_attempt(ip):
+    """Record a failed login attempt for the given IP."""
+    if ip not in _login_attempts:
+        _login_attempts[ip] = {'count': 0, 'last_attempt': 0}
+    _login_attempts[ip]['count'] += 1
+    _login_attempts[ip]['last_attempt'] = time.time()
+
+
+def _reset_attempts(ip):
+    """Reset failed attempt counter for the given IP after a successful login."""
+    _login_attempts.pop(ip, None)
+
 
 # ─── Auth Decorator ───
 def login_required(f):
@@ -37,12 +73,26 @@ def login_required(f):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
+    ip = request.remote_addr
+
+    if _is_locked_out(ip):
+        remaining = LOCKOUT_DURATION - int(time.time() - _login_attempts[ip]['last_attempt'])
+        error = f'Trop de tentatives échouées. Réessayez dans {remaining // 60} min.'
+        return render_template('login.html', error=error)
+
     if request.method == 'POST':
         password = request.form.get('password', '')
         if password == ADMIN_PASSWORD:
+            _reset_attempts(ip)
             session['admin_logged_in'] = True
             return redirect(url_for('dashboard'))
-        error = 'Mot de passe incorrect'
+        else:
+            _record_failed_attempt(ip)
+            attempts_left = MAX_LOGIN_ATTEMPTS - _login_attempts.get(ip, {}).get('count', 0)
+            if attempts_left > 0:
+                error = f'Mot de passe incorrect. {attempts_left} tentative(s) restante(s).'
+            else:
+                error = 'Trop de tentatives échouées. Réessayez dans 5 minutes.'
     return render_template('login.html', error=error)
 
 
@@ -165,20 +215,15 @@ def driver_documents(driver_id):
             if url:
                 try:
                     # Extract the storage path from the public URL
-                    # URL format: https://<project>.supabase.co/storage/v1/object/public/driver-documents/<path>
-                    # We need just the <path> part after the bucket name
                     if '/driver-documents/' in url:
                         path = url.split('/driver-documents/', 1)[1]
-                        # Remove any query parameters
                         if '?' in path:
                             path = path.split('?', 1)[0]
                     elif '/documents/' in url:
-                        # Legacy: old bucket name
                         path = url.split('/documents/', 1)[1]
                         if '?' in path:
                             path = path.split('?', 1)[0]
                     else:
-                        # Assume it's already a relative path
                         path = url
 
                     signed = supabase.storage.from_('driver-documents').create_signed_url(path, 3600)

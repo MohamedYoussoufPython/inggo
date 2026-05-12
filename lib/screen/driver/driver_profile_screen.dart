@@ -26,7 +26,12 @@ class DriverProfileScreen extends ConsumerWidget {
             CircleAvatar(
               radius: 50.r,
               backgroundColor: AppColors.primary.withValues(alpha: 0.2),
-              child: Icon(Icons.person, size: 40.w, color: AppColors.primary),
+              backgroundImage: auth.user?.avatarUrl != null
+                  ? NetworkImage(auth.user!.avatarUrl!)
+                  : null,
+              child: auth.user?.avatarUrl == null
+                  ? Icon(Icons.person, size: 40.w, color: AppColors.primary)
+                  : null,
             ),
             SizedBox(height: 16.h),
             Text(user?.fullName ?? 'Chauffeur', style: AppTextStyles.headline3),
