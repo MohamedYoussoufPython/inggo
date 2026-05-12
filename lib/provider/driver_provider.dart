@@ -158,6 +158,8 @@ class DriverNotifier extends StateNotifier<DriverState> {
 
   // ─── Accept a ride ───
   // Returns true on success, false on failure.
+  // Uses an atomic UPDATE with WHERE status = 'searching' to prevent
+  // race conditions where two drivers try to accept the same ride.
   // On success, currentRide is populated with full data from DB
   // and the client receives a push notification.
   Future<bool> acceptRide(String rideId) async {
@@ -169,28 +171,61 @@ class DriverNotifier extends StateNotifier<DriverState> {
         return false;
       }
 
-      // 1. Update the ride in the database
-      await SupabaseService.instance.update('rides', rideId, {
+      // 1. Atomic UPDATE: only succeed if ride is still 'searching'
+      // This prevents two drivers from accepting the same ride.
+      final updateData = {
         'driver_id': userId,
         'status': 'accepted',
         'accepted_at': DateTime.now().toIso8601String(),
-      });
+      };
 
-      // 2. Fetch the complete ride from DB (guaranteed to have all fields including coords)
+      List<Map<String, dynamic>> result;
+      try {
+        result = List<Map<String, dynamic>>.from(
+          await SupabaseService.client
+              .from('rides')
+              .update(updateData)
+              .eq('id', rideId)
+              .eq('status', 'searching') // ← atomic guard
+              .select(),
+        );
+      } catch (e) {
+        // DB trigger or constraint violation = another driver already accepted
+        _log.w('Ride $rideId accept failed (DB constraint): $e');
+        state = state.copyWith(
+          isLoading: false,
+          clearPendingRide: true,
+          error: 'Cette course a déjà été acceptée par un autre chauffeur.',
+        );
+        return false;
+      }
+
+      // 2. If no rows were updated, another driver beat us to it
+      if (result.isEmpty) {
+        _log.w('Ride $rideId was no longer searching — another driver accepted');
+        state = state.copyWith(
+          isLoading: false,
+          clearPendingRide: true,
+          error: 'Cette course a déjà été acceptée par un autre chauffeur.',
+        );
+        return false;
+      }
+
+      // 3. Fetch the complete ride from DB (guaranteed to have all fields)
       final rideData = await SupabaseService.instance.getById('rides', rideId);
       final acceptedRide = RideModel.fromJson(rideData);
 
-      // 3. Store currentRide and clear pendingRide
+      // 4. Store currentRide and clear pendingRide
       state = state.copyWith(
         isLoading: false,
         currentRide: acceptedRide,
         clearPendingRide: true,
       );
 
-      // 4. Stop listening for new rides while in a ride
+      // 5. Stop listening for new rides while in a ride
       _stopNewRidesSubscription();
 
-      // 5. Notify the client that their ride was accepted
+      // 6. Notify the client that their ride was accepted
       try {
         await NotificationService.instance.sendNotification(
           userId: acceptedRide.clientId,

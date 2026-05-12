@@ -72,10 +72,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           ? _landmarks.where((l) => l['is_popular'] == true).toList()
           : _landmarks
               .where((l) =>
-                  (l['name_fr'] as String)
+                  (l['name_fr'] as String? ?? '')
                       .toLowerCase()
                       .contains(query.toLowerCase()) ||
-                  (l['name_en'] as String)
+                  (l['name_en'] as String? ?? '')
                       .toLowerCase()
                       .contains(query.toLowerCase()))
               .toList();
@@ -83,10 +83,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   void _selectLandmark(Map<String, dynamic> landmark) {
+    final name = (landmark['name_fr'] as String? ?? landmark['name_en'] as String? ?? 'Destination');
     ref.read(rideProvider.notifier).setDropoff(
-          landmark['name_fr'] as String,
-          (landmark['lat'] as num).toDouble(),
-          (landmark['lng'] as num).toDouble(),
+          name,
+          (landmark['lat'] as num?)?.toDouble() ?? AppConstants.defaultLat,
+          (landmark['lng'] as num?)?.toDouble() ?? AppConstants.defaultLng,
         );
     context.push('/client/booking');
   }
@@ -172,8 +173,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                     itemBuilder: (context, index) {
                       final lm = _filtered[index];
                       return _LandmarkTile(
-                        name: lm['name_fr'] as String,
-                        category: lm['category'] as String,
+                        name: lm['name_fr'] as String? ?? lm['name_en'] as String? ?? 'Lieu',
+                        category: lm['category'] as String? ?? 'autre',
                         onTap: () => _selectLandmark(lm),
                       );
                     },

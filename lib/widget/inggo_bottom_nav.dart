@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import '../core/constants/constants.dart';
+import '../l10n/app_localizations.dart';
 
 class InggoBottomNav extends StatelessWidget {
   final int currentIndex;
@@ -15,7 +16,10 @@ class InggoBottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final items = isDriver ? _driverItems : _clientItems;
+    final loc = AppLocalizations.of(context);
+    final items = isDriver
+        ? _driverItems(loc)
+        : _clientItems(loc);
 
     return Container(
       decoration: BoxDecoration(
@@ -55,18 +59,18 @@ class InggoBottomNav extends StatelessWidget {
     );
   }
 
-  List<Map<String, dynamic>> get _clientItems => [
-        {'icon': Icons.home, 'label': 'Accueil', 'route': '/client/home'},
-        {'icon': Icons.history, 'label': 'Historique', 'route': '/client/history'},
-        {'icon': Icons.favorite, 'label': 'Favoris', 'route': '/client/favorites'},
-        {'icon': Icons.person, 'label': 'Profil', 'route': '/client/profile'},
+  List<Map<String, dynamic>> _clientItems(AppLocalizations loc) => [
+        {'icon': Icons.home, 'label': loc.home, 'route': '/client/home'},
+        {'icon': Icons.history, 'label': loc.history, 'route': '/client/history'},
+        {'icon': Icons.favorite, 'label': loc.favorites, 'route': '/client/favorites'},
+        {'icon': Icons.person, 'label': loc.profile, 'route': '/client/profile'},
       ];
 
-  List<Map<String, dynamic>> get _driverItems => [
-        {'icon': Icons.home, 'label': 'Accueil', 'route': '/driver/home'},
-        {'icon': Icons.account_balance_wallet, 'label': 'Revenus', 'route': '/driver/earnings'},
-        {'icon': Icons.description, 'label': 'Docs', 'route': '/driver/documents'},
-        {'icon': Icons.person, 'label': 'Profil', 'route': '/driver/profile'},
+  List<Map<String, dynamic>> _driverItems(AppLocalizations loc) => [
+        {'icon': Icons.home, 'label': loc.home, 'route': '/driver/home'},
+        {'icon': Icons.account_balance_wallet, 'label': loc.earnings, 'route': '/driver/earnings'},
+        {'icon': Icons.description, 'label': loc.documents, 'route': '/driver/documents'},
+        {'icon': Icons.person, 'label': loc.profile, 'route': '/driver/profile'},
       ];
 }
 

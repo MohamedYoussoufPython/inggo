@@ -180,6 +180,73 @@ class AppLocalizations {
   String get noNotifications => _t('Aucune notification', 'No notifications');
   String get markAllRead => _t('Tout marquer comme lu', 'Mark all as read');
 
+  // ─── Driver Home ───
+  String get online => _t('En ligne', 'Online');
+  String get offline => _t('Hors ligne', 'Offline');
+  String get goOnlinePrompt => _t('Activez-vous pour recevoir des courses', 'Go online to receive ride requests');
+  String get rides => _t('Courses', 'Rides');
+
+  // ─── Driver Ride ───
+  String get goToPickup => _t('Aller au départ', 'Go to pickup');
+  String get arrivedAtPickup => _t('Arrivé au départ', 'Arrived at pickup');
+  String get rideInProgressLabel => _t('Course en cours', 'Ride in progress');
+  String get completeRideLabel => _t('Terminer la course', 'Complete ride');
+  String get loadRide => _t('Chargement de la course...', 'Loading ride...');
+  String get back => _t('Retour', 'Back');
+
+  // ─── Client Trip ───
+  String get driverOnTheWayLabel => _t('Votre chauffeur arrive', 'Your driver is on the way');
+  String get driverEnRoute => _t('Chauffeur en route', 'Driver en route');
+  String get callDriver => _t('Appeler', 'Call');
+  String get cancelRideLabel => _t('Annuler', 'Cancel');
+  String get driverPhoneUnavailable => _t('Numéro de téléphone du chauffeur non disponible.', 'Driver phone number unavailable.');
+  String get unableToMakeCall => _t('Impossible de lancer l\'appel.', 'Unable to make call.');
+
+  // ─── Searching ───
+  String get searchingDriverLabel => _t('Recherche d\'un chauffeur...', 'Searching for a driver...');
+  String get pleaseWait => _t('Veuillez patienter...', 'Please wait...');
+  String get noDriverFoundTitle => _t('Aucun chauffeur trouvé', 'No driver found');
+  String get noDriverFoundMessage => _t('Désolé, aucun chauffeur n\'est disponible pour le moment. Veuillez réessayer.', 'Sorry, no driver is available at the moment. Please try again.');
+  String get cancelSearch => _t('Annuler', 'Cancel');
+
+  // ─── Documents ───
+  String get insurance => _t('Assurance', 'Insurance');
+  String get yourDocuments => _t('Vos documents', 'Your documents');
+  String get submitForVerification => _t('Soumettez vos documents pour vérification', 'Submit your documents for verification');
+  String get takePhoto => _t('Prendre une photo', 'Take a photo');
+  String get chooseFromGallery => _t('Choisir depuis la galerie', 'Choose from gallery');
+  String get uploadSuccess => _t('Document envoyé avec succès', 'Document uploaded successfully');
+  String get uploading => _t('Envoi en cours...', 'Uploading...');
+  String get notSubmittedYet => _t('Non soumis', 'Not submitted');
+  String get pendingVerificationLabel => _t('En attente de vérification', 'Pending verification');
+  String get accountVerified => _t('Votre compte est vérifié et actif', 'Your account is verified and active');
+  String get underReview => _t('Vos documents sont en cours d\'examen par l\'équipe', 'Your documents are under review');
+  String get submitAllRequired => _t('Veuillez soumettre tous les documents requis', 'Please submit all required documents');
+  String get submitColon => _t('Soumettre :', 'Submit:');
+
+  // ─── Earnings ───
+  String get totalEarningsLabel => _t('Revenus totaux', 'Total earnings');
+  String get details => _t('Détails', 'Details');
+  String get pricePerRide => _t('Prix par course', 'Price per ride');
+  String get yourEarningPerRide => _t('Votre gain/course', 'Your earning/ride');
+  String get commission50 => _t('Commission (50%)', 'Commission (50%)');
+  String get rideHistory => _t('Historique des courses', 'Ride history');
+  String get noCompletedRides => _t('Aucune course terminée', 'No completed rides');
+
+  // ─── Verification ───
+  String get awaitingVerification => _t('En attente de vérification', 'Awaiting verification');
+  String get verificationMessage => _t('Votre profil est en cours de vérification. Vous serez redirigé automatiquement une fois approuvé par notre équipe.', 'Your profile is being verified. You will be redirected automatically once approved.');
+  String get verificationLogoutHint => _t('Vous pouvez également vous déconnecter et attendre la vérification. Vous serez redirigé automatiquement à votre prochaine connexion.', 'You can also log out and wait for verification. You will be redirected automatically on your next login.');
+  String get understood => _t('Compris', 'Understood');
+  String get profileApproved => _t('Votre profil a été approuvé ! Bienvenue.', 'Your profile has been approved! Welcome.');
+
+  // ─── Settings ───
+  String get newRideRequests => _t('Nouvelles demandes de course', 'New ride requests');
+  String get pushNotifications => _t('Recevoir les notifications push', 'Receive push notifications');
+
+  // ─── Privacy ───
+  String get privacyPolicyLink => _t('Politique de confidentialité', 'Privacy policy');
+
   // ─── Documents ───
   String get documents => _t('Documents', 'Documents');
   String get uploadPhoto => _t('Prendre une photo', 'Take a photo');

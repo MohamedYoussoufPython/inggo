@@ -51,6 +51,8 @@ class ProfileScreen extends ConsumerWidget {
                 () => context.push('/client/support')),
             _MenuTile(Icons.info_outline, 'À propos',
                 () => context.push('/about')),
+            _MenuTile(Icons.privacy_tip_outlined, 'Politique de confidentialité',
+                () => context.push('/privacy-policy')),
             SizedBox(height: 16.h),
             InggoButton(
               label: 'Déconnexion',

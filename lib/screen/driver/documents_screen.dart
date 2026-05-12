@@ -166,8 +166,10 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
 
     final idCardUploaded = d?.idCardUrl != null && d!.idCardUrl!.isNotEmpty;
     final licenseUploaded = d?.licenseUrl != null && d!.licenseUrl!.isNotEmpty;
+    final insuranceUploaded = d?.insuranceUrl != null && d!.insuranceUrl!.isNotEmpty;
     final vehiclePhotoUploaded = d?.vehiclePhotoUrl != null && d!.vehiclePhotoUrl!.isNotEmpty;
     final isVerified = d?.isVerified ?? false;
+    final allUploaded = idCardUploaded && licenseUploaded && insuranceUploaded && vehiclePhotoUploaded;
 
     return Scaffold(
       appBar: const InggoAppBar(title: 'Documents'),
@@ -204,6 +206,16 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
                   : () => _showUploadOptions('license_url', 'license', 'Permis de conduire'),
             ),
             _DocTile(
+              icon: Icons.shield,
+              label: 'Assurance',
+              isUploaded: insuranceUploaded,
+              isVerified: isVerified,
+              isUploading: _isUploading && _uploadingField == 'insurance_url',
+              onUpload: insuranceUploaded
+                  ? null
+                  : () => _showUploadOptions('insurance_url', 'insurance', 'Assurance'),
+            ),
+            _DocTile(
               icon: Icons.motorcycle,
               label: 'Photo du véhicule',
               isUploaded: vehiclePhotoUploaded,
@@ -222,12 +234,12 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
                   Icon(
                     isVerified
                         ? Icons.verified
-                        : (idCardUploaded && licenseUploaded && vehiclePhotoUploaded)
+                        : allUploaded
                             ? Icons.schedule
                             : Icons.warning_amber,
                     color: isVerified
                         ? AppColors.success
-                        : (idCardUploaded && licenseUploaded && vehiclePhotoUploaded)
+                        : allUploaded
                             ? AppColors.warning
                             : AppColors.error,
                     size: 24.w,
@@ -240,7 +252,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
                         Text(
                           isVerified
                               ? 'Vérifié'
-                              : (idCardUploaded && licenseUploaded && vehiclePhotoUploaded)
+                              : allUploaded
                                   ? 'En cours de vérification'
                                   : 'Documents manquants',
                           style: AppTextStyles.labelMedium,
@@ -248,7 +260,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
                         Text(
                           isVerified
                               ? 'Votre compte est vérifié et actif'
-                              : (idCardUploaded && licenseUploaded && vehiclePhotoUploaded)
+                              : allUploaded
                                   ? 'Vos documents sont en cours d\'examen par l\'équipe'
                                   : 'Veuillez soumettre tous les documents requis',
                           style: AppTextStyles.bodySmall,

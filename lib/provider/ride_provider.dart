@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:logger/logger.dart';
@@ -231,6 +232,52 @@ class RideNotifier extends StateNotifier<RideState> {
         }
       },
     );
+
+    // Fallback: poll ride status every 5 seconds to catch missed Realtime events
+    // This ensures the client always sees status changes (accepted, in_progress, etc.)
+    _startStatusPolling(rideId);
+  }
+
+  /// Periodically refresh the ride status from the DB as a fallback
+  /// for Realtime events that might be missed.
+  Timer? _statusPollTimer;
+
+  void _startStatusPolling(String rideId) {
+    _stopStatusPolling();
+    _statusPollTimer = Timer.periodic(const Duration(seconds: 5), (timer) async {
+      // Stop polling if no current ride or ride is completed/cancelled
+      final currentRide = state.currentRide;
+      if (currentRide == null ||
+          currentRide.status == RideStatus.completed ||
+          currentRide.status == RideStatus.cancelled) {
+        _stopStatusPolling();
+        return;
+      }
+
+      try {
+        final data = await SupabaseService.instance.getById('rides', rideId);
+        final freshRide = RideModel.fromJson(data);
+
+        // Only update if the status actually changed
+        if (freshRide.status != currentRide.status) {
+          _log.i('Status poll detected change: ${currentRide.status} → ${freshRide.status}');
+          state = state.copyWith(currentRide: freshRide);
+
+          // If a driver was assigned and we don't have their info yet, fetch it
+          if (freshRide.driverId != null && state.driverName == null) {
+            _fetchDriverInfo(freshRide.driverId!);
+            _subscribeToDriverLocation(freshRide.driverId!);
+          }
+        }
+      } catch (e) {
+        _log.w('Status poll failed: $e');
+      }
+    });
+  }
+
+  void _stopStatusPolling() {
+    _statusPollTimer?.cancel();
+    _statusPollTimer = null;
   }
 
   /// Subscribe to Realtime updates on the driver's location
@@ -300,6 +347,7 @@ class RideNotifier extends StateNotifier<RideState> {
       _log.i('Unsubscribed from ride updates');
     }
     _stopDriverLocationSubscription();
+    _stopStatusPolling();
   }
 
   Future<void> cancelRide(String reason) async {

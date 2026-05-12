@@ -49,10 +49,6 @@ class AppConstants {
   static const String roleClient = 'client';
   static const String roleDriver = 'driver';
 
-  // Ride Status — use RideStatus enum instead of these string constants
-  static const String statusSearching = 'searching';
-  static const String statusAccepted = 'accepted';
-  static const String statusInProgress = 'in_progress';
-  static const String statusCompleted = 'completed';
-  static const String statusCancelled = 'cancelled';
+  // Note: Ride status strings are handled by the RideStatus enum in ride_model.dart.
+  // Use RideStatus.toSupabase() and RideModel.parseRideStatus() instead of string constants.
 }

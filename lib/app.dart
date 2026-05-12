@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'core/theme/inggo_theme.dart';
 import 'core/router/app_router.dart';
 import 'core/services/notification_service.dart';
@@ -68,21 +69,40 @@ class _InggoAppState extends ConsumerState<InggoApp> with WidgetsBindingObserver
     }
   }
 
-  void _maybeStartNotifications() {
+  void _maybeStartNotifications() async {
     // Inject the Riverpod container so NotificationService can update providers
     NotificationService.instance.setContainer(ref.container);
 
     final authState = ref.read(authProvider);
     final userId = authState.user?.id;
     if (userId != null && authState.isAuthenticated) {
-      NotificationService.instance.startListening(userId);
+      // Check if notifications are enabled in user preferences
+      // before auto-starting. Both client and driver have separate prefs.
+      final prefs = await SharedPreferences.getInstance();
+      final notificationsEnabled =
+          prefs.getBool('notifications_enabled') ??
+          prefs.getBool('driver_notifications_enabled') ??
+          true; // default to true if no preference set
+
+      if (notificationsEnabled) {
+        NotificationService.instance.startListening(userId);
+      }
     }
 
     // Listen for auth changes to start/stop notifications
-    ref.listen<AuthState>(authProvider, (prev, next) {
+    ref.listen<AuthState>(authProvider, (prev, next) async {
       final newUserId = next.user?.id;
       if (next.isAuthenticated && newUserId != null) {
-        NotificationService.instance.startListening(newUserId);
+        // Respect user's notification preference
+        final prefs = await SharedPreferences.getInstance();
+        final notificationsEnabled =
+            prefs.getBool('notifications_enabled') ??
+            prefs.getBool('driver_notifications_enabled') ??
+            true;
+
+        if (notificationsEnabled) {
+          NotificationService.instance.startListening(newUserId);
+        }
       } else {
         NotificationService.instance.stopListening();
       }
