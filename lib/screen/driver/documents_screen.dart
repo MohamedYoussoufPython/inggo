@@ -27,6 +27,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
   }
 
   Future<void> _uploadDocument(String field, String bucketPath) async {
+    final loc = AppLocalizations.of(context);
     final picker = ImagePicker();
     final image = await picker.pickImage(
       source: ImageSource.gallery,
@@ -35,6 +36,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
       maxHeight: 1024,
     );
     if (image == null) return;
+    if (!context.mounted) return;
 
     setState(() {
       _isUploading = true;
@@ -42,9 +44,8 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
     });
 
     try {
-      final notAuthMsg = AppLocalizations.of(context).notAuthenticated;
       final userId = SupabaseService.instance.currentUserId;
-      if (userId == null) throw Exception(notAuthMsg);
+      if (userId == null) throw Exception(loc.notAuthenticated);
 
       final bytes = await File(image.path).readAsBytes();
       final path = '$userId/$bucketPath/${DateTime.now().millisecondsSinceEpoch}.jpg';
@@ -56,15 +57,15 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
       // Refresh driver data
       await ref.read(driverProvider.notifier).loadDriver();
 
-      if (mounted) {
-        InggoToast.success(context, AppLocalizations.of(context).uploadSuccess);
+      if (context.mounted) {
+        InggoToast.success(context, loc.uploadSuccess);
       }
     } catch (e) {
-      if (mounted) {
-        InggoToast.error(context, '${AppLocalizations.of(context).error}: $e');
+      if (context.mounted) {
+        InggoToast.error(context, '${loc.error}: $e');
       }
     } finally {
-      if (mounted) {
+      if (context.mounted) {
         setState(() {
           _isUploading = false;
           _uploadingField = null;
@@ -74,6 +75,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
   }
 
   Future<void> _takePhoto(String field, String bucketPath) async {
+    final loc = AppLocalizations.of(context);
     final picker = ImagePicker();
     final image = await picker.pickImage(
       source: ImageSource.camera,
@@ -82,6 +84,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
       maxHeight: 1024,
     );
     if (image == null) return;
+    if (!context.mounted) return;
 
     setState(() {
       _isUploading = true;
@@ -89,9 +92,8 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
     });
 
     try {
-      final notAuthMsg = AppLocalizations.of(context).notAuthenticated;
       final userId = SupabaseService.instance.currentUserId;
-      if (userId == null) throw Exception(notAuthMsg);
+      if (userId == null) throw Exception(loc.notAuthenticated);
 
       final bytes = await File(image.path).readAsBytes();
       final path = '$userId/$bucketPath/${DateTime.now().millisecondsSinceEpoch}.jpg';
@@ -100,15 +102,15 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
       await SupabaseService.instance.update('drivers', userId, {field: url});
       await ref.read(driverProvider.notifier).loadDriver();
 
-      if (mounted) {
-        InggoToast.success(context, AppLocalizations.of(context).uploadSuccess);
+      if (context.mounted) {
+        InggoToast.success(context, loc.uploadSuccess);
       }
     } catch (e) {
-      if (mounted) {
-        InggoToast.error(context, '${AppLocalizations.of(context).error}: $e');
+      if (context.mounted) {
+        InggoToast.error(context, '${loc.error}: $e');
       }
     } finally {
-      if (mounted) {
+      if (context.mounted) {
         setState(() {
           _isUploading = false;
           _uploadingField = null;

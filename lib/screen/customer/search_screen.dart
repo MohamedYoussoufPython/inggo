@@ -34,7 +34,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   /// so that createRide() uses the real location instead of a fallback.
   Future<void> _setPickupFromGps() async {
     final position = await LocationService.instance.getCurrentPosition();
-    if (position != null && mounted) {
+    if (position != null && context.mounted) {
       final loc = AppLocalizations.of(context);
       ref.read(rideProvider.notifier).setPickup(
             loc.currentPosition,

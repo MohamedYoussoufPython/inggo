@@ -122,7 +122,7 @@ class _DriverRideScreenState extends ConsumerState<DriverRideScreen> {
                         final success = await ref
                             .read(driverProvider.notifier)
                             .updateRideStatus(RideStatus.inProgress);
-                        if (!success && mounted) {
+                        if (!success && context.mounted) {
                           messenger.showSnackBar(
                             SnackBar(
                               content: Text(failMsg),
@@ -164,7 +164,7 @@ class _DriverRideScreenState extends ConsumerState<DriverRideScreen> {
                               final success = await ref
                                   .read(driverProvider.notifier)
                                   .completeRide();
-                              if (!mounted) return;
+                              if (!context.mounted) return;
                               if (success) {
                                 router.go('/driver/end-ride');
                               } else {

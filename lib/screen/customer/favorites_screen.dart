@@ -84,14 +84,12 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
                               icon: Icon(Icons.delete_outline,
                                   color: AppColors.error, size: 20.w),
                               onPressed: () async {
-                                final ctx = context;
                                 final msg = AppLocalizations.of(context).favoriteDeleted;
                                 await ref
                                     .read(favoritesProvider.notifier)
                                     .deleteFavorite(fav.id);
-                                if (mounted) {
-                                  InggoToast.success(ctx, msg);
-                                }
+                                if (!context.mounted) return;
+                                InggoToast.success(context, msg);
                               },
                             ),
                           ],
@@ -114,7 +112,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
   Future<void> _navigateToBooking(String address, double lat, double lng) async {
     // Set pickup from current GPS position
     final position = await LocationService.instance.getCurrentPosition();
-    if (position != null && mounted) {
+    if (position != null && context.mounted) {
       final loc = AppLocalizations.of(context);
       ref.read(rideProvider.notifier).setPickup(
             loc.currentPosition,
@@ -124,7 +122,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
     }
     // Set dropoff
     ref.read(rideProvider.notifier).setDropoff(address, lat, lng);
-    if (mounted) {
+    if (context.mounted) {
       context.push('/client/booking');
     }
   }
@@ -183,7 +181,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
                       addressController.text = loc.selectedPosition;
                     }
                     // Re-show dialog with updated state
-                    if (mounted) {
+                    if (context.mounted) {
                       _showAddFavoriteDialogWithValues(
                         context,
                         labelController.text,
