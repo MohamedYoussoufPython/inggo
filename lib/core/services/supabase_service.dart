@@ -183,24 +183,25 @@ class SupabaseService {
     return client.storage.from(bucket).getPublicUrl(path);
   }
 
-  /// Upload a file to a **private** bucket and return a signed URL.
-  /// [expiresIn] is the signed URL validity in seconds (default 1 year).
-  Future<String> uploadFileSigned(
+  /// Upload a file to a **private** bucket and return the **storage path**.
+  /// The path can be stored in the DB. Use [getSignedUrl] to get a
+  /// time-limited URL when you need to display the file.
+  Future<String> uploadPrivateFile(
     String bucket,
     String path,
-    List<int> bytes, {
-    int expiresIn = 31536000, // 1 year
-  }) async {
+    List<int> bytes,
+  ) async {
     final uint8List = Uint8List.fromList(bytes);
     await client.storage.from(bucket).uploadBinary(path, uint8List);
-    return client.storage.from(bucket).createSignedUrl(path, expiresIn);
+    return path;
   }
 
-  /// Get a fresh signed URL for a file in a private bucket.
+  /// Get a signed URL for a file in a private bucket.
+  /// [expiresIn] is the signed URL validity in seconds (default 1 hour).
   Future<String> getSignedUrl(
     String bucket,
     String path, {
-    int expiresIn = 3600, // 1 hour
+    int expiresIn = 3600,
   }) async {
     return client.storage.from(bucket).createSignedUrl(path, expiresIn);
   }

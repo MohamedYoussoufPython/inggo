@@ -51,6 +51,8 @@ class DriverProfileScreen extends ConsumerWidget {
             SizedBox(height: 32.h),
             _MenuTile(Icons.person_outline, 'Modifier le profil',
                 () => context.push('/driver/edit-profile')),
+            _MenuTile(Icons.notifications_outlined, 'Notifications',
+                () => context.push('/driver/notifications')),
             _MenuTile(Icons.language, 'Langue',
                 () => context.push('/driver/settings')),
             _MenuTile(Icons.help_outline, 'Support',

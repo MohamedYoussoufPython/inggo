@@ -475,7 +475,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
         if (entry.value != null) {
           final bytes = await entry.value!.readAsBytes();
           final filePath = '$userId/${entry.key}_${DateTime.now().millisecondsSinceEpoch}.jpg';
-          docUrls[entry.key] = await SupabaseService.instance.uploadFileSigned('driver-documents', filePath, bytes);
+          docUrls[entry.key] = await SupabaseService.instance.uploadPrivateFile('driver-documents', filePath, bytes);
         }
       }
 

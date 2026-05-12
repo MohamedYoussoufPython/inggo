@@ -239,6 +239,10 @@ class AppRouter {
         path: '/driver/settings',
         builder: (context, state) => const DriverSettingsScreen(),
       ),
+      GoRoute(
+        path: '/driver/notifications',
+        builder: (context, state) => const NotificationsScreen(),
+      ),
     ],
   );
 }
