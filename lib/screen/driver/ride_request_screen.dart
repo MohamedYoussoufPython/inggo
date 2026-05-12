@@ -68,7 +68,7 @@ class _RideRequestScreenState extends ConsumerState<RideRequestScreen>
       setState(() => _isAccepting = false);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(AppLocalizations.of(context)!.rideAcceptFailed),
+          content: Text(AppLocalizations.of(context).rideAcceptFailed),
           backgroundColor: AppColors.error,
         ),
       );

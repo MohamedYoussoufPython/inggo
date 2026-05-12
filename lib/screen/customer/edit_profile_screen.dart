@@ -104,7 +104,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = ref.watch(authProvider).user;
+    // Watch auth provider to rebuild on profile changes
+    ref.watch(authProvider);
     final loc = AppLocalizations.of(context);
 
     return Scaffold(

@@ -19,13 +19,6 @@ class DriverRideScreen extends ConsumerStatefulWidget {
 class _DriverRideScreenState extends ConsumerState<DriverRideScreen> {
   bool _isCompleting = false;
 
-  /// Derive _pickedUp from the ride status so it's always in sync
-  /// even if the screen is rebuilt (e.g. after navigation back).
-  bool get _pickedUp {
-    final ride = ref.read(driverProvider).currentRide;
-    return ride?.status == RideStatus.inProgress;
-  }
-
   @override
   Widget build(BuildContext context) {
     final driverState = ref.watch(driverProvider);
@@ -175,7 +168,7 @@ class _DriverRideScreenState extends ConsumerState<DriverRideScreen> {
                                 setState(() => _isCompleting = false);
                                 messenger.showSnackBar(
                                   SnackBar(
-                                    content: Text(AppLocalizations.of(context)!.rideCompleteFailed),
+                                    content: Text(AppLocalizations.of(context).rideCompleteFailed),
                                     backgroundColor: AppColors.error,
                                   ),
                                 );

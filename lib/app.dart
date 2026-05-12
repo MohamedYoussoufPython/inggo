@@ -10,6 +10,7 @@ import 'core/services/supabase_service.dart';
 import 'l10n/app_localizations.dart';
 import 'provider/auth_provider.dart';
 import 'provider/driver_provider.dart';
+import 'provider/notification_provider.dart';
 
 class InggoApp extends ConsumerStatefulWidget {
   const InggoApp({super.key});
@@ -70,8 +71,11 @@ class _InggoAppState extends ConsumerState<InggoApp> with WidgetsBindingObserver
   }
 
   void _maybeStartNotifications() async {
-    // Inject the Riverpod container so NotificationService can update providers
-    NotificationService.instance.setContainer(ref.container);
+    // Set up the notification callback so NotificationService can
+    // update the notification provider via ref (no ProviderContainer needed).
+    NotificationService.instance.setOnNotificationCallback((notif) {
+      ref.read(notificationProvider.notifier).addIncomingNotification(notif);
+    });
 
     final authState = ref.read(authProvider);
     final userId = authState.user?.id;

@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/constants/constants.dart';
-import '../../core/constants/app_constants.dart';
 import '../../core/services/notification_service.dart';
 import '../../core/services/supabase_service.dart';
 import '../../widget/widgets.dart';

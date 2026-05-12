@@ -70,20 +70,21 @@ class SupabaseService {
     int limit = 20,
     int offset = 0,
   }) async {
-    var filter = client.from(table).select();
+    var queryBuilder = client.from(table).select();
     if (query != null) {
       query.forEach((key, value) {
-        filter = filter.eq(key, value);
+        queryBuilder = queryBuilder.eq(key, value);
       });
     }
+    // Build the full query chain before awaiting
+    dynamic chain = queryBuilder;
     if (orderBy != null) {
-      filter = filter.order(orderBy, ascending: ascending);
+      chain = chain.order(orderBy, ascending: ascending);
     }
     // Supabase range is inclusive on both ends, so end = offset + limit - 1
     final end = offset + limit - 1;
-    return List<Map<String, dynamic>>.from(
-      await filter.range(offset, end),
-    );
+    final result = await chain.range(offset, end);
+    return List<Map<String, dynamic>>.from(result);
   }
 
   Future<Map<String, dynamic>> getById(String table, String id) async {

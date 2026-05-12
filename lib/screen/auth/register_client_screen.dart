@@ -7,7 +7,6 @@ import '../../core/constants/constants.dart';
 import '../../core/services/supabase_service.dart';
 import '../../core/router/app_router.dart';
 import '../../widget/widgets.dart';
-import '../../widget/inggo_stepper.dart';
 import '../../l10n/app_localizations.dart';
 
 class RegisterClientScreen extends StatefulWidget {
@@ -41,7 +40,6 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
   bool _otpSending = false;
   bool _phoneVerified = false;
   bool _otpVerifying = false;
-  String _otpCode = '';
   int _resendTimer = 0;
   Timer? _timer;
   Timer? _debounceTimer;
@@ -91,7 +89,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
       setState(() {
         _phoneVerified = false;
         _otpSent = false;
-        _otpCode = '';
+
         _lastSentPhone = '';
       });
       return;
@@ -102,7 +100,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
       if (newPhone != _lastSentPhone) {
         setState(() {
           _otpSent = false;
-          _otpCode = '';
+  
           _lastSentPhone = '';
         });
       }
@@ -138,7 +136,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
         _otpSent = true;
         _otpSending = false;
         _phoneVerified = false;
-        _otpCode = '';
+
         _lastSentPhone = _fullPhone;
         _resendTimer = 60;
       });
@@ -721,11 +719,9 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
             Center(
               child: InggoOtpInput(
                 onCompleted: (code) {
-                  _otpCode = code;
                   _verifyOtp(code);
                 },
                 onChanged: (code) {
-                  _otpCode = code;
                   _clearErrors();
                 },
               ),

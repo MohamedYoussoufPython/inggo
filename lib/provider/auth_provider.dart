@@ -61,7 +61,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
         );
         final user = UserModel.fromJson(userData);
         // Cache the role for the router's role-based access control
-        AppRouter.setCachedRole(user.role);
+        AppRouter.setCachedRole(user.role.name);
         state = state.copyWith(
           isLoading: false,
           isAuthenticated: true,

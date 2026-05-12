@@ -43,7 +43,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
 
     try {
       final userId = SupabaseService.instance.currentUserId;
-      if (userId == null) throw Exception(AppLocalizations.of(context)!.notAuthenticated);
+      if (userId == null) throw Exception(AppLocalizations.of(context).notAuthenticated);
 
       final bytes = await File(image.path).readAsBytes();
       final path = '$userId/$bucketPath/${DateTime.now().millisecondsSinceEpoch}.jpg';
@@ -56,7 +56,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
       await ref.read(driverProvider.notifier).loadDriver();
 
       if (mounted) {
-        InggoToast.success(context, AppLocalizations.of(context)!.uploadSuccess);
+        InggoToast.success(context, AppLocalizations.of(context).uploadSuccess);
       }
     } catch (e) {
       if (mounted) {
@@ -89,7 +89,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
 
     try {
       final userId = SupabaseService.instance.currentUserId;
-      if (userId == null) throw Exception(AppLocalizations.of(context)!.notAuthenticated);
+      if (userId == null) throw Exception(AppLocalizations.of(context).notAuthenticated);
 
       final bytes = await File(image.path).readAsBytes();
       final path = '$userId/$bucketPath/${DateTime.now().millisecondsSinceEpoch}.jpg';
@@ -99,11 +99,11 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
       await ref.read(driverProvider.notifier).loadDriver();
 
       if (mounted) {
-        InggoToast.success(context, AppLocalizations.of(context)!.uploadSuccess);
+        InggoToast.success(context, AppLocalizations.of(context).uploadSuccess);
       }
     } catch (e) {
       if (mounted) {
-        InggoToast.error(context, '${AppLocalizations.of(context)!.error}: $e');
+        InggoToast.error(context, '${AppLocalizations.of(context).error}: $e');
       }
     } finally {
       if (mounted) {
