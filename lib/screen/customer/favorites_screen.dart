@@ -84,11 +84,13 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
                               icon: Icon(Icons.delete_outline,
                                   color: AppColors.error, size: 20.w),
                               onPressed: () async {
+                                final ctx = context;
+                                final msg = AppLocalizations.of(context).favoriteDeleted;
                                 await ref
                                     .read(favoritesProvider.notifier)
                                     .deleteFavorite(fav.id);
                                 if (mounted) {
-                                  InggoToast.success(context, AppLocalizations.of(context).favoriteDeleted);
+                                  InggoToast.success(ctx, msg);
                                 }
                               },
                             ),
@@ -112,7 +114,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
   Future<void> _navigateToBooking(String address, double lat, double lng) async {
     // Set pickup from current GPS position
     final position = await LocationService.instance.getCurrentPosition();
-    if (position != null) {
+    if (position != null && mounted) {
       final loc = AppLocalizations.of(context);
       ref.read(rideProvider.notifier).setPickup(
             loc.currentPosition,
@@ -122,7 +124,9 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
     }
     // Set dropoff
     ref.read(rideProvider.notifier).setDropoff(address, lat, lng);
-    context.push('/client/booking');
+    if (mounted) {
+      context.push('/client/booking');
+    }
   }
 
   /// Show a dialog to add a new favorite destination
@@ -179,13 +183,15 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
                       addressController.text = loc.selectedPosition;
                     }
                     // Re-show dialog with updated state
-                    if (mounted) _showAddFavoriteDialogWithValues(
-                      context,
-                      labelController.text,
-                      addressController.text,
-                      selectedLat,
-                      selectedLng,
-                    );
+                    if (mounted) {
+                      _showAddFavoriteDialogWithValues(
+                        context,
+                        labelController.text,
+                        addressController.text,
+                        selectedLat,
+                        selectedLng,
+                      );
+                    }
                   }
                 },
               ),

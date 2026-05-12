@@ -117,13 +117,15 @@ class _DriverRideScreenState extends ConsumerState<DriverRideScreen> {
                       label: loc.arrivedAtPickup,
                       icon: Icons.check_circle,
                       onPressed: () async {
+                        final messenger = ScaffoldMessenger.of(context);
+                        final failMsg = loc.rideUpdateFailed;
                         final success = await ref
                             .read(driverProvider.notifier)
                             .updateRideStatus(RideStatus.inProgress);
                         if (!success && mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
+                          messenger.showSnackBar(
                             SnackBar(
-                              content: Text(loc.rideUpdateFailed),
+                              content: Text(failMsg),
                               backgroundColor: AppColors.error,
                             ),
                           );
@@ -158,6 +160,7 @@ class _DriverRideScreenState extends ConsumerState<DriverRideScreen> {
                               setState(() => _isCompleting = true);
                               final router = GoRouter.of(context);
                               final messenger = ScaffoldMessenger.of(context);
+                              final failMsg = AppLocalizations.of(context).rideCompleteFailed;
                               final success = await ref
                                   .read(driverProvider.notifier)
                                   .completeRide();
@@ -168,7 +171,7 @@ class _DriverRideScreenState extends ConsumerState<DriverRideScreen> {
                                 setState(() => _isCompleting = false);
                                 messenger.showSnackBar(
                                   SnackBar(
-                                    content: Text(AppLocalizations.of(context).rideCompleteFailed),
+                                    content: Text(failMsg),
                                     backgroundColor: AppColors.error,
                                   ),
                                 );

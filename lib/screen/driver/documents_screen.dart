@@ -42,8 +42,9 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
     });
 
     try {
+      final notAuthMsg = AppLocalizations.of(context).notAuthenticated;
       final userId = SupabaseService.instance.currentUserId;
-      if (userId == null) throw Exception(AppLocalizations.of(context).notAuthenticated);
+      if (userId == null) throw Exception(notAuthMsg);
 
       final bytes = await File(image.path).readAsBytes();
       final path = '$userId/$bucketPath/${DateTime.now().millisecondsSinceEpoch}.jpg';
@@ -88,8 +89,9 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
     });
 
     try {
+      final notAuthMsg = AppLocalizations.of(context).notAuthenticated;
       final userId = SupabaseService.instance.currentUserId;
-      if (userId == null) throw Exception(AppLocalizations.of(context).notAuthenticated);
+      if (userId == null) throw Exception(notAuthMsg);
 
       final bytes = await File(image.path).readAsBytes();
       final path = '$userId/$bucketPath/${DateTime.now().millisecondsSinceEpoch}.jpg';

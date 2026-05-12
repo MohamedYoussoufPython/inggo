@@ -147,7 +147,7 @@ class SupabaseService {
     final suffix = filterColumn != null && filterValue != null
         ? '_${filterColumn}_$filterValue'
         : '';
-    final channelName = 'public:${table}${suffix}_${DateTime.now().millisecondsSinceEpoch}';
+    final channelName = 'public:$table$suffix_${DateTime.now().millisecondsSinceEpoch}';
     _log.i('Subscribing to $table via channel $channelName');
     final channel = client.channel(channelName);
     channel.onPostgresChanges(
