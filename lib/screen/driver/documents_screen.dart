@@ -27,7 +27,9 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
   }
 
   Future<void> _uploadDocument(String field, String bucketPath) async {
+    // Capture context-dependent values before any async gap
     final loc = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
     final picker = ImagePicker();
     final image = await picker.pickImage(
       source: ImageSource.gallery,
@@ -36,7 +38,6 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
       maxHeight: 1024,
     );
     if (image == null) return;
-    if (!context.mounted) return;
 
     setState(() {
       _isUploading = true;
@@ -57,15 +58,15 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
       // Refresh driver data
       await ref.read(driverProvider.notifier).loadDriver();
 
-      if (context.mounted) {
-        InggoToast.success(context, loc.uploadSuccess);
+      if (mounted) {
+        InggoToast.successMessenger(messenger, loc.uploadSuccess);
       }
     } catch (e) {
-      if (context.mounted) {
-        InggoToast.error(context, '${loc.error}: $e');
+      if (mounted) {
+        InggoToast.errorMessenger(messenger, '${loc.error}: $e');
       }
     } finally {
-      if (context.mounted) {
+      if (mounted) {
         setState(() {
           _isUploading = false;
           _uploadingField = null;
@@ -75,7 +76,9 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
   }
 
   Future<void> _takePhoto(String field, String bucketPath) async {
+    // Capture context-dependent values before any async gap
     final loc = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
     final picker = ImagePicker();
     final image = await picker.pickImage(
       source: ImageSource.camera,
@@ -84,7 +87,6 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
       maxHeight: 1024,
     );
     if (image == null) return;
-    if (!context.mounted) return;
 
     setState(() {
       _isUploading = true;
@@ -102,15 +104,15 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
       await SupabaseService.instance.update('drivers', userId, {field: url});
       await ref.read(driverProvider.notifier).loadDriver();
 
-      if (context.mounted) {
-        InggoToast.success(context, loc.uploadSuccess);
+      if (mounted) {
+        InggoToast.successMessenger(messenger, loc.uploadSuccess);
       }
     } catch (e) {
-      if (context.mounted) {
-        InggoToast.error(context, '${loc.error}: $e');
+      if (mounted) {
+        InggoToast.errorMessenger(messenger, '${loc.error}: $e');
       }
     } finally {
-      if (context.mounted) {
+      if (mounted) {
         setState(() {
           _isUploading = false;
           _uploadingField = null;

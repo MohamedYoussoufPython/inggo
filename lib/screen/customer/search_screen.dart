@@ -33,9 +33,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   /// Set the pickup point from the client's current GPS position
   /// so that createRide() uses the real location instead of a fallback.
   Future<void> _setPickupFromGps() async {
+    // Capture context-dependent value before the async gap
+    final loc = AppLocalizations.of(context);
     final position = await LocationService.instance.getCurrentPosition();
-    if (position != null && context.mounted) {
-      final loc = AppLocalizations.of(context);
+    if (position != null) {
       ref.read(rideProvider.notifier).setPickup(
             loc.currentPosition,
             position.latitude,

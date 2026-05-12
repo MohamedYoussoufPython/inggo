@@ -110,10 +110,12 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
 
   /// Set pickup from GPS, then set dropoff from favorite, then navigate to booking
   Future<void> _navigateToBooking(String address, double lat, double lng) async {
+    // Capture context-dependent values before the async gap
+    final loc = AppLocalizations.of(context);
+    final router = GoRouter.of(context);
     // Set pickup from current GPS position
     final position = await LocationService.instance.getCurrentPosition();
-    if (position != null && context.mounted) {
-      final loc = AppLocalizations.of(context);
+    if (position != null) {
       ref.read(rideProvider.notifier).setPickup(
             loc.currentPosition,
             position.latitude,
@@ -122,9 +124,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
     }
     // Set dropoff
     ref.read(rideProvider.notifier).setDropoff(address, lat, lng);
-    if (context.mounted) {
-      context.push('/client/booking');
-    }
+    router.push('/client/booking');
   }
 
   /// Show a dialog to add a new favorite destination
