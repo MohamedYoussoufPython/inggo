@@ -77,7 +77,7 @@ class AboutScreen extends StatelessWidget {
             ),
             Text(
               '\u00a9 ${DateTime.now().year} Inggo VTC. ${loc.allRightsReserved}',
-              style: AppTextStyles.caption.copyWith(color: AppColors.textHint),
+              style: AppTextStyles.bodySmall.copyWith(color: AppColors.textHint),
               textAlign: TextAlign.center,
             ),
           ],

@@ -22,9 +22,15 @@ class InggoBottomNav extends StatelessWidget {
         : _clientItems(loc);
 
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: AppColors.surface,
-        boxShadow: [AppShadows.bottomNav],
+        boxShadow: [
+          BoxShadow(
+            color: Color(0x0F000000),
+            blurRadius: 12,
+            offset: Offset(0, -2),
+          ),
+        ],
         border: Border(top: BorderSide(color: AppColors.border, width: 0.5)),
       ),
       child: SafeArea(
@@ -41,8 +47,6 @@ class InggoBottomNav extends StatelessWidget {
                 label: item['label'] as String,
                 isSelected: selected,
                 onTap: () {
-                  // Home tab uses go() to reset stack; other tabs use push()
-                  // to preserve navigation state when switching back.
                   if (item['route'] as String == (isDriver ? '/driver/home' : '/client/home')) {
                     context.go(item['route'] as String);
                   } else {
@@ -103,7 +107,7 @@ class _NavItem extends StatelessWidget {
             SizedBox(height: 2.h),
             Text(
               label,
-              style: (isSelected ? AppTextStyles.labelSmall : AppTextStyles.caption)
+              style: (isSelected ? AppTextStyles.labelSmall : AppTextStyles.bodySmall)
                   .copyWith(
                 color: isSelected ? AppColors.primary : AppColors.textHint,
               ),

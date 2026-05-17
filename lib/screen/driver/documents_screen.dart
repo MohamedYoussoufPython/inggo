@@ -134,7 +134,7 @@ class _DocumentsScreenState extends ConsumerState<DocumentsScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('${loc.submitColon} $label', style: AppTextStyles.headline4),
+              Text('${loc.submitColon} $label', style: AppTextStyles.labelLarge),
               SizedBox(height: 20.h),
               InggoButton(
                 label: loc.takePhoto,

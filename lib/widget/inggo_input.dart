@@ -46,7 +46,7 @@ class InggoInput extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (label != null) ...[
-          // Label uppercase DS style (11px/700/letterSpacing 0.08)
+          // Label: AppTextStyles.labelSection.copyWith — 11px/700/uppercase/letterSpacing 0.08
           Text(label!.toUpperCase(),
               style: AppTextStyles.labelSection.copyWith(
                 color: AppColors.textSecondary,
@@ -84,7 +84,7 @@ class InggoInput extends StatelessWidget {
             prefixStyle: AppTextStyles.bodyLarge
                 .copyWith(color: AppColors.textSecondary),
             filled: true,
-            fillColor: enabled ? AppColors.surface : AppColors.surfaceVariant,
+            fillColor: enabled ? AppColors.surface : AppColors.background,
             contentPadding:
                 EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
             border: OutlineInputBorder(
@@ -173,13 +173,19 @@ class InggoOtpInput extends StatelessWidget {
       ),
     );
 
-    // Focused: primary border + focus ring glow
+    // Focused: primary border + focus ring glow (0 0 0 3px rgba(255,199,0,0.12))
     final focusedPinTheme = defaultPinTheme.copyWith(
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
         border: Border.all(color: AppColors.primary, width: 1.5),
-        boxShadow: [AppShadows.focusRing],
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withOpacity(0.12),
+            blurRadius: 0,
+            spreadRadius: 3,
+          ),
+        ],
       ),
     );
 

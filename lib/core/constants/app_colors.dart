@@ -18,13 +18,10 @@ class AppColors {
   // ── Backgrounds ──
   static const Color background    = Color(0xFFFAFAFA); // #FAFAFA
   static const Color surface       = Color(0xFFFFFFFF);
-  static const Color surfaceVariant = Color(0xFFF5F5F5); // disabled inputs / badge grey
-  static const Color surfaceDark   = Color(0xFF1E1E1E);
 
   // ── Borders ──
   static const Color border        = Color(0xFFE8E8E8); // #E8E8E8
   static const Color border2       = Color(0xFFD0D0D0); // #D0D0D0
-  static const Color borderDark    = Color(0xFF424242);
 
   // ── Status ──
   static const Color success       = Color(0xFF16A34A); // #16A34A
@@ -37,7 +34,6 @@ class AppColors {
   static const Color info          = Color(0xFF2196F3); // #2196F3
 
   // ── Ride Status ──
-  static const Color pending       = Color(0xFFFF9800);
   static const Color searching     = Color(0xFF2196F3);
   static const Color accepted      = Color(0xFF16A34A);
   static const Color inProgress    = Color(0xFF00BCD4);
@@ -45,10 +41,9 @@ class AppColors {
   static const Color cancelled     = Color(0xFFDC2626);
 
   // ── Others ──
-  static const Color secondary     = Color(0xFF1A1A1A);
-  static const Color secondaryLight = Color(0xFF484848);
   static const Color overlay       = Color(0x80000000);
   static const Color overlayLight  = Color(0x33000000);
-  static const Color divider       = Color(0xFFE8E8E8);
+  static const Color divider       = Color(0xFFE8E8E8); // = border
   static const Color shadow        = Color(0x0F000000); // 6% opacity
+  static const Color secondary     = Color(0xFF1A1A1A); // = textPrimary
 }

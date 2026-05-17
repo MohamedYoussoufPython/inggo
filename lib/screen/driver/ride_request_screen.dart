@@ -185,7 +185,7 @@ class _RideRequestScreenState extends ConsumerState<RideRequestScreen>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(label, style: AppTextStyles.caption),
+              Text(label, style: AppTextStyles.bodySmall),
               Text(value,
                   style: AppTextStyles.bodyLarge,
                   overflow: TextOverflow.ellipsis),

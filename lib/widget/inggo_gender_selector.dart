@@ -80,7 +80,7 @@ class _GenderOption extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: EdgeInsets.symmetric(vertical: 14.h),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primaryLight : AppColors.surfaceVariant,
+          color: isSelected ? AppColors.primaryLight : AppColors.background,
           borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           border: Border.all(
             color: isSelected ? AppColors.primary : Colors.transparent,
@@ -90,7 +90,7 @@ class _GenderOption extends StatelessWidget {
         child: Center(
           child: Text(
             label,
-            style: AppTextStyles.headline4.copyWith(
+            style: AppTextStyles.labelLarge.copyWith(
               color: isSelected ? AppColors.textPrimary : AppColors.textHint,
               fontWeight: FontWeight.w600,
             ),

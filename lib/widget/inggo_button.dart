@@ -69,42 +69,23 @@ class InggoButton extends StatelessWidget {
             ],
           );
 
-    // ── Outline-style buttons ──
+    // ── Outline-style buttons (secondary + outline + ghost + greyOutline + dangerLight + primaryLight) ──
     if (type == InggoButtonType.outline ||
         type == InggoButtonType.ghost ||
         type == InggoButtonType.greyOutline ||
         type == InggoButtonType.dangerLight ||
-        type == InggoButtonType.primaryLight) {
+        type == InggoButtonType.primaryLight ||
+        type == InggoButtonType.secondary) {
       return OutlinedButton(
         onPressed: isLoading ? null : onPressed,
         style: OutlinedButton.styleFrom(
           minimumSize: Size(isFullWidth ? double.infinity : 0, height),
           padding: padding,
           side: BorderSide(
-            color: (style['borderColor'] ?? AppColors.primary) as Color,
+            color: (style['borderColor'] ?? AppColors.border) as Color,
             width: 1.5,
           ),
           backgroundColor: style['bgColor'] as Color?,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-          ),
-        ),
-        child: child,
-      );
-    }
-
-    // ── Secondary (yellow light "En attente") ──
-    if (type == InggoButtonType.secondary) {
-      return OutlinedButton(
-        onPressed: isLoading ? null : onPressed,
-        style: OutlinedButton.styleFrom(
-          minimumSize: Size(isFullWidth ? double.infinity : 0, height),
-          padding: padding,
-          side: BorderSide(
-            color: style['borderColor'] as Color,
-            width: 1.5,
-          ),
-          backgroundColor: style['bgColor'] as Color,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           ),
@@ -128,7 +109,7 @@ class InggoButton extends StatelessWidget {
       );
     }
 
-    // ── Filled buttons ──
+    // ── Filled buttons (primary, danger) ──
     return ElevatedButton(
       onPressed: isLoading ? null : onPressed,
       style: ElevatedButton.styleFrom(
@@ -165,16 +146,16 @@ class InggoButton extends StatelessWidget {
       // secondary = bouton jaune light "En attente"
       case InggoButtonType.secondary:
         return {
-          'bgColor': AppColors.primaryLight,
-          'borderColor': AppColors.primaryBorder,
-          'textColor': AppColors.primaryDark,
+          'bgColor': AppColors.primaryLight, // #FFF8E1
+          'textColor': AppColors.primaryDark, // #B38A00
+          'borderColor': AppColors.primaryBorder, // #FFE070
           'elevation': 0.0,
         };
       // outline = bouton "Annuler" — fond blanc, bordure grise
       case InggoButtonType.outline:
         return {
-          'borderColor': AppColors.border2,
-          'textColor': AppColors.textPrimary,
+          'borderColor': AppColors.border2, // #D0D0D0
+          'textColor': AppColors.textPrimary, // #1A1A1A
           'bgColor': AppColors.surface,
         };
       case InggoButtonType.ghost:

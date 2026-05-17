@@ -229,7 +229,7 @@ class _EarningsScreenState extends ConsumerState<EarningsScreen> {
                                       Text(
                                         Formatters.formatDateTime(
                                             ride.completedAt!),
-                                        style: AppTextStyles.caption,
+                                        style: AppTextStyles.bodySmall,
                                       ),
                                     ],
                                   ],

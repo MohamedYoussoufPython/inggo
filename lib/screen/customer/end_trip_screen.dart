@@ -82,7 +82,7 @@ class _EndTripScreenState extends ConsumerState<EndTripScreen> {
               ),
               SizedBox(height: 32.h),
               Text(loc.rateDriver,
-                  style: AppTextStyles.headline4),
+                  style: AppTextStyles.labelLarge),
               SizedBox(height: 12.h),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

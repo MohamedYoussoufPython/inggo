@@ -87,7 +87,7 @@ class _PaymentItem extends StatelessWidget {
                             : AppColors.textHint,
                       )),
                   if (!available)
-                    Text(loc.comingSoon, style: AppTextStyles.caption),
+                    Text(loc.comingSoon, style: AppTextStyles.bodySmall),
                 ],
               ),
             ),

@@ -4,7 +4,7 @@ import '../core/constants/constants.dart';
 import '../core/utils/formatters.dart';
 import '../l10n/app_localizations.dart';
 
-class InggoCard extends StatefulWidget {
+class InggoCard extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry? padding;
   final EdgeInsetsGeometry? margin;
@@ -25,41 +25,28 @@ class InggoCard extends StatefulWidget {
   });
 
   @override
-  State<InggoCard> createState() => _InggoCardState();
-}
-
-class _InggoCardState extends State<InggoCard> {
-  bool _isHovered = false;
-
-  @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: widget.onTap,
-      child: MouseRegion(
-        onEnter: (_) => setState(() => _isHovered = true),
-        onExit: (_) => setState(() => _isHovered = false),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          padding: widget.padding ?? EdgeInsets.all(AppSpacing.cardPadding),
-          margin: widget.margin,
-          decoration: BoxDecoration(
-            color: widget.color ?? AppColors.surface,
-            borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-            boxShadow: [_isHovered ? AppShadows.cardHover : AppShadows.card],
-            border: Border(
-              top: widget.isAccent
-                  ? BorderSide(
-                      color: widget.accentColor ?? AppColors.primary,
-                      width: 3,
-                    )
-                  : BorderSide(color: AppColors.border, width: 1),
-              left: BorderSide(color: AppColors.border, width: 1),
-              right: BorderSide(color: AppColors.border, width: 1),
-              bottom: BorderSide(color: AppColors.border, width: 1),
-            ),
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        padding: padding ?? EdgeInsets.all(AppSpacing.cardPadding),
+        margin: margin,
+        decoration: BoxDecoration(
+          color: color ?? AppColors.surface,
+          borderRadius: BorderRadius.circular(AppSpacing.radiusLg), // 16px
+          boxShadow: [AppShadows.card],
+          border: Border(
+            top: isAccent
+                ? BorderSide(
+                    color: accentColor ?? AppColors.primary, width: 3)
+                : BorderSide(color: AppColors.border, width: 1),
+            left: BorderSide(color: AppColors.border, width: 1),
+            right: BorderSide(color: AppColors.border, width: 1),
+            bottom: BorderSide(color: AppColors.border, width: 1),
           ),
-          child: widget.child,
         ),
+        child: child,
       ),
     );
   }

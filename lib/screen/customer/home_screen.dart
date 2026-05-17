@@ -69,7 +69,7 @@ class _CustomerHomeScreenState extends ConsumerState<CustomerHomeScreen> {
                                     ? auth.user!.fullName.substring(0, 1)
                                     : 'U')
                                 .toUpperCase(),
-                            style: AppTextStyles.headline4
+                            style: AppTextStyles.labelLarge
                                 .copyWith(color: AppColors.secondary),
                           ),
                         ),
@@ -111,7 +111,7 @@ class _CustomerHomeScreenState extends ConsumerState<CustomerHomeScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(loc.whereTo, style: AppTextStyles.headline4),
+                  Text(loc.whereTo, style: AppTextStyles.labelLarge),
                   SizedBox(height: 12.h),
                   GestureDetector(
                     onTap: () => context.push('/client/search'),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../core/constants/constants.dart';
-import 'inggo_badge.dart';
 
 /// Inggo VTC Design System — Carte profil conducteur v2.0
 /// Avatar + nom + rôle + badges + stats en ligne
@@ -90,15 +89,16 @@ class InggoProfileCard extends StatelessWidget {
                           children: [
                             if (rating != null)
                               InggoBadge(
-                                label:
-                                    '★ ${rating!.toStringAsFixed(1)}',
-                                variant: InggoBadgeVariant.yellow,
+                                label: '★ ${rating!.toStringAsFixed(1)}',
+                                color: AppColors.primary,
+                                bgColor: AppColors.primaryLight,
                               ),
                             if (totalRides != null) ...[
                               SizedBox(width: 4.w),
                               InggoBadge(
                                 label: '$totalRides courses',
-                                variant: InggoBadgeVariant.grey,
+                                color: AppColors.textHint,
+                                bgColor: AppColors.background,
                               ),
                             ],
                             ...?extraBadges,
@@ -141,9 +141,9 @@ class InggoProfileCard extends StatelessWidget {
     return Expanded(
       child: Column(
         children: [
-          Text(value, style: AppTextStyles.statValue),
+          Text(value, style: AppTextStyles.labelLarge),
           SizedBox(height: 3.h),
-          Text(label, style: AppTextStyles.statLabel),
+          Text(label, style: AppTextStyles.labelSection.copyWith(color: AppColors.textHint, fontWeight: FontWeight.w500)),
         ],
       ),
     );

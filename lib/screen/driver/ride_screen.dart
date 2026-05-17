@@ -88,13 +88,13 @@ class _DriverRideScreenState extends ConsumerState<DriverRideScreen> {
                     ),
                     child: Text(
                       Formatters.formatPrice(ride.price),
-                      style: AppTextStyles.headline4.copyWith(color: AppColors.secondary),
+                      style: AppTextStyles.labelLarge.copyWith(color: AppColors.secondary),
                     ),
                   ),
                   SizedBox(height: 16.h),
                   Text(
                     pickedUp ? loc.rideInProgressLabel : loc.goToPickup,
-                    style: AppTextStyles.headline4,
+                    style: AppTextStyles.labelLarge,
                   ),
                   SizedBox(height: 8.h),
                   if (!pickedUp) ...[

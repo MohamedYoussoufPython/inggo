@@ -73,7 +73,7 @@ class TripInProgressScreen extends ConsumerWidget {
                           Text(
                             Formatters.formatPrice(
                                 currentRide?.price ?? 250),
-                            style: AppTextStyles.headline4.copyWith(
+                            style: AppTextStyles.labelLarge.copyWith(
                                 color: AppColors.secondary),
                           ),
                         ],

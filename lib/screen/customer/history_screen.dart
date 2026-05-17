@@ -117,7 +117,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                               if (r.createdAt != null) ...[
                                 SizedBox(height: 8.h),
                                 Text(Formatters.formatDateTime(r.createdAt!),
-                                    style: AppTextStyles.caption),
+                                    style: AppTextStyles.bodySmall),
                               ],
                             ],
                           ),

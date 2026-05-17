@@ -86,7 +86,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
                                   Text(n.body, style: AppTextStyles.bodySmall),
                                   if (n.createdAt != null) ...[
                                     SizedBox(height: 4.h),
-                                    Text(Formatters.formatDateTime(n.createdAt!), style: AppTextStyles.caption),
+                                    Text(Formatters.formatDateTime(n.createdAt!), style: AppTextStyles.bodySmall),
                                   ],
                                 ],
                               ),

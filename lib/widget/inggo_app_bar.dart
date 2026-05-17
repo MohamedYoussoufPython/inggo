@@ -21,7 +21,7 @@ class InggoAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Text(title, style: AppTextStyles.headline4),
+      title: Text(title, style: AppTextStyles.labelLarge),
       centerTitle: true,
       backgroundColor: backgroundColor ?? AppColors.surface,
       elevation: 0,

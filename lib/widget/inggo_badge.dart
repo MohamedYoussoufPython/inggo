@@ -4,35 +4,27 @@ import '../core/constants/constants.dart';
 import '../l10n/app_localizations.dart';
 import '../model/ride_model.dart';
 
-/// Badge variant enum — 5 DS colors
-enum InggoBadgeVariant { yellow, green, red, grey, dark }
-
 class InggoBadge extends StatelessWidget {
   final String label;
   final Color? color;
-  final Color? textColor;
-  final InggoBadgeVariant? variant;
+  final Color? bgColor;
   final bool showDot;
 
   const InggoBadge({
     super.key,
     required this.label,
     this.color,
-    this.textColor,
-    this.variant,
+    this.bgColor,
     this.showDot = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    if (variant != null) return _buildVariant();
-
-    // Fallback: auto-generate from color — pill shape + dot
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 11.w, vertical: 5.h),
       decoration: BoxDecoration(
-        color: (color ?? AppColors.primary).withOpacity(0.12),
-        borderRadius: BorderRadius.circular(100), // pill
+        color: bgColor ?? (color ?? AppColors.primary).withOpacity(0.12),
+        borderRadius: BorderRadius.circular(100), // pill — était 8px
         border: Border.all(
           color: (color ?? AppColors.primary).withOpacity(0.3),
           width: 1,
@@ -46,7 +38,7 @@ class InggoBadge extends StatelessWidget {
               width: 6.w,
               height: 6.w,
               decoration: BoxDecoration(
-                color: textColor ?? color ?? AppColors.primary,
+                color: color ?? AppColors.primary,
                 shape: BoxShape.circle,
               ),
             ),
@@ -55,79 +47,8 @@ class InggoBadge extends StatelessWidget {
           Text(
             label,
             style: AppTextStyles.labelSmall.copyWith(
-              color: textColor ?? color ?? AppColors.primaryDark,
+              color: color ?? AppColors.primaryDark,
               fontSize: 12,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildVariant() {
-    final configs = {
-      InggoBadgeVariant.yellow: {
-        'bg': AppColors.primaryLight,
-        'text': AppColors.primaryDark,
-        'border': AppColors.primaryBorder,
-        'dot': AppColors.primary,
-      },
-      InggoBadgeVariant.green: {
-        'bg': AppColors.successLight,
-        'text': AppColors.successDark,
-        'border': null,
-        'dot': AppColors.success,
-      },
-      InggoBadgeVariant.red: {
-        'bg': AppColors.errorLight,
-        'text': AppColors.errorDark,
-        'border': null,
-        'dot': AppColors.error,
-      },
-      InggoBadgeVariant.grey: {
-        'bg': AppColors.surfaceVariant,
-        'text': AppColors.textSecondary,
-        'border': null,
-        'dot': AppColors.textHint,
-      },
-      InggoBadgeVariant.dark: {
-        'bg': AppColors.primary,
-        'text': AppColors.textPrimary,
-        'border': AppColors.primaryBorder,
-        'dot': AppColors.textPrimary,
-      },
-    };
-    final cfg = configs[variant!]!;
-
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 11.w, vertical: 5.h),
-      decoration: BoxDecoration(
-        color: cfg['bg'] as Color,
-        borderRadius: BorderRadius.circular(100), // pill
-        border: cfg['border'] != null
-            ? Border.all(color: cfg['border'] as Color, width: 1)
-            : null,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (showDot) ...[
-            Container(
-              width: 6.w,
-              height: 6.w,
-              decoration: BoxDecoration(
-                color: cfg['dot'] as Color,
-                shape: BoxShape.circle,
-              ),
-            ),
-            SizedBox(width: 5.w),
-          ],
-          Text(
-            label,
-            style: AppTextStyles.labelSmall.copyWith(
-              color: cfg['text'] as Color,
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
             ),
           ),
         ],
@@ -144,23 +65,52 @@ class RideStatusBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
     final cfg = _config(loc);
-    return InggoBadge(label: cfg['label'], variant: cfg['variant'], showDot: true);
+    return InggoBadge(
+      label: cfg['label'] as String,
+      color: cfg['color'] as Color,
+      bgColor: cfg['bgColor'] as Color,
+      showDot: true,
+    );
   }
 
   Map<String, dynamic> _config(AppLocalizations loc) {
     switch (status) {
       case RideStatus.pending:
-        return {'label': loc.statusPending, 'variant': InggoBadgeVariant.yellow};
+        return {
+          'label': loc.statusPending,
+          'color': AppColors.primary,
+          'bgColor': AppColors.primaryLight,
+        };
       case RideStatus.searching:
-        return {'label': loc.statusSearching, 'variant': InggoBadgeVariant.grey};
+        return {
+          'label': loc.statusSearching,
+          'color': AppColors.textHint,
+          'bgColor': AppColors.background,
+        };
       case RideStatus.accepted:
-        return {'label': loc.statusAccepted, 'variant': InggoBadgeVariant.green};
+        return {
+          'label': loc.statusAccepted,
+          'color': AppColors.success,
+          'bgColor': AppColors.successLight,
+        };
       case RideStatus.inProgress:
-        return {'label': loc.statusInProgress, 'variant': InggoBadgeVariant.grey};
+        return {
+          'label': loc.statusInProgress,
+          'color': AppColors.textHint,
+          'bgColor': AppColors.background,
+        };
       case RideStatus.completed:
-        return {'label': loc.statusCompleted, 'variant': InggoBadgeVariant.green};
+        return {
+          'label': loc.statusCompleted,
+          'color': AppColors.success,
+          'bgColor': AppColors.successLight,
+        };
       case RideStatus.cancelled:
-        return {'label': loc.statusCancelled, 'variant': InggoBadgeVariant.red};
+        return {
+          'label': loc.statusCancelled,
+          'color': AppColors.error,
+          'bgColor': AppColors.errorLight,
+        };
     }
   }
 }
