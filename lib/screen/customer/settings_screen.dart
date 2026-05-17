@@ -77,7 +77,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               subtitle: Text(loc.pushNotifications,
                   style: AppTextStyles.bodySmall),
               value: _notificationsEnabled,
-              activeThumbColor: AppColors.primary,
+              activeColor: AppColors.primary,
               onChanged: _prefsLoaded ? _onNotificationChanged : null,
             ),
             SizedBox(height: 24.h),

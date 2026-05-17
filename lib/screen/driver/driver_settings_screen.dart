@@ -77,7 +77,7 @@ class _DriverSettingsScreenState extends ConsumerState<DriverSettingsScreen> {
               subtitle: Text(loc.newRideRequests,
                   style: AppTextStyles.bodySmall),
               value: _notificationsEnabled,
-              activeThumbColor: AppColors.primary,
+              activeColor: AppColors.primary,
               onChanged: _prefsLoaded ? _onNotificationChanged : null,
             ),
           ],

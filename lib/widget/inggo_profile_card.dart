@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../core/constants/constants.dart';
+import 'inggo_badge.dart';
 
 /// Inggo VTC Design System — Carte profil conducteur v2.0
 /// Avatar + nom + rôle + badges + stats en ligne
