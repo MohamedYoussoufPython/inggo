@@ -66,16 +66,18 @@ class ProfileScreen extends ConsumerWidget {
                     title: Text(loc.logout),
                     content: Text(loc.logoutConfirm),
                     actions: [
-                      TextButton(
-                          onPressed: () => Navigator.pop(ctx),
-                          child: Text(loc.no)),
-                      TextButton(
+                      InggoButton(
+                          type: InggoButtonType.text,
+                          label: loc.no,
+                          onPressed: () => Navigator.pop(ctx)),
+                      InggoButton(
+                        type: InggoButtonType.text,
+                        label: loc.yes,
                         onPressed: () {
                           Navigator.pop(ctx);
                           ref.read(authProvider.notifier).signOut();
                           context.go('/login');
                         },
-                        child: Text(loc.yes),
                       ),
                     ],
                   ),

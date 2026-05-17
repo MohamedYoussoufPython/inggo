@@ -145,31 +145,28 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextFormField(
+              InggoInput(
+                label: loc.favoriteLabel,
+                hint: loc.favoriteLabelHint,
                 controller: labelController,
-                decoration: InputDecoration(
-                  labelText: loc.favoriteLabel,
-                  hintText: loc.favoriteLabelHint,
-                  prefixIcon: Icon(Icons.label),
-                ),
+                prefixIcon: Icons.label,
                 validator: (v) =>
                     v == null || v.trim().isEmpty ? loc.fieldRequired : null,
               ),
               SizedBox(height: 12.h),
-              TextFormField(
+              InggoInput(
+                label: loc.address,
+                hint: loc.addressHint,
                 controller: addressController,
-                decoration: InputDecoration(
-                  labelText: loc.address,
-                  hintText: loc.addressHint,
-                  prefixIcon: Icon(Icons.location_on),
-                ),
+                prefixIcon: Icons.location_on,
                 validator: (v) =>
                     v == null || v.trim().isEmpty ? loc.fieldRequired : null,
               ),
               SizedBox(height: 12.h),
-              OutlinedButton.icon(
-                icon: const Icon(Icons.map),
-                label: Text(loc.chooseOnMap),
+              InggoButton(
+                type: InggoButtonType.outline,
+                icon: Icons.map,
+                label: loc.chooseOnMap,
                 onPressed: () async {
                   // Close dialog temporarily and show map picker
                   Navigator.pop(ctx);
@@ -197,11 +194,13 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
           ),
         ),
         actions: [
-          TextButton(
+          InggoButton(
+            type: InggoButtonType.text,
+            label: loc.cancel,
             onPressed: () => Navigator.pop(ctx),
-            child: Text(loc.cancel),
           ),
-          ElevatedButton(
+          InggoButton(
+            label: loc.add,
             onPressed: () {
               if (!formKey.currentState!.validate()) return;
 
@@ -219,7 +218,6 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
               Navigator.pop(ctx);
               InggoToast.success(context, loc.favoriteAdded);
             },
-            child: Text(loc.add),
           ),
         ],
       ),
@@ -247,24 +245,20 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextFormField(
+              InggoInput(
+                label: loc.favoriteLabel,
+                hint: loc.favoriteLabelHint,
                 controller: labelController,
-                decoration: InputDecoration(
-                  labelText: loc.favoriteLabel,
-                  hintText: loc.favoriteLabelHint,
-                  prefixIcon: Icon(Icons.label),
-                ),
+                prefixIcon: Icons.label,
                 validator: (v) =>
                     v == null || v.trim().isEmpty ? loc.fieldRequired : null,
               ),
               SizedBox(height: 12.h),
-              TextFormField(
+              InggoInput(
+                label: loc.address,
+                hint: loc.addressHint,
                 controller: addressController,
-                decoration: InputDecoration(
-                  labelText: loc.address,
-                  hintText: loc.addressHint,
-                  prefixIcon: Icon(Icons.location_on),
-                ),
+                prefixIcon: Icons.location_on,
                 validator: (v) =>
                     v == null || v.trim().isEmpty ? loc.fieldRequired : null,
               ),
@@ -283,11 +277,13 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
           ),
         ),
         actions: [
-          TextButton(
+          InggoButton(
+            type: InggoButtonType.text,
+            label: loc.cancel,
             onPressed: () => Navigator.pop(ctx),
-            child: Text(loc.cancel),
           ),
-          ElevatedButton(
+          InggoButton(
+            label: loc.add,
             onPressed: () {
               if (!formKey.currentState!.validate()) return;
 
@@ -304,7 +300,6 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
               Navigator.pop(ctx);
               InggoToast.success(context, loc.favoriteAdded);
             },
-            child: Text(loc.add),
           ),
         ],
       ),

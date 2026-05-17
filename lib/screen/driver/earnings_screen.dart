@@ -196,7 +196,7 @@ class _EarningsScreenState extends ConsumerState<EarningsScreen> {
                               return Padding(
                                 padding: EdgeInsets.symmetric(vertical: 16.h),
                                 child: const Center(
-                                    child: CircularProgressIndicator()),
+                                    child: InggoLoading()),
                               );
                             }
 

@@ -151,12 +151,7 @@ class TripInProgressScreen extends ConsumerWidget {
   Future<void> _callDriver(BuildContext context, String? phone) async {
     final loc = AppLocalizations.of(context);
     if (phone == null || phone.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(loc.driverPhoneUnavailable),
-          backgroundColor: AppColors.error,
-        ),
-      );
+      InggoToast.error(context, loc.driverPhoneUnavailable);
       return;
     }
 
@@ -168,12 +163,7 @@ class TripInProgressScreen extends ConsumerWidget {
       await launchUrl(uri);
     } else {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(loc.unableToMakeCall),
-            backgroundColor: AppColors.error,
-          ),
-        );
+        InggoToast.error(context, loc.unableToMakeCall);
       }
     }
   }

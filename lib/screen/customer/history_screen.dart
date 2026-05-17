@@ -86,11 +86,7 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                         return Padding(
                           padding: EdgeInsets.symmetric(vertical: 16.h),
                           child: Center(
-                            child: SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            ),
+                            child: InggoLoading(),
                           ),
                         );
                       }

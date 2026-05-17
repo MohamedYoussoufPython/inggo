@@ -58,13 +58,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     } catch (e) {
       if (mounted) {
         final loc = AppLocalizations.of(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(loc.profileUpdateError),
-            backgroundColor: AppColors.error,
-            duration: Duration(seconds: 3),
-          ),
-        );
+        InggoToast.error(context, loc.profileUpdateError);
       }
     }
   }

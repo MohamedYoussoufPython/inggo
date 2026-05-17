@@ -74,18 +74,19 @@ class DriverProfileScreen extends ConsumerWidget {
                     title: Text(loc.logout),
                     content: Text(loc.logoutMessage),
                     actions: [
-                      TextButton(
+                      InggoButton(
+                        type: InggoButtonType.text,
+                        label: loc.cancel,
                         onPressed: () => Navigator.pop(ctx),
-                        child: Text(loc.cancel),
                       ),
-                      TextButton(
+                      InggoButton(
+                        type: InggoButtonType.text,
+                        label: loc.logout,
                         onPressed: () {
                           Navigator.pop(ctx);
                           ref.read(authProvider.notifier).signOut();
                           context.go('/login');
                         },
-                        child: Text(loc.logout,
-                            style: TextStyle(color: AppColors.error)),
                       ),
                     ],
                   ),

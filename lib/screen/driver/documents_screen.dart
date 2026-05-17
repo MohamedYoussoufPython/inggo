@@ -340,11 +340,7 @@ class _DocTile extends StatelessWidget {
                   ),
                 ),
                 isUploading
-                    ? SizedBox(
-                        width: 20.w,
-                        height: 20.w,
-                        child: const CircularProgressIndicator(strokeWidth: 2),
-                      )
+                    ? const InggoLoading()
                     : Icon(
                         isUploaded
                             ? (isVerified ? Icons.check_circle : Icons.schedule)
@@ -360,21 +356,12 @@ class _DocTile extends StatelessWidget {
               SizedBox(height: 8.h),
               SizedBox(
                 width: double.infinity,
-                child: OutlinedButton.icon(
+                child: InggoButton(
+                  type: InggoButtonType.outline,
+                  icon: isUploaded ? Icons.refresh : Icons.upload_file,
+                  label: isUploaded ? loc.replace : loc.submitDocument,
+                  size: InggoButtonSize.small,
                   onPressed: isUploading ? null : onUpload,
-                  icon: Icon(
-                    isUploaded ? Icons.refresh : Icons.upload_file,
-                    size: 16.w,
-                  ),
-                  label: Text(
-                    isUploaded ? loc.replace : loc.submitDocument,
-                    style: AppTextStyles.bodySmall,
-                  ),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.primary,
-                    side: const BorderSide(color: AppColors.primary),
-                    padding: EdgeInsets.symmetric(vertical: 8.h),
-                  ),
                 ),
               ),
             ],

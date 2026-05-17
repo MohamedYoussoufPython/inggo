@@ -68,10 +68,10 @@ class AboutScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TextButton(
+                InggoButton(
+                  type: InggoButtonType.text,
+                  label: loc.privacyPolicy,
                   onPressed: () => context.push('/privacy-policy'),
-                  child: Text(loc.privacyPolicy,
-                      style: AppTextStyles.bodyMedium.copyWith(color: AppColors.primary)),
                 ),
               ],
             ),

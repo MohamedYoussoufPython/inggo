@@ -66,12 +66,7 @@ class _RideRequestScreenState extends ConsumerState<RideRequestScreen>
     } else {
       // Accept failed (ride taken by another driver, network error, etc.)
       setState(() => _isAccepting = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context).rideAcceptFailed),
-          backgroundColor: AppColors.error,
-        ),
-      );
+      InggoToast.error(context, AppLocalizations.of(context).rideAcceptFailed);
       context.go('/driver/home');
     }
   }
@@ -147,7 +142,7 @@ class _RideRequestScreenState extends ConsumerState<RideRequestScreen>
                 if (_isAccepting)
                   const Padding(
                     padding: EdgeInsets.all(16.0),
-                    child: CircularProgressIndicator(),
+                    child: InggoLoading(),
                   )
                 else
                   Row(

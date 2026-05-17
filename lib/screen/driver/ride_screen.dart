@@ -33,7 +33,7 @@ class _DriverRideScreenState extends ConsumerState<DriverRideScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const CircularProgressIndicator(),
+                const InggoLoading(),
                 SizedBox(height: 16.h),
                 Text(loc.loadRide, style: AppTextStyles.bodyLarge),
                 SizedBox(height: 16.h),
@@ -123,12 +123,7 @@ class _DriverRideScreenState extends ConsumerState<DriverRideScreen> {
                             .read(driverProvider.notifier)
                             .updateRideStatus(RideStatus.inProgress);
                         if (!success && context.mounted) {
-                          messenger.showSnackBar(
-                            SnackBar(
-                              content: Text(failMsg),
-                              backgroundColor: AppColors.error,
-                            ),
-                          );
+                          InggoToast.errorMessenger(messenger, failMsg);
                         }
                       },
                     ),
@@ -151,7 +146,7 @@ class _DriverRideScreenState extends ConsumerState<DriverRideScreen> {
                     _isCompleting
                         ? const Padding(
                             padding: EdgeInsets.all(16.0),
-                            child: CircularProgressIndicator(),
+                            child: InggoLoading(),
                           )
                         : InggoButton(
                             label: loc.completeRideLabel,
@@ -169,12 +164,7 @@ class _DriverRideScreenState extends ConsumerState<DriverRideScreen> {
                                 router.go('/driver/end-ride');
                               } else {
                                 setState(() => _isCompleting = false);
-                                messenger.showSnackBar(
-                                  SnackBar(
-                                    content: Text(failMsg),
-                                    backgroundColor: AppColors.error,
-                                  ),
-                                );
+                                InggoToast.errorMessenger(messenger, failMsg);
                               }
                             },
                           ),

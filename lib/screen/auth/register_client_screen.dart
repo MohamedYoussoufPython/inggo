@@ -352,16 +352,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
   }
 
   void _showToast(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(msg, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-        backgroundColor: AppColors.secondary,
-        duration: const Duration(seconds: 2),
-        margin: const EdgeInsets.only(bottom: 20, left: 40, right: 40),
-      ),
-    );
+    InggoToast.success(context, msg);
   }
 
   void _showLegalModal(String title, String content) {
@@ -728,14 +719,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
             ),
             if (_otpVerifying) ...[
               const SizedBox(height: 12),
-              const Center(child: SizedBox(
-                width: 24,
-                height: 24,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2.5,
-                  color: AppColors.primary,
-                ),
-              )),
+              const Center(child: InggoLoading()),
             ],
             if (_errors.containsKey('otp'))
               Padding(

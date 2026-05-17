@@ -69,13 +69,14 @@ class _SearchingDriverScreenState extends ConsumerState<SearchingDriverScreen> {
         title: Text(loc.noDriverFoundTitle),
         content: Text(loc.noDriverFoundMessage),
         actions: [
-          TextButton(
+          InggoButton(
+            type: InggoButtonType.text,
+            label: loc.ok,
             onPressed: () {
               Navigator.pop(ctx);
               ref.read(rideProvider.notifier).reset();
               context.go('/client/home');
             },
-            child: Text(loc.ok),
           ),
         ],
       ),
@@ -110,25 +111,7 @@ class _SearchingDriverScreenState extends ConsumerState<SearchingDriverScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Animated searching indicator
-              SizedBox(
-                width: 120.w,
-                height: 120.w,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    SizedBox(
-                      width: 120.w,
-                      height: 120.w,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 4,
-                        valueColor: AlwaysStoppedAnimation(AppColors.primary),
-                      ),
-                    ),
-                    Icon(Icons.motorcycle,
-                        size: 48.w, color: AppColors.primary),
-                  ],
-                ),
-              ),
+              InggoLoading(message: loc.searchingDriverLabel),
               SizedBox(height: 24.h),
               Text(loc.searchingDriverLabel,
                   style: AppTextStyles.headline3),

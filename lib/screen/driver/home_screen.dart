@@ -87,16 +87,7 @@ class _DriverHomeScreenState extends ConsumerState<DriverHomeScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             if (driver.isLoading)
-                              SizedBox(
-                                width: 24.w,
-                                height: 24.w,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: driver.isOnline
-                                      ? AppColors.success
-                                      : AppColors.error,
-                                ),
-                              )
+                              const InggoLoading()
                             else
                               Icon(
                                 driver.isOnline ? Icons.wifi : Icons.wifi_off,

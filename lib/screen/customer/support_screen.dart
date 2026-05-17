@@ -24,13 +24,7 @@ class _SupportScreenState extends State<SupportScreen> {
       await launchUrl(uri);
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(loc.unableToMakePhoneCall),
-            backgroundColor: AppColors.error,
-            duration: Duration(seconds: 3),
-          ),
-        );
+        InggoToast.error(context, loc.unableToMakePhoneCall);
       }
     }
   }
@@ -48,13 +42,7 @@ class _SupportScreenState extends State<SupportScreen> {
       await launchUrl(smsUri);
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(loc.noMessagingApp),
-            backgroundColor: AppColors.error,
-            duration: Duration(seconds: 3),
-          ),
-        );
+        InggoToast.error(context, loc.noMessagingApp);
       }
     }
   }

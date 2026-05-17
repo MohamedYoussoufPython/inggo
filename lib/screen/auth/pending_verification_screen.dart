@@ -38,13 +38,7 @@ class _PendingVerificationScreenState
         _navigated = true;
         // Stop listening since we're verified now
         ref.read(verificationProvider.notifier).stopListening();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(loc.profileApproved),
-            backgroundColor: AppColors.success,
-            duration: const Duration(seconds: 3),
-          ),
-        );
+        InggoToast.success(context, loc.profileApproved);
         context.go('/driver/home');
       }
     });

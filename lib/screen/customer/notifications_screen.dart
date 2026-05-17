@@ -33,11 +33,11 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         title: loc.notifications,
         actions: [
           if (notifState.unreadCount > 0)
-            TextButton(
+            InggoButton(
+              type: InggoButtonType.text,
+              label: loc.markAllReadShort,
               onPressed: () =>
                   ref.read(notificationProvider.notifier).markAllAsRead(),
-              child: Text(loc.markAllReadShort,
-                  style: AppTextStyles.labelSmall.copyWith(color: AppColors.primary)),
             ),
         ],
       ),

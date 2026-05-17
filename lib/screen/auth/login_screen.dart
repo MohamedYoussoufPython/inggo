@@ -123,22 +123,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   void _showSnackBar(String message, Color backgroundColor) {
-    final loc = AppLocalizations.of(context);
     if (!mounted) return;
     ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: backgroundColor,
-        behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 3),
-        action: SnackBarAction(
-          label: loc.ok,
-          textColor: Colors.white,
-          onPressed: () {},
-        ),
-      ),
-    );
+    final variant = backgroundColor == AppColors.error ? ToastVariant.error
+        : backgroundColor == AppColors.success ? ToastVariant.success
+        : backgroundColor == AppColors.warning ? ToastVariant.warning
+        : ToastVariant.dark;
+    InggoToast.show(context, message, variant: variant);
   }
 
   Future<void> _handleLogin() async {
@@ -507,14 +498,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget _buildForgotPasswordLink() {
     final loc = AppLocalizations.of(context);
     return Center(
-      child: TextButton(
+      child: InggoButton(
+        label: loc.forgotPassword,
+        type: InggoButtonType.text,
         onPressed: () {
           _showForgotPasswordDialog();
         },
-        child: Text(
-          loc.forgotPassword,
-          style: AppTextStyles.button.copyWith(color: AppColors.textPrimary),
-        ),
       ),
     );
   }
@@ -538,25 +527,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   style: const TextStyle(fontSize: 14, color: Color(0xFF757575)),
                 ),
                 const SizedBox(height: 16),
-                TextFormField(
+                InggoInput(
+                  hint: loc.emailHint,
                   controller: emailController,
                   keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    hintText: loc.emailHint,
-                    prefixIcon: const Icon(Icons.email_outlined),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-                    ),
-                  ),
+                  prefixIcon: Icons.email_outlined,
                 ),
               ],
             ),
             actions: [
-              TextButton(
+              InggoButton(
+                label: loc.cancel,
+                type: InggoButtonType.ghost,
                 onPressed: () => Navigator.pop(ctx),
-                child: Text(loc.cancel),
               ),
-              ElevatedButton(
+              InggoButton(
+                label: loc.send,
+                type: InggoButtonType.primary,
+                isLoading: isSending,
                 onPressed: isSending
                     ? null
                     : () async {
@@ -585,13 +573,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           }
                         }
                       },
-                child: isSending
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : Text(loc.send),
               ),
             ],
           );
