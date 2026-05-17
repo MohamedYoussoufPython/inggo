@@ -73,7 +73,8 @@ class InggoButton extends StatelessWidget {
     if (type == InggoButtonType.outline ||
         type == InggoButtonType.ghost ||
         type == InggoButtonType.greyOutline ||
-        type == InggoButtonType.dangerLight) {
+        type == InggoButtonType.dangerLight ||
+        type == InggoButtonType.primaryLight) {
       return OutlinedButton(
         onPressed: isLoading ? null : onPressed,
         style: OutlinedButton.styleFrom(

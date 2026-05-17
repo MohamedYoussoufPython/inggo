@@ -22,7 +22,7 @@ class InggoTheme {
           onSurface: AppColors.textPrimary,
           onError: AppColors.textWhite,
         ),
-        textTheme: GoogleFonts.interTextTheme().apply(
+        textTheme: GoogleFonts.dmSansTextTheme().apply(
           bodyColor: AppColors.textPrimary,
           displayColor: AppColors.textPrimary,
         ),
@@ -31,7 +31,7 @@ class InggoTheme {
           foregroundColor: AppColors.textPrimary,
           elevation: 0,
           centerTitle: true,
-          titleTextStyle: GoogleFonts.inter(
+          titleTextStyle: GoogleFonts.dmSans(
             fontSize: 18,
             fontWeight: FontWeight.w700,
             color: AppColors.textPrimary,
@@ -45,7 +45,7 @@ class InggoTheme {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12.r),
             ),
-            textStyle: GoogleFonts.inter(
+            textStyle: GoogleFonts.dmSans(
               fontSize: 16,
               fontWeight: FontWeight.w600,
             ),
@@ -59,7 +59,7 @@ class InggoTheme {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12.r),
             ),
-            textStyle: GoogleFonts.inter(
+            textStyle: GoogleFonts.dmSans(
               fontSize: 16,
               fontWeight: FontWeight.w600,
             ),
@@ -68,7 +68,8 @@ class InggoTheme {
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
           fillColor: AppColors.surface,
-          contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+          contentPadding:
+              EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12.r),
             borderSide: const BorderSide(color: AppColors.border),
@@ -85,7 +86,7 @@ class InggoTheme {
             borderRadius: BorderRadius.circular(12.r),
             borderSide: const BorderSide(color: AppColors.error),
           ),
-          hintStyle: GoogleFonts.inter(
+          hintStyle: GoogleFonts.dmSans(
             fontSize: 14,
             color: AppColors.textHint,
           ),
@@ -105,11 +106,11 @@ class InggoTheme {
           unselectedItemColor: AppColors.textHint,
           type: BottomNavigationBarType.fixed,
           elevation: 8,
-          selectedLabelStyle: GoogleFonts.inter(
+          selectedLabelStyle: GoogleFonts.dmSans(
             fontSize: 12,
             fontWeight: FontWeight.w600,
           ),
-          unselectedLabelStyle: GoogleFonts.inter(
+          unselectedLabelStyle: GoogleFonts.dmSans(
             fontSize: 12,
             fontWeight: FontWeight.w400,
           ),
