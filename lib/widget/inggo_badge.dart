@@ -27,12 +27,16 @@ class InggoBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     if (variant != null) return _buildVariant();
 
-    // Fallback: auto-generate from color
+    // Fallback: auto-generate from color — pill shape + dot
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+      padding: EdgeInsets.symmetric(horizontal: 11.w, vertical: 5.h),
       decoration: BoxDecoration(
-        color: (color ?? AppColors.primary).withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+        color: (color ?? AppColors.primary).withOpacity(0.12),
+        borderRadius: BorderRadius.circular(100), // pill
+        border: Border.all(
+          color: (color ?? AppColors.primary).withOpacity(0.3),
+          width: 1,
+        ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -46,12 +50,13 @@ class InggoBadge extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
             ),
-            SizedBox(width: 6.w),
+            SizedBox(width: 5.w),
           ],
           Text(
             label,
             style: AppTextStyles.labelSmall.copyWith(
-              color: textColor ?? color ?? AppColors.primary,
+              color: textColor ?? color ?? AppColors.primaryDark,
+              fontSize: 12,
             ),
           ),
         ],
@@ -98,7 +103,7 @@ class InggoBadge extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 11.w, vertical: 5.h),
       decoration: BoxDecoration(
         color: cfg['bg'] as Color,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusFull),
+        borderRadius: BorderRadius.circular(100), // pill
         border: cfg['border'] != null
             ? Border.all(color: cfg['border'] as Color, width: 1)
             : null,
@@ -115,14 +120,14 @@ class InggoBadge extends StatelessWidget {
                 shape: BoxShape.circle,
               ),
             ),
-            SizedBox(width: 6.w),
+            SizedBox(width: 5.w),
           ],
           Text(
             label,
-            style: AppTextStyles.bodySmall.copyWith(
+            style: AppTextStyles.labelSmall.copyWith(
               color: cfg['text'] as Color,
-              fontWeight: FontWeight.w600,
               fontSize: 12,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],

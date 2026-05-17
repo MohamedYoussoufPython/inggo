@@ -108,6 +108,17 @@ class _NavItem extends StatelessWidget {
                 color: isSelected ? AppColors.primary : AppColors.textHint,
               ),
             ),
+            // ── Barre indicatrice jaune ──
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              width: isSelected ? 20.w : 0,
+              height: 3.h,
+              margin: EdgeInsets.only(top: 2.h),
+              decoration: BoxDecoration(
+                color: isSelected ? AppColors.primary : Colors.transparent,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
           ],
         ),
       ),

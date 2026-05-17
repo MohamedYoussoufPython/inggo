@@ -46,7 +46,11 @@ class InggoInput extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (label != null) ...[
-          Text(label!.toUpperCase(), style: AppTextStyles.labelInput),
+          // Label uppercase DS style (11px/700/letterSpacing 0.08)
+          Text(label!.toUpperCase(),
+              style: AppTextStyles.labelSection.copyWith(
+                color: AppColors.textSecondary,
+              )),
           SizedBox(height: 6.h),
         ],
         TextFormField(
@@ -85,29 +89,29 @@ class InggoInput extends StatelessWidget {
                 EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-              borderSide: const BorderSide(color: AppColors.border),
+              borderSide: BorderSide(color: AppColors.border, width: 1.5),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-              borderSide: const BorderSide(color: AppColors.border),
+              borderSide: BorderSide(color: AppColors.border, width: 1.5),
             ),
             disabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-              borderSide: const BorderSide(color: AppColors.border),
+              borderSide: BorderSide(color: AppColors.border, width: 1.5),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
               borderSide:
-                  const BorderSide(color: AppColors.primary, width: 2),
+                  const BorderSide(color: AppColors.primary, width: 1.5),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-              borderSide: const BorderSide(color: AppColors.error),
+              borderSide: BorderSide(color: AppColors.error, width: 1.5),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
               borderSide:
-                  const BorderSide(color: AppColors.error, width: 2),
+                  const BorderSide(color: AppColors.error, width: 1.5),
             ),
           ),
         ),
@@ -169,11 +173,12 @@ class InggoOtpInput extends StatelessWidget {
       ),
     );
 
+    // Focused: primary border + focus ring glow
     final focusedPinTheme = defaultPinTheme.copyWith(
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        border: Border.all(color: AppColors.primary, width: 2),
+        border: Border.all(color: AppColors.primary, width: 1.5),
         boxShadow: [AppShadows.focusRing],
       ),
     );

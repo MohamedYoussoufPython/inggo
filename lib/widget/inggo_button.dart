@@ -93,6 +93,26 @@ class InggoButton extends StatelessWidget {
       );
     }
 
+    // ── Secondary (yellow light "En attente") ──
+    if (type == InggoButtonType.secondary) {
+      return OutlinedButton(
+        onPressed: isLoading ? null : onPressed,
+        style: OutlinedButton.styleFrom(
+          minimumSize: Size(isFullWidth ? double.infinity : 0, height),
+          padding: padding,
+          side: BorderSide(
+            color: style['borderColor'] as Color,
+            width: 1.5,
+          ),
+          backgroundColor: style['bgColor'] as Color,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+          ),
+        ),
+        child: child,
+      );
+    }
+
     // ── Text-style button ──
     if (type == InggoButtonType.text) {
       return TextButton(
@@ -142,17 +162,20 @@ class InggoButton extends StatelessWidget {
           'textColor': AppColors.primaryDark,
           'elevation': 0.0,
         };
+      // secondary = bouton jaune light "En attente"
       case InggoButtonType.secondary:
         return {
-          'bgColor': AppColors.secondary,
-          'textColor': AppColors.textWhite,
+          'bgColor': AppColors.primaryLight,
+          'borderColor': AppColors.primaryBorder,
+          'textColor': AppColors.primaryDark,
           'elevation': 0.0,
         };
+      // outline = bouton "Annuler" — fond blanc, bordure grise
       case InggoButtonType.outline:
         return {
-          'borderColor': AppColors.primary,
-          'textColor': AppColors.primary,
-          'bgColor': Colors.transparent,
+          'borderColor': AppColors.border2,
+          'textColor': AppColors.textPrimary,
+          'bgColor': AppColors.surface,
         };
       case InggoButtonType.ghost:
         return {
@@ -185,14 +208,15 @@ class InggoButton extends StatelessWidget {
     }
   }
 
+  // Hauteurs alignées avec le design system
   double _getHeight() {
     switch (size) {
       case InggoButtonSize.large:
-        return 48.h;
+        return 52.h; // était 48
       case InggoButtonSize.medium:
-        return 40.h;
+        return 44.h; // était 40
       case InggoButtonSize.small:
-        return 32.h;
+        return 34.h; // était 32
     }
   }
 

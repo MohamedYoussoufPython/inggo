@@ -10,7 +10,9 @@ class InggoTheme {
         useMaterial3: true,
         brightness: Brightness.light,
         primaryColor: AppColors.primary,
-        scaffoldBackgroundColor: AppColors.background,
+        scaffoldBackgroundColor: AppColors.background, // #FAFAFA
+        fontFamily: GoogleFonts.dmSans().fontFamily, // DM Sans global
+        dividerColor: AppColors.divider,
         colorScheme: const ColorScheme.light(
           primary: AppColors.primary,
           primaryContainer: AppColors.primaryLight,
@@ -41,27 +43,27 @@ class InggoTheme {
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.primary,
             foregroundColor: AppColors.secondary,
-            minimumSize: Size(double.infinity, 48.h),
+            minimumSize: Size(double.infinity, 44.h),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12.r),
             ),
             textStyle: GoogleFonts.dmSans(
               fontSize: 16,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ),
         outlinedButtonTheme: OutlinedButtonThemeData(
           style: OutlinedButton.styleFrom(
             foregroundColor: AppColors.primary,
-            minimumSize: Size(double.infinity, 48.h),
+            minimumSize: Size(double.infinity, 44.h),
             side: const BorderSide(color: AppColors.primary, width: 1.5),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12.r),
             ),
             textStyle: GoogleFonts.dmSans(
               fontSize: 16,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ),
@@ -69,26 +71,32 @@ class InggoTheme {
           filled: true,
           fillColor: AppColors.surface,
           contentPadding:
-              EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+              EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12.r),
-            borderSide: const BorderSide(color: AppColors.border),
+            borderSide: BorderSide(color: AppColors.border, width: 1.5),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12.r),
-            borderSide: const BorderSide(color: AppColors.border),
+            borderSide: BorderSide(color: AppColors.border, width: 1.5),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12.r),
-            borderSide: const BorderSide(color: AppColors.primary, width: 2),
+            borderSide: BorderSide(color: AppColors.primary, width: 1.5),
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12.r),
-            borderSide: const BorderSide(color: AppColors.error),
+            borderSide: BorderSide(color: AppColors.error, width: 1.5),
           ),
           hintStyle: GoogleFonts.dmSans(
             fontSize: 14,
             color: AppColors.textHint,
+          ),
+          labelStyle: GoogleFonts.dmSans(
+            fontSize: 11,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0.08,
+            color: AppColors.textSecondary,
           ),
         ),
         cardTheme: CardThemeData(

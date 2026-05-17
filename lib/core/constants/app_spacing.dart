@@ -15,10 +15,17 @@ class AppSpacing {
   // ── Specific ──
   static double get screenPadding => 16.w;
   static double get cardPadding => 16.w;
-  static double get buttonHeight => 48.h;
+
+  // ── Button heights (alignés DS) ──
+  static double get buttonHeightSm => 34.h;
+  static double get buttonHeightMd => 44.h;
+  static double get buttonHeightLg => 52.h;
+  // Legacy alias
+  static double get buttonHeight => 44.h; // = buttonHeightMd
   static double get buttonHeightLarge => 52.h;
   static double get buttonHeightSmall => 34.h;
   static double get buttonIconSize => 44.h;
+
   static double get inputHeight => 48.h;
   static double get bottomNavHeight => 60.h;
   static double get appBarHeight => 56.h;
