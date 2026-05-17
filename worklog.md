@@ -1,33 +1,39 @@
+# Inggo VTC — Work Log
+
 ---
 Task ID: 1
 Agent: Main Agent
-Task: Build Inggo VTC Flutter app from ZERO + Admin Panel Flask
+Task: Apply complete Design System migration to inggo-fix project
 
 Work Log:
-- Created complete project structure from scratch
-- Wrote pubspec.yaml with all required packages (riverpod, go_router, supabase, google_maps, freezed, etc.)
-- Wrote analysis_options.yaml with 12 Inggo coding rules
-- Created design system: AppColors, AppSpacing, AppTextStyles, AppShadows, AppConstants
-- Created InggoTheme (light + dark) with Inter font and #FFC107 primary
-- Created AppRouter with GoRouter (all routes + auth redirects)
-- Created l10n system (AppLocalizations FR/EN)
-- Created utility files: Formatters, Validators, Helpers
-- Created extensions: ContextExtensions, StringExtensions
-- Created main.dart + app.dart with Supabase + ProviderScope
-- Created 8 Freezed models: UserModel, DriverModel, RideModel, PaymentModel, ReviewModel, FavoriteModel, NotificationModel, LandmarkModel
-- Created 5 services: SupabaseService, LocationService (5s throttle), NotificationService (Realtime), PaymentService, ConnectivityService
-- Created 13 widgets: InggoButton, InggoInput, InggoPhoneInput, InggoOtpInput, InggoCard, RideSummaryCard, InggoBottomNav, InggoToast, InggoBadge, RideStatusBadge, InggoLoading, InggoAppBar, MapWidget, PaymentMethodSelector, OfflineBanner, DriverCard, LanguageSelector
-- Created 5 providers: AuthProvider, RideProvider, DriverProvider, NotificationProvider, FavoritesProvider
-- Created Auth screens: Splash, Welcome, Login, OTP (120s timeout), RoleSelection, RegisterClient, RegisterDriver, PendingVerification
-- Created Client screens: Home, Search (landmarks + tap on map), Booking, SearchingDriver (3min timeout), TripInProgress, EndTrip, History, Favorites, Profile, Settings, Notifications, Support
-- Created Driver screens: Home (online/offline toggle), RideRequest (10s timeout), Ride, EndRide, Earnings, Documents, Profile, Settings
-- Created Supabase SQL migration with all tables, RLS, indexes, triggers, seed landmarks (30+ Djibouti locations)
-- Created Flask Admin Panel: app.py with dashboard, drivers mgmt, rides mgmt, clients mgmt, landmarks CRUD, notifications
-- Created admin HTML templates: login, dashboard, drivers, rides, clients, landmarks, send_notification
-- Created admin CSS with Inggo theme (yellow/black)
+- Read all existing files from inggo-fix and original inggo/ project
+- Analyzed differences between current code and DS specifications
+- Updated app_colors.dart — new palette: primary #FFC700, added primaryLight (#FFF8E1), primaryBorder (#FFE070), surfaceVariant (#F5F5F5), successLight/Dark, errorLight/Dark, border2 (#D0D0D0)
+- Updated app_shadows.dart — 3-level system (level1/2/3) + semantic shadows (card, cardHover, bottomNav, modal, button, focusRing) + deprecated aliases
+- Updated app_spacing.dart — added buttonHeightLarge (52.h), buttonHeightSmall (34.h), buttonIconSize (44.h), iconAvatar (60.w)
+- Updated app_text_styles.dart — switched from Inter to DM Sans, added statValue, statLabel, labelSection, labelInput, buttonLarge, accent styles
+- Updated inggo_button.dart — added 4 new variants: primaryLight, ghost, dangerLight, greyOutline
+- Updated inggo_input.dart — uppercase labels via labelInput style, focus ring on OTP, explicit border styling
+- Rewrote inggo_badge.dart — 5 DS variants (yellow, green, red, grey, dark) with dot support, InggoBadgeVariant enum
+- Rewrote inggo_card.dart — hover shadow effect (StatefulWidget), InggoCardVariant.accent, labelSection for RideSummaryCard
+- Created inggo_profile_card.dart — ported from original, uses InggoBadge for inline badges, statValue/statLabel for stats
+- Created inggo_gender_selector.dart — ported from original with new AppColors
+- Created inggo_progress_bar.dart — ported from original with new AppColors
+- Updated inggo_bottom_nav.dart — yellow active bar indicator above selected icon
+- Rewrote inggo_toast.dart — 4 variants (success, error, warning, info) with ToastVariant enum
+- Created inggo_stepper.dart — ported from original with circles + bars variants
+- Updated inggo_theme.dart — switched to DM Sans font
+- Updated widgets.dart — added exports for stepper, profile_card, gender_selector, progress_bar
+- Updated login_screen.dart — new DS layout with icon container, error banner, bottom sign-up section
 
 Stage Summary:
-- Complete Flutter app code: ~50+ Dart files covering all features
-- Admin Panel: Flask + HTML/CSS/JS with full CRUD
-- Database: Complete SQL migration with RLS, triggers, seed data
-- All critical issues resolved: GPS throttling, landmarks for Djibouti, OTP 120s timeout, admin panel, connectivity service, cancellation policy
+- All 17 design system files updated/created
+- Color palette migrated: #FFC107→#FFC700, #212121→#1A1A1A, #757575→#555555, #BDBDBD→#999999, #F5F5F5→#FAFAFA, etc.
+- Font migrated: Inter → DM Sans
+- 4 new button variants added (primaryLight, ghost, dangerLight, greyOutline)
+- 3 new widget files created (profile_card, gender_selector, progress_bar, stepper)
+- Badge system upgraded with 5 variants + dot indicator
+- Card widget upgraded with hover shadow + accent variant
+- Bottom nav upgraded with yellow active bar
+- Toast upgraded with 4 colored variants
+- Login screen redesigned with error banner + bottom sign-up

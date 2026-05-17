@@ -2,7 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../core/constants/constants.dart';
 
-enum InggoButtonType { primary, secondary, outline, danger, text }
+enum InggoButtonType {
+  primary,
+  primaryLight,
+  secondary,
+  outline,
+  ghost,
+  danger,
+  dangerLight,
+  greyOutline,
+  text,
+}
+
 enum InggoButtonSize { large, medium, small }
 
 class InggoButton extends StatelessWidget {
@@ -38,7 +49,8 @@ class InggoButton extends StatelessWidget {
             width: 20.w,
             child: CircularProgressIndicator(
               strokeWidth: 2,
-              valueColor: AlwaysStoppedAnimation<Color>(style['textColor'] as Color),
+              valueColor:
+                  AlwaysStoppedAnimation<Color>(style['textColor'] as Color),
             ),
           )
         : Row(
@@ -46,14 +58,22 @@ class InggoButton extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (icon != null) ...[
-                Icon(icon, size: _getIconSize(), color: style['textColor'] as Color),
+                Icon(icon,
+                    size: _getIconSize(),
+                    color: style['textColor'] as Color),
                 SizedBox(width: 8.w),
               ],
-              Text(label, style: textStyle.copyWith(color: style['textColor'] as Color)),
+              Text(label,
+                  style:
+                      textStyle.copyWith(color: style['textColor'] as Color)),
             ],
           );
 
-    if (type == InggoButtonType.outline) {
+    // ── Outline-style buttons ──
+    if (type == InggoButtonType.outline ||
+        type == InggoButtonType.ghost ||
+        type == InggoButtonType.greyOutline ||
+        type == InggoButtonType.dangerLight) {
       return OutlinedButton(
         onPressed: isLoading ? null : onPressed,
         style: OutlinedButton.styleFrom(
@@ -63,6 +83,7 @@ class InggoButton extends StatelessWidget {
             color: (style['borderColor'] ?? AppColors.primary) as Color,
             width: 1.5,
           ),
+          backgroundColor: style['bgColor'] as Color?,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
           ),
@@ -71,6 +92,7 @@ class InggoButton extends StatelessWidget {
       );
     }
 
+    // ── Text-style button ──
     if (type == InggoButtonType.text) {
       return TextButton(
         onPressed: isLoading ? null : onPressed,
@@ -85,12 +107,14 @@ class InggoButton extends StatelessWidget {
       );
     }
 
+    // ── Filled buttons ──
     return ElevatedButton(
       onPressed: isLoading ? null : onPressed,
       style: ElevatedButton.styleFrom(
         backgroundColor: style['bgColor'] as Color,
         foregroundColor: style['textColor'] as Color,
-        disabledBackgroundColor: (style['bgColor'] as Color).withValues(alpha: 0.5),
+        disabledBackgroundColor:
+            (style['bgColor'] as Color).withValues(alpha: 0.5),
         minimumSize: Size(isFullWidth ? double.infinity : 0, height),
         padding: padding,
         elevation: (style['elevation'] ?? 0.0) as double,
@@ -110,6 +134,13 @@ class InggoButton extends StatelessWidget {
           'textColor': AppColors.secondary,
           'elevation': 2.0,
         };
+      case InggoButtonType.primaryLight:
+        return {
+          'bgColor': AppColors.primaryLight,
+          'borderColor': AppColors.primaryBorder,
+          'textColor': AppColors.primaryDark,
+          'elevation': 0.0,
+        };
       case InggoButtonType.secondary:
         return {
           'bgColor': AppColors.secondary,
@@ -120,6 +151,13 @@ class InggoButton extends StatelessWidget {
         return {
           'borderColor': AppColors.primary,
           'textColor': AppColors.primary,
+          'bgColor': Colors.transparent,
+        };
+      case InggoButtonType.ghost:
+        return {
+          'borderColor': AppColors.border,
+          'textColor': AppColors.textSecondary,
+          'bgColor': Colors.transparent,
         };
       case InggoButtonType.danger:
         return {
@@ -127,8 +165,22 @@ class InggoButton extends StatelessWidget {
           'textColor': AppColors.textWhite,
           'elevation': 0.0,
         };
+      case InggoButtonType.dangerLight:
+        return {
+          'borderColor': AppColors.error,
+          'textColor': AppColors.errorDark,
+          'bgColor': AppColors.errorLight,
+        };
+      case InggoButtonType.greyOutline:
+        return {
+          'borderColor': AppColors.border2,
+          'textColor': AppColors.textSecondary,
+          'bgColor': Colors.transparent,
+        };
       case InggoButtonType.text:
-        return {'textColor': AppColors.primary};
+        return {
+          'textColor': AppColors.primary,
+        };
     }
   }
 
