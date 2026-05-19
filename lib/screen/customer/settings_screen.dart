@@ -98,7 +98,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: AppTextStyles.bodyMedium),
+          Flexible(child: Text(label, style: AppTextStyles.bodyMedium)),
           Text(value,
               style: AppTextStyles.bodyMedium
                   .copyWith(color: AppColors.textSecondary)),

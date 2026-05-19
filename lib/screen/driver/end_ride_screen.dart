@@ -73,7 +73,7 @@ class EndRideScreen extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: AppTextStyles.bodyMedium),
+          Flexible(child: Text(label, style: AppTextStyles.bodyMedium)),
           Text(value, style: AppTextStyles.labelMedium),
         ],
       ),

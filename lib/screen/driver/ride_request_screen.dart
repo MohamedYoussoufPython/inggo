@@ -121,7 +121,7 @@ class _RideRequestScreenState extends ConsumerState<RideRequestScreen>
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(loc.price, style: AppTextStyles.bodyMedium),
+                          Flexible(child: Text(loc.price, style: AppTextStyles.bodyMedium)),
                           Text(Formatters.formatPrice(ride.price),
                               style: AppTextStyles.priceSmall),
                         ],
@@ -130,7 +130,7 @@ class _RideRequestScreenState extends ConsumerState<RideRequestScreen>
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(loc.payment, style: AppTextStyles.bodyMedium),
+                          Flexible(child: Text(loc.payment, style: AppTextStyles.bodyMedium)),
                           Text(_formatPaymentMethod(ride.paymentMethod.name, loc),
                               style: AppTextStyles.bodyLarge),
                         ],

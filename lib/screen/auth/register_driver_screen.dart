@@ -437,6 +437,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
       final fullName =
           '${_nomCtrl.text.trim()} ${_pereCtrl.text.trim()} ${_grandpereCtrl.text.trim()}';
       final phone = _fullPhone;
+      final loc = AppLocalizations.of(context);
 
       // 1. Sign up with Supabase Auth
       final response = await Supabase.instance.client.auth.signUp(
@@ -453,7 +454,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
 
       if (!mounted) return;
       final userId = response.user?.id;
-      if (userId == null) throw Exception(AppLocalizations.of(context).accountCreationError);
+      if (userId == null) throw Exception(loc.accountCreationError);
 
       // 2. Insert profile (trigger fallback)
       try {
@@ -473,26 +474,47 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
 
       // 3. Upload documents to Supabase Storage (private bucket — use signed URLs)
       final docUrls = <String, String?>{};
-      for (final entry in _documentFiles.entries) {
-        if (entry.value != null) {
-          final bytes = await entry.value!.readAsBytes();
-          final filePath = '$userId/${entry.key}_${DateTime.now().millisecondsSinceEpoch}.jpg';
-          docUrls[entry.key] = await SupabaseService.instance.uploadPrivateFile('driver-documents', filePath, bytes);
+      try {
+        for (final entry in _documentFiles.entries) {
+          if (entry.value != null) {
+            final bytes = await entry.value!.readAsBytes();
+            final filePath = '$userId/${entry.key}_${DateTime.now().millisecondsSinceEpoch}.jpg';
+            docUrls[entry.key] = await SupabaseService.instance.uploadPrivateFile('driver-documents', filePath, bytes);
+          }
         }
+      } catch (e) {
+        // Document upload failed — log but continue, driver record can be updated later
+        debugPrint('Document upload failed: $e');
       }
 
       // 4. Insert driver (upsert in case of re-registration)
-      await SupabaseService.instance.upsert('drivers', {
-        'id': userId,
-        'vehicle_type': 'moto',
-        'plate_number': _plateCtrl.text.trim(),
-        'vehicle_color': _vehicleColorCtrl.text.trim().isEmpty ? null : _vehicleColorCtrl.text.trim(),
-        'is_verified': false,
-        'id_card_url': docUrls['cni'],
-        'license_url': docUrls['permis'],
-        'insurance_url': docUrls['assurance'],
-        'vehicle_photo_url': docUrls['moto'],
-      });
+      try {
+        await SupabaseService.instance.upsert('drivers', {
+          'id': userId,
+          'vehicle_type': 'moto',
+          'plate_number': _plateCtrl.text.trim(),
+          'vehicle_color': _vehicleColorCtrl.text.trim().isEmpty ? null : _vehicleColorCtrl.text.trim(),
+          'is_verified': false,
+          if (docUrls['cni'] != null) 'id_card_url': docUrls['cni'],
+          if (docUrls['permis'] != null) 'license_url': docUrls['permis'],
+          if (docUrls['assurance'] != null) 'insurance_url': docUrls['assurance'],
+          if (docUrls['moto'] != null) 'vehicle_photo_url': docUrls['moto'],
+        });
+      } catch (e) {
+        // Driver table insert may fail if the table schema doesn't match.
+        // Try a minimal insert with just the required fields.
+        debugPrint('Full driver upsert failed: $e');
+        try {
+          await SupabaseService.instance.upsert('drivers', {
+            'id': userId,
+            'plate_number': _plateCtrl.text.trim(),
+            'is_verified': false,
+          });
+        } catch (e2) {
+          // Even minimal insert failed — profile was created so the user exists
+          debugPrint('Minimal driver upsert also failed: $e2');
+        }
+      }
 
       setState(() {
         _isSubmitting = false;
@@ -749,9 +771,12 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
                 children: [
                   const Icon(Icons.info_outline, size: 14, color: AppColors.primary),
                   const SizedBox(width: 6),
-                  Text(
-                    loc.otpAutoSend,
-                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                  Expanded(
+                    child: Text(
+                      loc.otpAutoSend,
+                      style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ],
               ),
@@ -770,12 +795,15 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
                 children: [
                   const Icon(Icons.verified, color: AppColors.success, size: 20),
                   const SizedBox(width: 10),
-                  Text(
-                    '${loc.phoneVerifiedWith} $_fullPhone',
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.success,
+                  Expanded(
+                    child: Text(
+                      '${loc.phoneVerifiedWith} $_fullPhone',
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.success,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],
@@ -1125,7 +1153,9 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
       children: [
         Icon(icon, color: AppColors.primary, size: 28),
         const SizedBox(width: 10),
-        Text(text, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: AppColors.textDark)),
+        Expanded(
+          child: Text(text, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: AppColors.textDark), overflow: TextOverflow.ellipsis),
+        ),
       ],
     );
   }

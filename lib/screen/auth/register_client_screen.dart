@@ -663,9 +663,12 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
                 children: [
                   const Icon(Icons.info_outline, size: 14, color: AppColors.primary),
                   const SizedBox(width: 6),
-                  Text(
-                    loc.otpAutoSend,
-                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                  Expanded(
+                    child: Text(
+                      loc.otpAutoSend,
+                      style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ],
               ),
@@ -684,12 +687,15 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
                 children: [
                   const Icon(Icons.verified, color: AppColors.success, size: 20),
                   const SizedBox(width: 10),
-                  Text(
-                    '${loc.phoneVerifiedWith} $_fullPhone',
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.success,
+                  Expanded(
+                    child: Text(
+                      '${loc.phoneVerifiedWith} $_fullPhone',
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.success,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],
@@ -995,7 +1001,9 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
       children: [
         Icon(icon, color: AppColors.primary, size: 28),
         const SizedBox(width: 10),
-        Text(text, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: AppColors.textDark)),
+        Expanded(
+          child: Text(text, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: AppColors.textDark), overflow: TextOverflow.ellipsis),
+        ),
       ],
     );
   }
