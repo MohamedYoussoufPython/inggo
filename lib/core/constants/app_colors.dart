@@ -46,4 +46,14 @@ class AppColors {
   static const Color divider       = border; // alias
   static const Color shadow        = Color(0x0F000000); // 6% opacity
   static const Color secondary     = textPrimary; // alias
+
+  // ── Register / Form ──
+  static const Color inputFill      = Color(0xFFF0F0F0);
+  static const Color linkBlue       = Color(0xFF336D91);
+  static const Color successLightBg = Color(0xFFE8F5E9);
+  static const Color successIcon    = Color(0xFF43A047);
+  static const Color textDark       = Color(0xFF121212);
+  static const Color greyMedium     = Color(0xFF757575);
+  static const Color greyDark       = Color(0xFF444444);
+  static const Color greyLight      = Color(0xFFCCCCCC);
 }

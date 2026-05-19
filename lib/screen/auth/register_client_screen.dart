@@ -382,7 +382,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
                       width: 36,
                       height: 36,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF0F0F0),
+                        color: const AppColors.inputFill,
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: const Icon(Icons.close, size: 20),
@@ -398,7 +398,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
                 padding: const EdgeInsets.all(20),
                 child: Text(
                   content,
-                  style: const TextStyle(fontSize: 14, color: Color(0xFF444444), height: 1.6),
+                  style: const TextStyle(fontSize: 14, color: AppColors.greyDark, height: 1.6),
                 ),
               ),
             ),
@@ -454,10 +454,10 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF0F0F0),
+                    color: const AppColors.inputFill,
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(Icons.arrow_back, size: 20, color: Color(0xFF121212)),
+                  child: const Icon(Icons.arrow_back, size: 20, color: AppColors.textDark),
                 ),
               ),
             ],
@@ -465,12 +465,12 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
           const SizedBox(height: 16),
           Text(
             loc.createAccount,
-            style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w900, color: Color(0xFF121212)),
+            style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w900, color: AppColors.textDark),
           ),
           const SizedBox(height: 4),
           Text(
             loc.joinCommunity3,
-            style: const TextStyle(fontSize: 14, color: Color(0xFF757575)),
+            style: const TextStyle(fontSize: 14, color: AppColors.greyMedium),
           ),
         ],
       ),
@@ -553,7 +553,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
             height: 56,
             padding: const EdgeInsets.symmetric(horizontal: 16),
             decoration: BoxDecoration(
-              color: const Color(0xFFF0F0F0),
+              color: const AppColors.inputFill,
               borderRadius: BorderRadius.circular(16),
             ),
             child: DropdownButtonHideUnderline(
@@ -561,7 +561,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
                 value: _pays,
                 isExpanded: true,
                 icon: const Icon(Icons.keyboard_arrow_down),
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Color(0xFF121212)),
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.textDark),
                 items: [('Djibouti', 'Djibouti'), ('Autre', loc.other)].map((e) => DropdownMenuItem(value: e.$1, child: Text(e.$2))).toList(),
                 onChanged: (v) => setState(() => _pays = v ?? 'Djibouti'),
               ),
@@ -607,7 +607,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
                     height: 56,
                     padding: const EdgeInsets.symmetric(horizontal: 14),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF0F0F0),
+                      color: const AppColors.inputFill,
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: const Center(
@@ -704,7 +704,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
               padding: const EdgeInsets.only(left: 4, bottom: 10),
               child: Text(
                 loc.enterVerificationCode,
-                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF444444)),
+                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.greyDark),
               ),
             ),
             Center(
@@ -779,7 +779,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
             child: Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: _isLegalChecked ? AppColors.primaryLight.withValues(alpha: 0.3) : const Color(0xFFFAFAFA),
+                color: _isLegalChecked ? AppColors.primaryLight.withValues(alpha: 0.3) : const AppColors.background,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: _isLegalChecked
@@ -800,7 +800,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
                       color: _isLegalChecked ? AppColors.secondary : Colors.white,
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: _isLegalChecked ? AppColors.secondary : const Color(0xFFCCCCCC),
+                        color: _isLegalChecked ? AppColors.secondary : const AppColors.greyLight,
                         width: 2,
                       ),
                     ),
@@ -813,7 +813,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
                     child: Text.rich(
                       TextSpan(
                         text: loc.iAcknowledgeRead,
-                        style: const TextStyle(fontSize: 13, color: Color(0xFF121212), height: 1.5),
+                        style: const TextStyle(fontSize: 13, color: AppColors.textDark, height: 1.5),
                         children: [
                           WidgetSpan(
                             child: GestureDetector(
@@ -822,7 +822,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
                                 loc.cgu,
                                 style: const TextStyle(
                                   fontSize: 13,
-                                  color: Color(0xFF336D91),
+                                  color: AppColors.linkBlue,
                                   fontWeight: FontWeight.w700,
                                   decoration: TextDecoration.underline,
                                 ),
@@ -837,7 +837,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
                                 loc.privacyPolicy,
                                 style: const TextStyle(
                                   fontSize: 13,
-                                  color: Color(0xFF336D91),
+                                  color: AppColors.linkBlue,
                                   fontWeight: FontWeight.w700,
                                   decoration: TextDecoration.underline,
                                 ),
@@ -906,10 +906,10 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
                     width: 50,
                     height: 50,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF0F0F0),
+                      color: const AppColors.inputFill,
                       borderRadius: BorderRadius.circular(14),
                     ),
-                    child: const Icon(Icons.arrow_back, color: Color(0xFF121212)),
+                    child: const Icon(Icons.arrow_back, color: AppColors.textDark),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -948,12 +948,12 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
                 child: Container(
                   width: 100,
                   height: 100,
-                  decoration: const BoxDecoration(color: Color(0xFFE8F5E9), shape: BoxShape.circle),
-                  child: const Icon(Icons.check, size: 48, color: Color(0xFF43A047)),
+                  decoration: const BoxDecoration(color: AppColors.successLightBg, shape: BoxShape.circle),
+                  child: const Icon(Icons.check, size: 48, color: AppColors.successIcon),
                 ),
               ),
               const SizedBox(height: 24),
-              Text(loc.welcome, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w900, color: Color(0xFF121212))),
+              Text(loc.welcome, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w900, color: AppColors.textDark)),
               const SizedBox(height: 10),
               Text(loc.accountCreatedSuccess, style: TextStyle(fontSize: 15, color: Colors.grey.shade600)),
               const SizedBox(height: 60),
@@ -995,7 +995,7 @@ class _RegisterClientScreenState extends State<RegisterClientScreen> {
       children: [
         Icon(icon, color: AppColors.primary, size: 28),
         const SizedBox(width: 10),
-        Text(text, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: Color(0xFF121212))),
+        Text(text, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: AppColors.textDark)),
       ],
     );
   }
@@ -1026,18 +1026,18 @@ class _GenderCard extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(vertical: 14),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primaryLight.withValues(alpha: 0.3) : const Color(0xFFF0F0F0),
+          color: isSelected ? AppColors.primaryLight.withValues(alpha: 0.3) : const AppColors.inputFill,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: isSelected ? AppColors.primary : Colors.transparent, width: 2),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 20, color: isSelected ? AppColors.secondary : const Color(0xFF757575)),
+            Icon(icon, size: 20, color: isSelected ? AppColors.secondary : const AppColors.greyMedium),
             const SizedBox(width: 8),
             Text(
               label,
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: isSelected ? AppColors.secondary : const Color(0xFF757575)),
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: isSelected ? AppColors.secondary : const AppColors.greyMedium),
             ),
           ],
         ),

@@ -524,7 +524,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               children: [
                 Text(
                   loc.forgotPasswordMessage,
-                  style: const TextStyle(fontSize: 14, color: Color(0xFF757575)),
+                  style: const TextStyle(fontSize: 14, color: AppColors.greyMedium),
                 ),
                 const SizedBox(height: 16),
                 InggoInput(

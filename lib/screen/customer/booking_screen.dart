@@ -86,7 +86,7 @@ class _BookingScreenState extends ConsumerState<BookingScreen> {
             InggoButton(
               label: _isCreating
                   ? loc.creatingBooking
-                  : '${loc.confirmBookingPrice} — ${AppConstants.ridePrice.toInt()} FDJ',
+                  : '${loc.confirmBookingPrice} — ${AppConstants.ridePrice.toInt()} ${AppConstants.currency}',
               isLoading: _isCreating,
               onPressed: _confirmBooking,
             ),

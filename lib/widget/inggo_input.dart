@@ -181,7 +181,7 @@ class InggoOtpInput extends StatelessWidget {
         border: Border.all(color: AppColors.primary, width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.12),
+            color: AppColors.primary.withValues(alpha: 0.12),
             blurRadius: 0,
             spreadRadius: 3,
           ),

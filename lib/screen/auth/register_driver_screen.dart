@@ -538,7 +538,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
                       width: 36,
                       height: 36,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF0F0F0),
+                        color: const AppColors.inputFill,
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: const Icon(Icons.close, size: 20),
@@ -552,7 +552,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
               child: SingleChildScrollView(
                 controller: scrollCtrl,
                 padding: const EdgeInsets.all(20),
-                child: Text(content, style: const TextStyle(fontSize: 14, color: Color(0xFF444444), height: 1.6)),
+                child: Text(content, style: const TextStyle(fontSize: 14, color: AppColors.greyDark, height: 1.6)),
               ),
             ),
           ],
@@ -607,18 +607,18 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF0F0F0),
+                    color: const AppColors.inputFill,
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(Icons.arrow_back, size: 20, color: Color(0xFF121212)),
+                  child: const Icon(Icons.arrow_back, size: 20, color: AppColors.textDark),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 16),
-          Text(loc.becomeDriver, style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w900, color: Color(0xFF121212))),
+          Text(loc.becomeDriver, style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w900, color: AppColors.textDark)),
           const SizedBox(height: 4),
-          Text(loc.joinFleet4Steps, style: const TextStyle(fontSize: 14, color: Color(0xFF757575))),
+          Text(loc.joinFleet4Steps, style: const TextStyle(fontSize: 14, color: AppColors.greyMedium)),
         ],
       ),
     );
@@ -659,13 +659,13 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
           Container(
             height: 56,
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            decoration: BoxDecoration(color: const Color(0xFFF0F0F0), borderRadius: BorderRadius.circular(16)),
+            decoration: BoxDecoration(color: const AppColors.inputFill, borderRadius: BorderRadius.circular(16)),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
                 value: _pays,
                 isExpanded: true,
                 icon: const Icon(Icons.keyboard_arrow_down),
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Color(0xFF121212)),
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: AppColors.textDark),
                 items: [('Djibouti', 'Djibouti'), ('Autre', loc.other)].map((e) => DropdownMenuItem(value: e.$1, child: Text(e.$2))).toList(),
                 onChanged: (v) => setState(() => _pays = v ?? 'Djibouti'),
               ),
@@ -700,7 +700,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
                   Container(
                     height: 56,
                     padding: const EdgeInsets.symmetric(horizontal: 14),
-                    decoration: BoxDecoration(color: const Color(0xFFF0F0F0), borderRadius: BorderRadius.circular(16)),
+                    decoration: BoxDecoration(color: const AppColors.inputFill, borderRadius: BorderRadius.circular(16)),
                     child: const Center(child: Text('🇩🇯 +253', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700))),
                   ),
                   const SizedBox(width: 10),
@@ -790,7 +790,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
               padding: const EdgeInsets.only(left: 4, bottom: 10),
               child: Text(
                 loc.enterVerificationCode,
-                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF444444)),
+                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.greyDark),
               ),
             ),
             Center(
@@ -884,7 +884,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
                   duration: const Duration(milliseconds: 200),
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: file != null ? AppColors.success.withValues(alpha: 0.05) : const Color(0xFFF0F0F0),
+                    color: file != null ? AppColors.success.withValues(alpha: 0.05) : const AppColors.inputFill,
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
                       color: file != null ? AppColors.success : AppColors.border,
@@ -1040,8 +1040,8 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
                   child: Container(
                     width: 50,
                     height: 50,
-                    decoration: BoxDecoration(color: const Color(0xFFF0F0F0), borderRadius: BorderRadius.circular(14)),
-                    child: const Icon(Icons.arrow_back, color: Color(0xFF121212)),
+                    decoration: BoxDecoration(color: const AppColors.inputFill, borderRadius: BorderRadius.circular(14)),
+                    child: const Icon(Icons.arrow_back, color: AppColors.textDark),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -1085,7 +1085,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
                 ),
               ),
               const SizedBox(height: 24),
-              Text(loc.dossierSubmitted, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w900, color: Color(0xFF121212))),
+              Text(loc.dossierSubmitted, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w900, color: AppColors.textDark)),
               const SizedBox(height: 10),
               Text(loc.dossierVerificationPending,
                   textAlign: TextAlign.center, style: TextStyle(fontSize: 15, color: Colors.grey.shade600)),
@@ -1125,7 +1125,7 @@ class _RegisterDriverScreenState extends State<RegisterDriverScreen> {
       children: [
         Icon(icon, color: AppColors.primary, size: 28),
         const SizedBox(width: 10),
-        Text(text, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: Color(0xFF121212))),
+        Text(text, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: AppColors.textDark)),
       ],
     );
   }
@@ -1156,16 +1156,16 @@ class _GenderCard extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(vertical: 14),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primaryLight.withValues(alpha: 0.3) : const Color(0xFFF0F0F0),
+          color: isSelected ? AppColors.primaryLight.withValues(alpha: 0.3) : const AppColors.inputFill,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: isSelected ? AppColors.primary : Colors.transparent, width: 2),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 20, color: isSelected ? AppColors.secondary : const Color(0xFF757575)),
+            Icon(icon, size: 20, color: isSelected ? AppColors.secondary : const AppColors.greyMedium),
             const SizedBox(width: 8),
-            Text(label, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: isSelected ? AppColors.secondary : const Color(0xFF757575))),
+            Text(label, style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: isSelected ? AppColors.secondary : const AppColors.greyMedium)),
           ],
         ),
       ),
@@ -1189,7 +1189,7 @@ class _LegalCheckbox extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: checked ? AppColors.primaryLight.withValues(alpha: 0.3) : const Color(0xFFFAFAFA),
+        color: checked ? AppColors.primaryLight.withValues(alpha: 0.3) : const AppColors.background,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: checked ? AppColors.secondary : Colors.transparent),
       ),
@@ -1203,7 +1203,7 @@ class _LegalCheckbox extends StatelessWidget {
             decoration: BoxDecoration(
               color: checked ? AppColors.secondary : Colors.white,
               shape: BoxShape.circle,
-              border: Border.all(color: checked ? AppColors.secondary : const Color(0xFFCCCCCC), width: 2),
+              border: Border.all(color: checked ? AppColors.secondary : const AppColors.greyLight, width: 2),
             ),
             child: checked ? const Icon(Icons.check, size: 14, color: AppColors.primary) : null,
           ),
@@ -1212,14 +1212,14 @@ class _LegalCheckbox extends StatelessWidget {
             child: Text.rich(
               TextSpan(
                 text: label,
-                style: const TextStyle(fontSize: 13, color: Color(0xFF121212), height: 1.5),
+                style: const TextStyle(fontSize: 13, color: AppColors.textDark, height: 1.5),
                 children: [
                   WidgetSpan(
                     child: GestureDetector(
                       onTap: onLinkTap,
                       child: Text(
                         linkLabel,
-                        style: const TextStyle(fontSize: 13, color: Color(0xFF336D91), fontWeight: FontWeight.w700, decoration: TextDecoration.underline),
+                        style: const TextStyle(fontSize: 13, color: AppColors.linkBlue, fontWeight: FontWeight.w700, decoration: TextDecoration.underline),
                       ),
                     ),
                   ),

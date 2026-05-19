@@ -23,10 +23,10 @@ class InggoBadge extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 11.w, vertical: 5.h),
       decoration: BoxDecoration(
-        color: bgColor ?? (color ?? AppColors.primary).withOpacity(0.12),
+        color: bgColor ?? (color ?? AppColors.primary).withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(100), // pill — était 8px
         border: Border.all(
-          color: (color ?? AppColors.primary).withOpacity(0.3),
+          color: (color ?? AppColors.primary).withValues(alpha: 0.3),
           width: 1,
         ),
       ),

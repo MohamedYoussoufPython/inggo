@@ -46,7 +46,7 @@ class EndRideScreen extends ConsumerWidget {
               ),
               SizedBox(height: 24.h),
               Text(
-                '${loc.collectReminder} ${price.toInt()} FDJ ${loc.fromClient}',
+                '${loc.collectReminder} ${price.toInt()} ${AppConstants.currency} ${loc.fromClient}',
                 style: AppTextStyles.bodyLarge
                     .copyWith(color: AppColors.warning),
                 textAlign: TextAlign.center,

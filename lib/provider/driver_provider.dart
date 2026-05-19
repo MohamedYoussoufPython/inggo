@@ -170,7 +170,7 @@ class DriverNotifier extends StateNotifier<DriverState> {
     try {
       final userId = SupabaseService.instance.currentUserId;
       if (userId == null) {
-        state = state.copyWith(isLoading: false, error: 'Non authentifié'); // TODO: i18n — no BuildContext in provider
+        state = state.copyWith(isLoading: false, error: 'Not authenticated'); // TODO: i18n — no BuildContext in provider
         return false;
       }
 
@@ -198,7 +198,7 @@ class DriverNotifier extends StateNotifier<DriverState> {
         state = state.copyWith(
           isLoading: false,
           clearPendingRide: true,
-          error: 'Cette course a déjà été acceptée par un autre chauffeur.', // TODO: i18n
+          error: 'This ride has already been accepted by another driver.', // TODO: i18n
         );
         return false;
       }
@@ -209,7 +209,7 @@ class DriverNotifier extends StateNotifier<DriverState> {
         state = state.copyWith(
           isLoading: false,
           clearPendingRide: true,
-          error: 'Cette course a déjà été acceptée par un autre chauffeur.', // TODO: i18n
+          error: 'This ride has already been accepted by another driver.', // TODO: i18n
         );
         return false;
       }
@@ -232,8 +232,8 @@ class DriverNotifier extends StateNotifier<DriverState> {
       try {
         await NotificationService.instance.sendNotification(
           userId: acceptedRide.clientId,
-          title: 'Chauffeur trouvé !', // TODO: i18n — push notification
-          body: 'Un chauffeur a accepté votre course. Il arrive...', // TODO: i18n
+          title: 'Driver found!', // TODO: i18n — push notification
+          body: 'A driver has accepted your ride. They are on their way...', // TODO: i18n
           type: 'ride_accepted',
           data: {'ride_id': rideId},
         );
@@ -341,8 +341,8 @@ class DriverNotifier extends StateNotifier<DriverState> {
       try {
         await NotificationService.instance.sendNotification(
           userId: ride.clientId,
-          title: 'Course terminée', // TODO: i18n — push notification
-          body: 'Votre course est terminée. Merci d\'avoir utilisé Inggo !', // TODO: i18n
+          title: 'Ride completed', // TODO: i18n — push notification
+          body: 'Your ride is complete. Thank you for using Inggo!', // TODO: i18n
           type: 'ride_completed',
           data: {'ride_id': ride.id},
         );

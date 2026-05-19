@@ -64,7 +64,7 @@ class InggoStepper extends StatelessWidget {
                           boxShadow: isDone
                               ? [
                                   BoxShadow(
-                                    color: AppColors.primary.withOpacity(0.2),
+                                    color: AppColors.primary.withValues(alpha: 0.2),
                                     blurRadius: 0,
                                     spreadRadius: 3,
                                   )
