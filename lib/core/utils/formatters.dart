@@ -1,3 +1,5 @@
+import '../constants/app_constants.dart';
+
 class Formatters {
   Formatters._();
 
@@ -9,12 +11,12 @@ class Formatters {
     return phone;
   }
 
-  static String formatPrice(double amount) {
-    return '${amount.toInt()} FDJ';
+  static String formatPrice(num amount) {
+    return '${amount.toInt()} ${AppConstants.currency}';
   }
 
-  static String formatPriceWithSymbol(double amount) {
-    return '${amount.toInt()} Fdj';
+  static String formatPriceWithSymbol(num amount) {
+    return '${amount.toInt()} ${AppConstants.currency}';
   }
 
   static String formatDuration(int minutes) {

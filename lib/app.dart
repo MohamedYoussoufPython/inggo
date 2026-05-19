@@ -58,6 +58,8 @@ class _InggoAppState extends ConsumerState<InggoApp> with WidgetsBindingObserver
         // Fire and forget — don't block the lifecycle transition
         SupabaseService.instance.update('drivers', userId, {
           'is_online': false,
+        }).catchError((e) {
+          debugPrint('Failed to set driver offline: $e');
         });
       }
     }

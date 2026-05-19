@@ -33,13 +33,38 @@ class ReviewModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'ride_id': rideId,
       'from_user_id': fromUserId,
       'to_user_id': toUserId,
       'rating': rating,
       'comment': comment,
-      'created_at': createdAt?.toIso8601String(),
     };
+  }
+
+  Map<String, dynamic> toJsonFull() {
+    final json = toJson();
+    json['id'] = id;
+    json['created_at'] = createdAt?.toIso8601String();
+    return json;
+  }
+
+  ReviewModel copyWith({
+    String? id,
+    String? rideId,
+    String? fromUserId,
+    String? toUserId,
+    double? rating,
+    String? comment,
+    DateTime? createdAt,
+  }) {
+    return ReviewModel(
+      id: id ?? this.id,
+      rideId: rideId ?? this.rideId,
+      fromUserId: fromUserId ?? this.fromUserId,
+      toUserId: toUserId ?? this.toUserId,
+      rating: rating ?? this.rating,
+      comment: comment ?? this.comment,
+      createdAt: createdAt ?? this.createdAt,
+    );
   }
 }

@@ -13,7 +13,7 @@ class PaymentService {
     return {
       'price': AppConstants.ridePrice,
       'commission': AppConstants.rideCommission,
-      'driver_earning': AppConstants.ridePrice - AppConstants.rideCommission,
+      'driver_earning': AppConstants.driverEarning,
       'currency': AppConstants.currency,
     };
   }

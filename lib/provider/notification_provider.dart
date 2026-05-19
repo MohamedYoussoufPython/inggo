@@ -38,7 +38,10 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
     state = state.copyWith(isLoading: true);
     try {
       final userId = SupabaseService.instance.currentUserId;
-      if (userId == null) return;
+      if (userId == null) {
+        state = state.copyWith(isLoading: false);
+        return;
+      }
 
       final data = await SupabaseService.instance.getAll(
         'notifications',

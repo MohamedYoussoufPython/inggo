@@ -36,15 +36,21 @@ class NotificationModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'user_id': userId,
       'title': title,
       'body': body,
       'type': type,
       'data': data,
       'is_read': isRead,
-      'created_at': createdAt?.toIso8601String(),
     };
+  }
+
+  /// Full JSON including read-only fields (id, timestamps).
+  Map<String, dynamic> toJsonFull() {
+    final json = toJson();
+    json['id'] = id;
+    json['created_at'] = createdAt?.toIso8601String();
+    return json;
   }
 
   NotificationModel copyWith({

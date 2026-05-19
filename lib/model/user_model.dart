@@ -66,7 +66,6 @@ class UserModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'full_name': fullName,
       'phone': phone,
       'email': email,
@@ -77,9 +76,16 @@ class UserModel {
       'sexe': sexe,
       'pays': pays,
       'phone_verified': phoneVerified,
-      'created_at': createdAt?.toIso8601String(),
-      'updated_at': updatedAt?.toIso8601String(),
     };
+  }
+
+  /// Full JSON including read-only fields (id, timestamps).
+  Map<String, dynamic> toJsonFull() {
+    final json = toJson();
+    json['id'] = id;
+    json['created_at'] = createdAt?.toIso8601String();
+    json['updated_at'] = updatedAt?.toIso8601String();
+    return json;
   }
 
   UserModel copyWith({

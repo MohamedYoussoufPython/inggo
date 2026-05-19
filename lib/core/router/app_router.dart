@@ -72,7 +72,7 @@ class AppRouter {
       final registrationRoutes = ['/register-client', '/register-driver'];
 
       // Common routes accessible by both roles
-      final commonRoutes = ['/about', '/support'];
+      final commonRoutes = ['/about', '/support', '/privacy-policy'];
 
       // Not logged in → login
       if (session == null && !publicRoutes.contains(currentPath)) {

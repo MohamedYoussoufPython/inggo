@@ -69,7 +69,6 @@ class LandmarkModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'name_fr': nameFr,
       'name_en': nameEn,
       'category': category.name,
@@ -77,5 +76,31 @@ class LandmarkModel {
       'lng': lng,
       'is_popular': isPopular,
     };
+  }
+
+  Map<String, dynamic> toJsonFull() {
+    final json = toJson();
+    json['id'] = id;
+    return json;
+  }
+
+  LandmarkModel copyWith({
+    String? id,
+    String? nameFr,
+    String? nameEn,
+    LandmarkCategory? category,
+    double? lat,
+    double? lng,
+    bool? isPopular,
+  }) {
+    return LandmarkModel(
+      id: id ?? this.id,
+      nameFr: nameFr ?? this.nameFr,
+      nameEn: nameEn ?? this.nameEn,
+      category: category ?? this.category,
+      lat: lat ?? this.lat,
+      lng: lng ?? this.lng,
+      isPopular: isPopular ?? this.isPopular,
+    );
   }
 }

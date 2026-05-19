@@ -43,7 +43,7 @@ class AppColors {
   // ── Others ──
   static const Color overlay       = Color(0x80000000);
   static const Color overlayLight  = Color(0x33000000);
-  static const Color divider       = Color(0xFFE8E8E8); // = border
+  static const Color divider       = border; // alias
   static const Color shadow        = Color(0x0F000000); // 6% opacity
-  static const Color secondary     = Color(0xFF1A1A1A); // = textPrimary
+  static const Color secondary     = textPrimary; // alias
 }

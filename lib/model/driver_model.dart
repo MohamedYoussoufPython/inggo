@@ -65,7 +65,6 @@ class DriverModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'vehicle_type': vehicleType,
       'plate_number': plateNumber,
       'vehicle_color': vehicleColor,
@@ -81,8 +80,15 @@ class DriverModel {
       'current_lat': currentLat,
       'current_lng': currentLng,
       'last_location_update': lastLocationUpdate?.toIso8601String(),
-      'created_at': createdAt?.toIso8601String(),
     };
+  }
+
+  /// Full JSON including read-only fields (id, timestamps).
+  Map<String, dynamic> toJsonFull() {
+    final json = toJson();
+    json['id'] = id;
+    json['created_at'] = createdAt?.toIso8601String();
+    return json;
   }
 
   DriverModel copyWith({

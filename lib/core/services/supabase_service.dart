@@ -180,7 +180,11 @@ class SupabaseService {
     List<int> bytes,
   ) async {
     final uint8List = Uint8List.fromList(bytes);
-    await client.storage.from(bucket).uploadBinary(path, uint8List);
+    await client.storage.from(bucket).uploadBinary(
+      path,
+      uint8List,
+      fileOptions: FileOptions(upsert: true),
+    );
     return client.storage.from(bucket).getPublicUrl(path);
   }
 
@@ -193,7 +197,11 @@ class SupabaseService {
     List<int> bytes,
   ) async {
     final uint8List = Uint8List.fromList(bytes);
-    await client.storage.from(bucket).uploadBinary(path, uint8List);
+    await client.storage.from(bucket).uploadBinary(
+      path,
+      uint8List,
+      fileOptions: FileOptions(upsert: true),
+    );
     return path;
   }
 
