@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/constants.dart';
 import '../../core/utils/formatters.dart';
-import '../../model/ride_model.dart';
 import '../../widget/widgets.dart';
 import '../../provider/ride_provider.dart';
 import '../../l10n/app_localizations.dart';
@@ -28,20 +27,12 @@ class _EndTripScreenState extends ConsumerState<EndTripScreen> {
 
   /// Map PaymentMethod enum to a human-readable localized label
   String _paymentMethodLabel(PaymentMethod method, AppLocalizations loc) {
-    switch (method) {
-      case PaymentMethod.cash:
-        return loc.paymentCash;
-      case PaymentMethod.waafi:
-        return loc.paymentWaafi;
-      case PaymentMethod.dmoney:
-        return loc.paymentDMoney;
-      case PaymentMethod.cacpay:
-        return loc.paymentCacPay;
-      case PaymentMethod.sabapay:
-        return loc.paymentSabaPay;
-      case PaymentMethod.dahabplus:
-        return loc.paymentDahabplus;
-    }
+    if (method == PaymentMethod.waafi) return loc.paymentWaafi;
+    if (method == PaymentMethod.dmoney) return loc.paymentDMoney;
+    if (method == PaymentMethod.cacpay) return loc.paymentCacPay;
+    if (method == PaymentMethod.sabapay) return loc.paymentSabaPay;
+    if (method == PaymentMethod.dahabplus) return loc.paymentDahabplus;
+    return loc.paymentCash;
   }
 
   @override
@@ -70,7 +61,7 @@ class _EndTripScreenState extends ConsumerState<EndTripScreen> {
                     _infoRow(loc.dropoff, currentRide?.dropoffAddress ?? '-'),
                     const Divider(),
                     _infoRow(loc.price,
-                        Formatters.formatPrice(currentRide?.price ?? 250),
+                        Formatters.formatPrice(currentRide?.price ?? 250.0),
                         valueStyle: AppTextStyles.priceSmall),
                     _infoRow(
                       loc.payment,

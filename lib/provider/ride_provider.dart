@@ -6,6 +6,8 @@ import '../core/services/supabase_service.dart';
 import '../core/services/location_service.dart';
 import '../core/constants/app_constants.dart';
 import '../model/ride_model.dart';
+// Re-export model types so screens only need to import ride_provider
+export '../model/ride_model.dart';
 
 class RideState {
   final bool isLoading;
@@ -116,7 +118,7 @@ class RideState {
           clearDriverInfo ? null : (driverAvatarUrl ?? this.driverAvatarUrl),
       driverLat: clearDriverInfo ? null : (driverLat ?? this.driverLat),
       driverLng: clearDriverInfo ? null : (driverLng ?? this.driverLng),
-      calculatedPrice: calculatedPrice ?? this.calculatedPrice,
+      calculatedPrice: calculatedPrice as double? ?? this.calculatedPrice,
       historyPage: historyPage ?? this.historyPage,
       hasMoreHistory: hasMoreHistory ?? this.hasMoreHistory,
     );
@@ -155,7 +157,7 @@ class RideNotifier extends StateNotifier<RideState> {
   }
 
   Future<void> createRide() async {
-    state = state.copyWith(isLoading: true, error: null);
+    state = state.copyWith(isLoading: true, clearError: true);
     try {
       final userId = SupabaseService.instance.currentUserId;
       if (userId == null) throw Exception('Non authentifié'); // TODO: i18n — no BuildContext in provider
@@ -329,7 +331,7 @@ class RideNotifier extends StateNotifier<RideState> {
         driverAvatarUrl: profile['avatar_url'] as String?,
         driverPlateNumber: driver['plate_number'] as String?,
         driverRating: (driver['rating'] as num?)?.toDouble() ?? 5.0,
-        driverTotalRides: driver['total_rides'] as int? ?? 0,
+        driverTotalRides: (driver['total_rides'] as num?)?.toInt() ?? 0,
         driverLat: (driver['current_lat'] as num?)?.toDouble(),
         driverLng: (driver['current_lng'] as num?)?.toDouble(),
       );

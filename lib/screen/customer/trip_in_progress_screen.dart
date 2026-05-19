@@ -7,7 +7,6 @@ import '../../core/constants/constants.dart';
 import '../../core/utils/formatters.dart';
 import '../../widget/widgets.dart';
 import '../../provider/ride_provider.dart';
-import '../../model/ride_model.dart';
 import '../../l10n/app_localizations.dart';
 
 class TripInProgressScreen extends ConsumerWidget {
@@ -72,7 +71,7 @@ class TripInProgressScreen extends ConsumerWidget {
                                   color: AppColors.secondary)),
                           Text(
                             Formatters.formatPrice(
-                                currentRide?.price ?? 250),
+                                currentRide?.price ?? 250.0),
                             style: AppTextStyles.labelLarge.copyWith(
                                 color: AppColors.secondary),
                           ),

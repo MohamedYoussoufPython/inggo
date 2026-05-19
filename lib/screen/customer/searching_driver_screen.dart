@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/constants/constants.dart';
 import '../../widget/widgets.dart';
 import '../../provider/ride_provider.dart';
-import '../../model/ride_model.dart';
 import '../../l10n/app_localizations.dart';
 
 class SearchingDriverScreen extends ConsumerStatefulWidget {
