@@ -8,9 +8,9 @@ class AppConstants {
   static const String currency = 'FDJ';
 
   // Ride Pricing
-  static const int ridePrice = 250;
-  static const int rideCommission = 125;
-  static const int driverEarning = ridePrice - rideCommission;
+  static const double ridePrice = 250.0;
+  static const double rideCommission = 125.0;
+  static const double driverEarning = ridePrice - rideCommission;
 
   // Phone
   static const String countryCode = '+253';

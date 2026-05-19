@@ -39,10 +39,8 @@ class LocationService {
       if (!hasPermission) return null;
 
       final position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
-          timeLimit: Duration(seconds: 10),
-        ),
+        desiredAccuracy: LocationAccuracy.high,
+        timeLimit: const Duration(seconds: 10),
       );
       _lastPosition = position;
       _throttledPosition = position;
@@ -57,10 +55,8 @@ class LocationService {
   void startTracking({void Function(Position)? onPositionUpdate}) {
     _log.i('Starting GPS tracking (throttle ${_throttleSeconds}s)');
     _positionStream = Geolocator.getPositionStream(
-      locationSettings: LocationSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: _distanceFilterMeters,
-      ),
+      desiredAccuracy: LocationAccuracy.high,
+      distanceFilter: _distanceFilterMeters,
     ).listen((Position position) {
       _lastPosition = position;
       _throttlePosition(position, onPositionUpdate);
