@@ -55,8 +55,10 @@ class LocationService {
   void startTracking({void Function(Position)? onPositionUpdate}) {
     _log.i('Starting GPS tracking (throttle ${_throttleSeconds}s)');
     _positionStream = Geolocator.getPositionStream(
-      desiredAccuracy: LocationAccuracy.high,
-      distanceFilter: _distanceFilterMeters,
+      locationSettings: LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: _distanceFilterMeters,
+      ),
     ).listen((Position position) {
       _lastPosition = position;
       _throttlePosition(position, onPositionUpdate);
